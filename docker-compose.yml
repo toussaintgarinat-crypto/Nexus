@@ -1,0 +1,42 @@
+version: '3.8'
+
+services:
+  backend:
+    build: ./backend
+    ports:
+      - "8000:8000"
+    environment:
+      - DATABASE_URL=sqlite+aiosqlite:///./data/nexus.db
+      - SECRET_KEY=change-me-in-production-use-openssl-rand-hex-32
+      - LIVEKIT_URL=ws://livekit:7880
+      - LIVEKIT_API_KEY=devkey
+      - LIVEKIT_API_SECRET=secret
+    volumes:
+      - ./backend:/app
+      - nexus_data:/app/data
+    depends_on:
+      - livekit
+
+  frontend:
+    build: ./frontend
+    ports:
+      - "3000:3000"
+    environment:
+      - VITE_API_URL=http://localhost:8000
+      - VITE_WS_URL=ws://localhost:8000
+      - VITE_LIVEKIT_URL=ws://localhost:7880
+    depends_on:
+      - backend
+
+  livekit:
+    image: livekit/livekit-server:latest
+    ports:
+      - "7880:7880"
+      - "7881:7881"
+      - "7882:7882/udp"
+    volumes:
+      - ./livekit/livekit.yaml:/etc/livekit.yaml
+    command: --config /etc/livekit.yaml
+
+volumes:
+  nexus_data:
