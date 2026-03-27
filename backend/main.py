@@ -14,9 +14,16 @@ async def lifespan(app: FastAPI):
 
 app = FastAPI(title="Nexus API", version="1.0.0", lifespan=lifespan)
 
+ALLOWED_ORIGINS = [
+    "http://localhost:3000",
+    "http://localhost:5173",
+    "https://nexus-dididev.vercel.app",
+    "https://frontend-sable-eta-60.vercel.app",
+]
+
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=["http://localhost:3000", "http://localhost:5173", "*"],
+    allow_origins=ALLOWED_ORIGINS,
     allow_credentials=True,
     allow_methods=["*"],
     allow_headers=["*"],
