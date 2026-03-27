@@ -19,6 +19,7 @@ ALLOWED_ORIGINS = [
     "http://localhost:5173",
     "https://nexus-dididev.vercel.app",
     "https://frontend-sable-eta-60.vercel.app",
+    "https://nexus-app-dididev.vercel.app",
 ]
 
 app.add_middleware(
