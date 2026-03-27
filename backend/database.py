@@ -3,8 +3,10 @@ from sqlalchemy.ext.asyncio import create_async_engine, async_sessionmaker, Asyn
 from sqlalchemy.orm import DeclarativeBase
 
 _raw_url = os.getenv("DATABASE_URL", "sqlite+aiosqlite:///./nexus.db")
-# Render gives postgresql:// — SQLAlchemy async needs postgresql+asyncpg://
-if _raw_url.startswith("postgresql://"):
+# Render gives postgres:// or postgresql:// — SQLAlchemy async needs postgresql+asyncpg://
+if _raw_url.startswith("postgres://"):
+    _raw_url = _raw_url.replace("postgres://", "postgresql+asyncpg://", 1)
+elif _raw_url.startswith("postgresql://"):
     _raw_url = _raw_url.replace("postgresql://", "postgresql+asyncpg://", 1)
 DATABASE_URL = _raw_url
 

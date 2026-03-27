@@ -1,6 +1,8 @@
-from fastapi import FastAPI
+from fastapi import FastAPI, Request
 from fastapi.middleware.cors import CORSMiddleware
+from fastapi.responses import JSONResponse
 from contextlib import asynccontextmanager
+import traceback
 
 from database import init_db
 from routers import auth, worlds, channels, messages, ai, tokens, config
@@ -37,6 +39,13 @@ app.include_router(messages.router)
 app.include_router(ai.router)
 app.include_router(tokens.router)
 app.include_router(config.router)
+
+
+@app.exception_handler(Exception)
+async def global_exception_handler(request: Request, exc: Exception):
+    detail = traceback.format_exc()
+    print(f"UNHANDLED ERROR: {detail}")
+    return JSONResponse(status_code=500, content={"detail": str(exc), "type": type(exc).__name__})
 
 
 @app.get("/")
