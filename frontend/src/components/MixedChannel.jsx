@@ -2,6 +2,7 @@ import { useState, useEffect, useRef, useCallback } from 'react'
 import { messages as messagesApi } from '../services/api'
 import AIAssistant from './AIAssistant'
 import ExcalidrawPanel from './ExcalidrawPanel'
+import CoursesLibrary from './CoursesLibrary'
 
 const WORLD_COLORS = {
   web: '#3B82F6', mobile: '#10B981', ai: '#8B5CF6', backend: '#F59E0B',
@@ -113,7 +114,7 @@ export default function MixedChannel({ channel, world, user, llmConfig }) {
         {/* Left: Tab content */}
         <div className="flex flex-col flex-1 overflow-hidden">
           <div className="flex border-b border-border bg-panel">
-            {[['ai', '🤖 Assistant'], ['chat', '💬 Chat']].map(([key, label]) => (
+            {[['ai', '🤖 Assistant'], ['chat', '💬 Chat'], ['cours', '📚 Cours']].map(([key, label]) => (
               <button key={key} onClick={() => setTab(key)}
                 className={`px-4 py-2 text-sm font-medium transition-colors ${tab === key ? 'text-white border-b-2' : 'text-muted hover:text-white'}`}
                 style={tab === key ? { borderBottomColor: accentColor } : {}}>
@@ -122,7 +123,11 @@ export default function MixedChannel({ channel, world, user, llmConfig }) {
             ))}
           </div>
 
-          {tab === 'ai' ? (
+          {tab === 'cours' ? (
+            <div className="flex-1 overflow-hidden">
+              <CoursesLibrary accentColor={accentColor} />
+            </div>
+          ) : tab === 'ai' ? (
             <AIAssistant channel={channel} world={world} user={user} llmConfig={llmConfig} accentColor={accentColor} />
           ) : (
             <div className="flex flex-col flex-1 overflow-hidden">
