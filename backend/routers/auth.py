@@ -57,25 +57,31 @@ async def get_current_user(token: str = Depends(oauth2_scheme), db: AsyncSession
 
 @router.post("/register", response_model=LoginResponse)
 async def register(req: RegisterRequest, db: AsyncSession = Depends(get_db)):
-    result = await db.execute(select(User).where(User.email == req.email))
-    if result.scalar_one_or_none():
-        raise HTTPException(status_code=400, detail="Email déjà utilisé")
-    user = User(
-        email=req.email,
-        hashed_password=pwd_context.hash(req.password),
-        avatar_emoji=req.avatar_emoji,
-        display_name=req.display_name or req.email.split("@")[0],
-    )
-    db.add(user)
-    await db.commit()
-    await db.refresh(user)
-    return LoginResponse(
-        access_token=create_token(user.id),
-        user_id=user.id,
-        email=user.email,
-        avatar_emoji=user.avatar_emoji,
-        display_name=user.display_name,
-    )
+    try:
+        result = await db.execute(select(User).where(User.email == req.email))
+        if result.scalar_one_or_none():
+            raise HTTPException(status_code=400, detail="Email déjà utilisé")
+        user = User(
+            email=req.email,
+            hashed_password=pwd_context.hash(req.password),
+            avatar_emoji=req.avatar_emoji,
+            display_name=req.display_name or req.email.split("@")[0],
+        )
+        db.add(user)
+        await db.commit()
+        await db.refresh(user)
+        return LoginResponse(
+            access_token=create_token(user.id),
+            user_id=user.id,
+            email=user.email,
+            avatar_emoji=user.avatar_emoji,
+            display_name=user.display_name,
+        )
+    except HTTPException:
+        raise
+    except Exception as e:
+        import traceback
+        raise HTTPException(status_code=500, detail=f"{type(e).__name__}: {e}\n{traceback.format_exc()}")
 
 
 @router.post("/login", response_model=LoginResponse)

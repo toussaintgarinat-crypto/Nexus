@@ -56,3 +56,17 @@ async def root():
 @app.get("/health")
 async def health():
     return {"status": "ok"}
+
+
+@app.get("/debug/db")
+async def debug_db():
+    from database import DATABASE_URL, engine
+    from sqlalchemy import text
+    masked = DATABASE_URL[:30] + "..." if len(DATABASE_URL) > 30 else DATABASE_URL
+    try:
+        async with engine.connect() as conn:
+            result = await conn.execute(text("SELECT 1"))
+            return {"db": "connected", "url_prefix": masked, "result": str(result.fetchone())}
+    except Exception as e:
+        import traceback
+        return {"db": "error", "url_prefix": masked, "error": str(e), "trace": traceback.format_exc()}
