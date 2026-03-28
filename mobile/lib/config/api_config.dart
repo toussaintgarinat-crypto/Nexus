@@ -3,7 +3,7 @@ class ApiConfig {
   // Local dev:   http://10.0.2.2:8000  (Android emulator)
   //              http://localhost:8000   (iOS simulator)
   // Production:  https://nexus-backend.onrender.com
-  static const String baseUrl = 'https://nexus-backend.onrender.com';
+  static const String baseUrl = 'https://nexus-backend-t83s.onrender.com';
 
   static String get wsBaseUrl => baseUrl.replaceFirst('https://', 'wss://').replaceFirst('http://', 'ws://');
 
