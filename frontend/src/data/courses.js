@@ -7377,13 +7377,13 @@ En 1998, le terme **"Open Source"** est créé pour rendre l'idée plus accessib
 
 C'est la confusion la plus fréquente.
 
-\\`\\`\\`
+\`\`\`
 Open Source = le code est visible et modifiable
 Gratuit     = aucun coût d'utilisation
 
 → Un logiciel peut être open source ET payant (Red Hat Enterprise Linux)
 → Un logiciel peut être gratuit ET propriétaire (Skype, Adobe Acrobat Reader)
-\\`\\`\\`
+\`\`\`
 
 ## Pourquoi les entreprises font de l'open source ?
 
@@ -7427,23 +7427,23 @@ La licence est le **contrat légal** qui définit ce que tu as le droit de faire
 
 ## La grande division : permissive vs copyleft
 
-\\`\\`\\`
+\`\`\`
 PERMISSIVE                          COPYLEFT
 "Fais ce que tu veux,               "Tu peux utiliser, mais si tu
  même fermer le code"                distribues, le code reste ouvert"
 
 MIT, Apache, BSD                    GPL, AGPL, LGPL
-\\`\\`\\`
+\`\`\`
 
 ## MIT License — la plus utilisée
 
-\\`\\`\\`
+\`\`\`
 ✅ Utiliser commercialement
 ✅ Modifier et distribuer
 ✅ Intégrer dans un projet propriétaire
 ⚠️  Obligation : conserver la notice de copyright
 ❌ Aucune garantie de l'auteur
-\\`\\`\\`
+\`\`\`
 
 **Utilisée par :** React, Vue.js, Node.js, jQuery, Bootstrap, Rails
 
@@ -7451,12 +7451,12 @@ MIT, Apache, BSD                    GPL, AGPL, LGPL
 
 ## Apache License 2.0 — pour les entreprises
 
-\\`\\`\\`
+\`\`\`
 ✅ Tout ce que MIT autorise
 ✅ Protection contre les poursuites pour brevets
 ⚠️  Obligation : noter les modifications apportées
 ⚠️  Inclure la licence et les notices
-\\`\\`\\`
+\`\`\`
 
 **Utilisée par :** Android, Kubernetes, TensorFlow, Kafka
 
@@ -7466,12 +7466,12 @@ MIT, Apache, BSD                    GPL, AGPL, LGPL
 
 La licence "virale". Si tu distribues un programme basé sur du code GPL, **tout ton code doit aussi être GPL**.
 
-\\`\\`\\`
+\`\`\`
 ✅ Utiliser et modifier
 ✅ Usage interne sans obligation
 ❌ Si tu distribues → code source obligatoire
 ❌ Impossible d'intégrer dans du code propriétaire distribué
-\\`\\`\\`
+\`\`\`
 
 **Utilisée par :** Linux kernel (v2), WordPress, Git, VLC, GIMP
 
@@ -7479,11 +7479,11 @@ La licence "virale". Si tu distribues un programme basé sur du code GPL, **tout
 
 ## AGPL v3 — ferme la faille SaaS
 
-\\`\\`\\`
+\`\`\`
 Même chose que GPL v3, PLUS :
 → Fournir le service via le réseau (SaaS, API) = distribution
 → Tu dois quand même publier le code source
-\\`\\`\\`
+\`\`\`
 
 **Utilisée par :** Grafana, Nextcloud, Gitea, MongoDB (anciennement)
 
@@ -7491,10 +7491,10 @@ Même chose que GPL v3, PLUS :
 
 ## LGPL — copyleft doux pour les bibliothèques
 
-\\`\\`\\`
+\`\`\`
 ✅ Lier dynamiquement une lib LGPL dans ton code propriétaire
 ❌ Modifier et redistribuer la lib → doit rester LGPL
-\\`\\`\\`
+\`\`\`
 
 **Utilisée par :** Qt (partiel), FFmpeg, GNU C Library
 
@@ -7510,13 +7510,13 @@ Même chose que GPL v3, PLUS :
 
 ## Comment choisir sa licence
 
-\\`\\`\\`
+\`\`\`
 Adoption maximale ?              → MIT
 Environnement brevets/entreprise → Apache 2.0
 Améliorations ouvertes (distribué) → GPL v3
 Bloquer les SaaS non contributeurs → AGPL v3
 Bibliothèque usage commercial libre → LGPL
-\\`\\`\\`
+\`\`\`
 
 ## Le cas "sans licence"
 
@@ -7545,15 +7545,15 @@ Contribuer à l'open source est une des meilleures façons de progresser, de se 
 ### 1. Trouver une issue
 
 Sur GitHub, cherche les labels :
-- \\`good first issue\\` → pour débutants
-- \\`help wanted\\` → mainteneurs cherchent de l'aide
-- \\`documentation\\` → améliorations de doc
+- \`good first issue\` → pour débutants
+- \`help wanted\` → mainteneurs cherchent de l'aide
+- \`documentation\` → améliorations de doc
 
 Lis **CONTRIBUTING.md** avant tout.
 
 ### 2. Forker et cloner
 
-\\`\\`\\`bash
+\`\`\`bash
 # Fork sur GitHub (bouton "Fork")
 
 # Cloner ton fork
@@ -7562,23 +7562,23 @@ cd nom-du-projet
 
 # Ajouter le repo original comme upstream
 git remote add upstream https://github.com/AUTEUR/nom-du-projet.git
-\\`\\`\\`
+\`\`\`
 
 ### 3. Créer une branche dédiée
 
-\\`\\`\\`bash
+\`\`\`bash
 git fetch upstream
 git checkout upstream/main -b fix/description-du-bug
-\\`\\`\\`
+\`\`\`
 
 Convention de nommage :
-- \\`fix/nom-du-bug\\`
-- \\`feat/nom-feature\\`
-- \\`docs/section-concernee\\`
+- \`fix/nom-du-bug\`
+- \`feat/nom-feature\`
+- \`docs/section-concernee\`
 
 ### 4. Committer avec Conventional Commits
 
-\\`\\`\\`bash
+\`\`\`bash
 git commit -m "fix: corriger le crash au démarrage sans config"
 
 # Préfixes standards :
@@ -7588,40 +7588,40 @@ git commit -m "fix: corriger le crash au démarrage sans config"
 # refactor: restructuration du code
 # test:     ajout de tests
 # chore:    maintenance
-\\`\\`\\`
+\`\`\`
 
 ### 5. Ouvrir une Pull Request
 
-\\`\\`\\`bash
+\`\`\`bash
 git push origin fix/description-du-bug
-\\`\\`\\`
+\`\`\`
 
 Une bonne PR :
 - Titre clair décrivant le changement
 - Explication du **pourquoi** dans la description
-- Référence l'issue : \\`Closes #123\\`
+- Référence l'issue : \`Closes #123\`
 - Minimum de changements (pas de reformatage parasite)
 
 ### 6. Après le merge
 
-\\`\\`\\`bash
+\`\`\`bash
 git fetch upstream
 git checkout main
 git merge upstream/main
 git push origin main
 git branch -d fix/description-du-bug
-\\`\\`\\`
+\`\`\`
 
 ## Les fichiers clés d'un projet open source
 
 | Fichier | Rôle |
 |---------|------|
-| \\`README.md\\` | Présentation, installation, usage |
-| \\`CONTRIBUTING.md\\` | Comment contribuer, règles |
-| \\`CODE_OF_CONDUCT.md\\` | Règles de comportement |
-| \\`LICENSE\\` | La licence |
-| \\`CHANGELOG.md\\` | Historique des versions |
-| \\`SECURITY.md\\` | Signaler une faille |
+| \`README.md\` | Présentation, installation, usage |
+| \`CONTRIBUTING.md\` | Comment contribuer, règles |
+| \`CODE_OF_CONDUCT.md\` | Règles de comportement |
+| \`LICENSE\` | La licence |
+| \`CHANGELOG.md\` | Historique des versions |
+| \`SECURITY.md\` | Signaler une faille |
 
 ## Étiquette dans l'open source
 
@@ -7641,7 +7641,7 @@ Publier un projet open source va au-delà de "mettre le code sur GitHub".
 
 ## Structure minimale recommandée
 
-\\`\\`\\`
+\`\`\`
 mon-projet/
 ├── src/                    # Code source
 ├── tests/                  # Tests
@@ -7649,13 +7649,13 @@ mon-projet/
 ├── LICENSE                 # OBLIGATOIRE
 ├── CONTRIBUTING.md         # Recommandé
 └── .gitignore
-\\`\\`\\`
+\`\`\`
 
 ## Le versionnage sémantique (SemVer)
 
 Convention universelle : **MAJEURE.MINEURE.CORRECTIF**
 
-\\`\\`\\`
+\`\`\`
 v2.4.1
 │ │ └── CORRECTIF (patch) : bug fix, rétrocompatible
 │ └──── MINEURE (minor)   : nouvelle feature, rétrocompatible
@@ -7665,24 +7665,24 @@ Exemples :
 1.0.0 → 1.0.1  bug fix
 1.0.1 → 1.1.0  nouvelle feature
 1.1.0 → 2.0.0  API incompatible
-\\`\\`\\`
+\`\`\`
 
-En \\`0.x.x\\` : tout peut changer. À \\`1.0.0\\` tu t'engages à respecter SemVer.
+En \`0.x.x\` : tout peut changer. À \`1.0.0\` tu t'engages à respecter SemVer.
 
 ## Labels GitHub utiles
 
-\\`\\`\\`
+\`\`\`
 good first issue    → pour les débutants
 help wanted         → tu cherches des contributeurs
 bug                 → comportement anormal confirmé
 enhancement         → nouvelle fonctionnalité
 duplicate           → issue déjà signalée
 wontfix             → hors périmètre
-\\`\\`\\`
+\`\`\`
 
 ## CI avec GitHub Actions
 
-\\`\\`\\`yaml
+\`\`\`yaml
 # .github/workflows/ci.yml
 name: CI
 on: [push, pull_request]
@@ -7696,7 +7696,7 @@ jobs:
           node-version: '20'
       - run: npm install
       - run: npm test
-\\`\\`\\`
+\`\`\`
 
 ## Monétiser son open source
 
@@ -7752,30 +7752,30 @@ Les LLMs (GPT-4, Claude, Gemini…) ont transformé la façon de coder. Bien les
 ## Prompter efficacement pour le code
 
 **Mauvais :**
-\\`\\`\\`
+\`\`\`
 Fais-moi une fonction Python
-\\`\\`\\`
+\`\`\`
 
 **Bon :**
-\\`\\`\\`
+\`\`\`
 Écris une fonction Python qui :
 - Prend une liste de dicts avec clés "nom" et "score"
 - Filtre les entrées avec score > 80
 - Trie par score décroissant
 - Retourne les 3 premiers
 - Inclus un exemple et les cas limites (liste vide, ex aequo)
-\\`\\`\\`
+\`\`\`
 
 ## La règle du contexte
 
 Donne toujours à l'IA :
-\\`\\`\\`
+\`\`\`
 1. Contexte du projet    → "C'est une API FastAPI, Python 3.11"
 2. Code existant         → colle les fichiers concernés
 3. Message d'erreur exact → copie-colle l'erreur complète
 4. Ce que tu as essayé   → évite les suggestions déjà testées
 5. La contrainte clé     → "doit être compatible Python 3.9"
-\\`\\`\\`
+\`\`\`
 
 ## Outils IA pour coder
 
@@ -7797,7 +7797,7 @@ Donne toujours à l'IA :
 
 ## Le problème que MCP résout
 
-\\`\\`\\`
+\`\`\`
 Avant MCP :
 Claude ─── intégration custom ──→ GitHub
 Claude ─── intégration custom ──→ Notion
@@ -7809,13 +7809,13 @@ Claude ──→ protocole MCP ──→ serveur MCP GitHub
                           ──→ serveur MCP Notion
                           ──→ serveur MCP PostgreSQL
 (N outils + M LLMs = N+M implémentations seulement)
-\\`\\`\\`
+\`\`\`
 
 ## Architecture MCP
 
 MCP fonctionne en client-serveur :
 
-\\`\\`\\`
+\`\`\`
 Application hôte (Claude Desktop, Claude Code...)
   │
   │  protocole MCP (JSON-RPC sur stdio/HTTP)
@@ -7823,14 +7823,14 @@ Application hôte (Claude Desktop, Claude Code...)
   ├──→ Serveur MCP GitHub  ──→ API GitHub
   ├──→ Serveur MCP BDD     ──→ PostgreSQL
   └──→ Serveur MCP Fichiers ──→ Système de fichiers
-\\`\\`\\`
+\`\`\`
 
 ## Ce qu'un serveur MCP expose
 
 ### Tools (Outils)
 Des fonctions que le LLM peut appeler :
 
-\\`\\`\\`json
+\`\`\`json
 {
   "name": "create_github_issue",
   "description": "Crée une issue GitHub",
@@ -7843,7 +7843,7 @@ Des fonctions que le LLM peut appeler :
     }
   }
 }
-\\`\\`\\`
+\`\`\`
 
 ### Resources
 Des données que le LLM peut lire (fichiers, pages, BDD…)
@@ -7853,7 +7853,7 @@ Des templates préconfigurés pour des tâches récurrentes
 
 ## Créer un serveur MCP simple (Python)
 
-\\`\\`\\`python
+\`\`\`python
 from mcp.server import Server
 from mcp.server.stdio import stdio_server
 from mcp.types import Tool, TextContent
@@ -7889,11 +7889,11 @@ async def main():
         await app.run(read, write, app.create_initialization_options())
 
 asyncio.run(main())
-\\`\\`\\`
+\`\`\`
 
 ## Configurer MCP dans Claude Desktop
 
-\\`\\`\\`json
+\`\`\`json
 {
   "mcpServers": {
     "github": {
@@ -7911,18 +7911,18 @@ asyncio.run(main())
     }
   }
 }
-\\`\\`\\`
+\`\`\`
 
 ## Serveurs MCP populaires
 
 | Serveur | Capacités |
 |---------|----------|
-| \\`server-github\\` | Issues, PRs, repos, code |
-| \\`server-filesystem\\` | Lire/écrire fichiers locaux |
-| \\`server-postgres\\` | Requêtes SQL |
-| \\`server-brave-search\\` | Recherche web |
-| \\`server-slack\\` | Messages Slack |
-| \\`mcp-server-fetch\\` | Récupérer des URLs |`
+| \`server-github\` | Issues, PRs, repos, code |
+| \`server-filesystem\` | Lire/écrire fichiers locaux |
+| \`server-postgres\` | Requêtes SQL |
+| \`server-brave-search\` | Recherche web |
+| \`server-slack\` | Messages Slack |
+| \`mcp-server-fetch\` | Récupérer des URLs |`
       },
       {
         id: "ia-agents",
@@ -7934,7 +7934,7 @@ Un **agent IA** est un LLM capable d'utiliser des **outils** pour accomplir des 
 
 ## LLM vs Agent
 
-\\`\\`\\`
+\`\`\`
 LLM seul :
   Tu → Question → LLM → Réponse texte
 
@@ -7945,11 +7945,11 @@ Agent :
                         → [décide de l'étape suivante]
                         → ... répète ...
                         → Résultat final
-\\`\\`\\`
+\`\`\`
 
 ## Le pattern ReAct (Reason + Act)
 
-\\`\\`\\`
+\`\`\`
 Objectif : "Trouve le prix de l'action Apple et fais un graphique"
 
 THOUGHT : Je dois chercher le prix AAPL
@@ -7961,13 +7961,13 @@ ACTION  : run_code("import matplotlib... plt.bar(['AAPL'], [189.45])")
 RESULT  : graphique.png créé
 
 FINAL   : Prix Apple = 189.45$. Voici le graphique.
-\\`\\`\\`
+\`\`\`
 
 ## Les sous-agents (subagents)
 
 Un agent peut **déléguer des sous-tâches** à d'autres agents spécialisés :
 
-\\`\\`\\`
+\`\`\`
 Agent Orchestrateur : "Audit complet de mon app"
          │
          ├──→ Sous-agent Sécurité    → rapport vulnérabilités
@@ -7975,13 +7975,13 @@ Agent Orchestrateur : "Audit complet de mon app"
          └──→ Sous-agent Qualité     → rapport code quality
                     │
          Orchestrateur synthétise → Rapport final
-\\`\\`\\`
+\`\`\`
 
 **Avantages :** tâches en parallèle, contexte spécialisé par agent, pas de saturation du contexte principal.
 
 ## Créer un agent avec l'API Claude
 
-\\`\\`\\`python
+\`\`\`python
 import anthropic
 
 client = anthropic.Anthropic()
@@ -8028,7 +8028,7 @@ def run_agent(objective: str):
                     "content": result
                 }]
             })
-\\`\\`\\`
+\`\`\`
 
 ## Patterns d'architecture multi-agents
 
@@ -8040,13 +8040,13 @@ def run_agent(objective: str):
 
 ## Garder le contrôle
 
-\\`\\`\\`
+\`\`\`
 ✅ Confirmation humaine avant actions irréversibles
 ✅ Sandbox (pas d'accès direct à la prod)
 ✅ Logging de toutes les actions
 ✅ Timeout et budget de tokens max
 ✅ Principe du moindre privilège (outils minimaux nécessaires)
-\\`\\`\\``
+\`\`\``
       },
       {
         id: "ia-rag",
@@ -8058,17 +8058,17 @@ def run_agent(objective: str):
 
 ## Le problème sans RAG
 
-\\`\\`\\`
+\`\`\`
 "Quelle est notre politique de remboursement ?"
 → LLM : "Je n'ai pas accès à vos documents internes..."
 
 "Résume la réunion du 15 mars 2025"
 → LLM : "Je n'ai pas connaissance de cette réunion..."
-\\`\\`\\`
+\`\`\`
 
 ## Comment fonctionne le RAG
 
-\\`\\`\\`
+\`\`\`
 PHASE 1 : INDEXATION (une fois)
 Documents → Découper en chunks → Embeddings → Base vectorielle
 
@@ -8076,21 +8076,21 @@ PHASE 2 : REQUÊTE (à chaque question)
 Question → Embedding → Recherche similarité → Top 3 chunks
         → Prompt : "Voici les extraits : [chunks]. Réponds à : [question]"
         → LLM génère la réponse
-\\`\\`\\`
+\`\`\`
 
 ## Les embeddings
 
 Un embedding est une représentation numérique d'un texte. Des textes sémantiquement proches ont des vecteurs proches.
 
-\\`\\`\\`python
+\`\`\`python
 "le chien court"   → [0.23, -0.45, 0.12, ...]  # voisins
 "le chiot galope"  → [0.21, -0.43, 0.14, ...]  # proches
 "la voiture roule" → [-0.34, 0.67, -0.23, ...] # éloigné
-\\`\\`\\`
+\`\`\`
 
 ## RAG avec ChromaDB (exemple complet)
 
-\\`\\`\\`python
+\`\`\`python
 import chromadb
 from chromadb.utils import embedding_functions
 import anthropic
@@ -8136,7 +8136,7 @@ Réponds uniquement à partir des extraits. Si absent, dis-le clairement."""
 
 print(rag_query("Comment retourner un produit ?"))
 # → "Notre politique de retour est de 30 jours sans justificatif."
-\\`\\`\\`
+\`\`\`
 
 ## Les bases de données vectorielles
 
@@ -8150,13 +8150,13 @@ print(rag_query("Comment retourner un produit ?"))
 
 ## Pièges classiques du RAG
 
-\\`\\`\\`
+\`\`\`
 Chunks trop grands   → contexte utile noyé dans le bruit
 Chunks trop petits   → manque de contexte pour comprendre
 Mauvais découpage    → couper une phrase au milieu perd le sens
 Données périmées     → re-indexer régulièrement si les docs changent
 Hallucination        → le LLM invente si les chunks n'ont pas la réponse
-\\`\\`\\`
+\`\`\`
 
 ## RAG vs Fine-tuning
 
