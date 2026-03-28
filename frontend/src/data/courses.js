@@ -3286,5 +3286,1966 @@ Timely      : écrit en même temps que le code
 \`\`\``
       }
     ]
+  },
+  {
+    id: "ia-llm",
+    emoji: "🤖",
+    title: "IA & LLMs",
+    description: "Intégrer des modèles de langage dans tes applications",
+    level: "Intermédiaire",
+    color: "#A855F7",
+    lessons: [
+      {
+        id: "llm-concepts",
+        title: "Comment fonctionnent les LLMs",
+        duration: "14 min",
+        content: `# Comment fonctionnent les LLMs
+
+Un **LLM** (Large Language Model) est un modèle d'IA entraîné sur des milliards de textes pour prédire le prochain mot (token) le plus probable.
+
+## L'idée fondamentale
+
+\`\`\`
+Entrée : "La capitale de la France est"
+LLM calcule la probabilité de chaque mot suivant :
+  "Paris"      → 94.2%
+  "Lyon"       → 2.1%
+  "une belle"  → 1.8%
+  ...
+→ Choisit "Paris"
+
+Ce processus se répète token par token pour générer du texte.
+\`\`\`
+
+## Les concepts clés
+
+\`\`\`
+Token :
+→ Unité de base traitée par le LLM
+→ Environ 3/4 d'un mot en anglais, un peu moins en français
+→ "bonjour" = 1 token, "extraordinaire" = 2-3 tokens
+→ 1000 tokens ≈ 750 mots
+
+Context Window (fenêtre de contexte) :
+→ Nombre maximum de tokens que le modèle peut traiter d'un coup
+→ GPT-4 : 128 000 tokens (~100 000 mots)
+→ Claude Sonnet : 200 000 tokens
+→ Llama 3 : 8 000 à 128 000 tokens selon la version
+
+Temperature :
+→ Contrôle le caractère aléatoire des réponses
+→ 0.0 = déterministe (toujours la même réponse)
+→ 0.7 = équilibre créativité/cohérence (recommandé)
+→ 1.5 = très créatif mais peut délirer
+
+Hallucination :
+→ Le modèle génère des informations fausses avec confiance
+→ Cause : il optimise la vraisemblance du texte, pas la vérité
+→ Solution : RAG, vérification des sources, température basse
+\`\`\`
+
+## Les types de modèles
+
+\`\`\`
+Closed-source (API payante) :
+  GPT-4o, GPT-4 Turbo     → OpenAI    → Très capables, chers
+  Claude 3.5 Sonnet        → Anthropic → Excellent pour le code
+  Gemini 1.5 Pro           → Google    → Grande fenêtre de contexte
+
+Open-source (gratuit, auto-hébergeable) :
+  Llama 3 (70B)            → Meta       → Très performant
+  Mistral / Mixtral        → Mistral AI → Excellent rapport qualité/taille
+  Qwen 2.5                 → Alibaba    → Multilingue
+  Phi-3                    → Microsoft  → Petit mais efficace
+
+Via API gratuite :
+  OpenRouter.ai            → Accès unifié à 100+ modèles
+  Groq                     → Llama/Mistral ultra rapide (gratuit limité)
+  Google AI Studio         → Gemini gratuit
+  Hugging Face             → Hébergement de modèles open-source
+\`\`\`
+
+## Inférence : où tourner un LLM ?
+
+\`\`\`
+Cloud (API) :
+→ Simple, scalable, pas de GPU requis
+→ Coût : ~$0.002-0.06 par 1000 tokens selon modèle
+→ Latence : 50-500ms pour les premiers tokens
+
+Local (Ollama, LM Studio) :
+→ Gratuit, privé, hors ligne
+→ Requiert un GPU (ou CPU lent)
+→ Modèles jusqu'à 70B params sur un bon GPU
+→ ollama run llama3 → chat en local
+
+Edge (petits modèles) :
+→ Phi-3 Mini, Llama 3.2 1B : tournent sur mobile ou navigateur
+→ WebLLM : LLM directement dans le navigateur (WebGPU)
+\`\`\``
+      },
+      {
+        id: "llm-api-calls",
+        title: "Appeler une API IA : pratique complète",
+        duration: "18 min",
+        content: `# Appeler une API IA : pratique complète
+
+## OpenAI API (standard devenu universel)
+
+La quasi-totalité des APIs IA (OpenAI, Groq, OpenRouter, Mistral, Ollama...) utilisent le même format.
+
+\`\`\`python
+# pip install openai
+from openai import OpenAI
+
+client = OpenAI(api_key="sk-...")
+
+# Appel simple
+response = client.chat.completions.create(
+    model="gpt-4o-mini",
+    messages=[
+        {"role": "system", "content": "Tu es un assistant développeur expert."},
+        {"role": "user", "content": "Explique ce qu'est un index de base de données."}
+    ],
+    temperature=0.7,
+    max_tokens=500
+)
+
+print(response.choices[0].message.content)
+print(f"Tokens utilisés : {response.usage.total_tokens}")
+\`\`\`
+
+## Même code, modèle différent (Groq, OpenRouter, Ollama)
+
+\`\`\`python
+# Groq (ultra rapide, gratuit)
+client = OpenAI(
+    base_url="https://api.groq.com/openai/v1",
+    api_key="gsk_..."
+)
+response = client.chat.completions.create(
+    model="llama-3.1-70b-versatile",
+    messages=[...]
+)
+
+# OpenRouter (100+ modèles gratuits)
+client = OpenAI(
+    base_url="https://openrouter.ai/api/v1",
+    api_key="sk-or-..."
+)
+response = client.chat.completions.create(
+    model="meta-llama/llama-3.1-8b-instruct:free",
+    messages=[...]
+)
+
+# Ollama (local, gratuit)
+client = OpenAI(
+    base_url="http://localhost:11434/v1",
+    api_key="ollama"  # pas de vraie clé
+)
+response = client.chat.completions.create(
+    model="llama3.2",
+    messages=[...]
+)
+\`\`\`
+
+## Streaming : afficher les tokens au fur et à mesure
+
+\`\`\`python
+# Sans streaming : attend toute la réponse (~5-10s)
+# Avec streaming : affiche dès le premier token (~100ms)
+
+stream = client.chat.completions.create(
+    model="gpt-4o-mini",
+    messages=[{"role": "user", "content": "Écris un poème sur Python"}],
+    stream=True  # ← activer le streaming
+)
+
+for chunk in stream:
+    if chunk.choices[0].delta.content is not None:
+        print(chunk.choices[0].delta.content, end="", flush=True)
+
+# En FastAPI (Server-Sent Events) :
+from fastapi.responses import StreamingResponse
+
+async def chat_stream(message: str):
+    async def generate():
+        stream = client.chat.completions.create(
+            model="gpt-4o-mini",
+            messages=[{"role": "user", "content": message}],
+            stream=True
+        )
+        for chunk in stream:
+            content = chunk.choices[0].delta.content
+            if content:
+                yield f"data: {json.dumps({'content': content})}\\n\\n"
+        yield "data: [DONE]\\n\\n"
+
+    return StreamingResponse(generate(), media_type="text/event-stream")
+\`\`\`
+
+## Gérer l'historique de conversation
+
+\`\`\`python
+# Les LLMs sont sans état : tu dois renvoyer tout l'historique
+historique = [
+    {"role": "system", "content": "Tu es un assistant développeur."}
+]
+
+def chat(message_utilisateur: str) -> str:
+    # Ajouter le message de l'utilisateur
+    historique.append({"role": "user", "content": message_utilisateur})
+
+    # Appeler l'API avec tout l'historique
+    response = client.chat.completions.create(
+        model="gpt-4o-mini",
+        messages=historique
+    )
+
+    réponse = response.choices[0].message.content
+
+    # Sauvegarder la réponse dans l'historique
+    historique.append({"role": "assistant", "content": réponse})
+
+    return réponse
+
+# Tour 1
+print(chat("Qu'est-ce qu'un index SQL ?"))
+# Tour 2 (le modèle se souvient du contexte)
+print(chat("Et quand ne faut-il PAS en créer ?"))
+\`\`\`
+
+## Coûts et optimisation
+
+\`\`\`
+Modèles par rapport qualité/coût :
+gpt-4o-mini   : $0.15/1M tokens in, $0.60/1M out  → très bon rapport
+claude-haiku  : $0.25/1M tokens in, $1.25/1M out  → rapide et économique
+gpt-4o        : $5/1M tokens in, $15/1M out        → réservé aux tâches complexes
+
+Optimisations :
+→ Utiliser des modèles plus petits pour les tâches simples
+→ Mettre en cache les réponses répétitives (même prompt → même réponse)
+→ Limiter max_tokens selon le besoin
+→ Compresser l'historique quand il devient trop long
+\`\`\``
+      },
+      {
+        id: "llm-prompting",
+        title: "Prompt Engineering",
+        duration: "15 min",
+        content: `# Prompt Engineering
+
+La qualité du prompt détermine à 80% la qualité de la réponse.
+
+## Les techniques fondamentales
+
+### 1. Soyez précis et contextuel
+
+\`\`\`
+❌ Vague :
+"Améliore mon code"
+
+✅ Précis :
+"Tu es un expert Python senior.
+Révise cette fonction pour :
+1. La rendre plus performante (elle est appelée 10 000x/seconde)
+2. Ajouter une gestion d'erreurs robuste
+3. La documenter avec des docstrings Google style
+
+Voici le code : [CODE]
+
+Explique chaque modification et pourquoi tu l'as faite."
+\`\`\`
+
+### 2. Few-Shot Prompting (donner des exemples)
+
+\`\`\`
+Classe ces commentaires en positif/négatif/neutre :
+
+Exemples :
+"Ce produit est fantastique !" → positif
+"Livraison en retard, déçu"   → négatif
+"Reçu hier"                   → neutre
+
+Maintenant classe :
+"La qualité est médiocre pour le prix"  → ?
+"Emballage soigné, livraison rapide"    → ?
+\`\`\`
+
+### 3. Chain of Thought (raisonnement étape par étape)
+
+\`\`\`
+❌ Sans CoT :
+"Quel est le résultat de ce code ?"
+→ Risque d'erreur sur les calculs complexes
+
+✅ Avec CoT :
+"Quel est le résultat de ce code ?
+Raisonne étape par étape avant de donner ta réponse finale."
+→ Le modèle décompose avant de conclure, beaucoup plus précis
+\`\`\`
+
+### 4. System Prompt : définir le rôle
+
+\`\`\`python
+messages = [
+    {
+        "role": "system",
+        "content": """Tu es un senior développeur backend avec 10 ans d'expérience
+en Python, FastAPI et PostgreSQL.
+Tu donnes des réponses concises et directement applicables.
+Tu signales toujours les problèmes de sécurité ou de performance potentiels.
+Tu utilises des exemples de code réels, pas des pseudocodes."""
+    },
+    {
+        "role": "user",
+        "content": "Comment implémenter le rate limiting sur mon API ?"
+    }
+]
+\`\`\`
+
+## Patterns de prompts utiles
+
+\`\`\`
+Analyse de code :
+"Analyse ce code et liste :
+- Les bugs potentiels
+- Les problèmes de sécurité
+- Les améliorations de performance
+- La lisibilité
+Priorise par criticité."
+
+Génération de code :
+"Génère [QUOI] en [LANGAGE] qui :
+- Fait [FONCTIONNALITÉ 1]
+- Gère [CAS D'ERREUR]
+- Respecte [CONTRAINTE]
+N'inclus pas de commentaires inutiles.
+Le code doit être prêt pour la production."
+
+Explication :
+"Explique [CONCEPT] comme si j'étais un développeur junior
+qui connaît Python mais pas les systèmes distribués.
+Utilise une analogie du monde réel.
+Termine par 3 points clés à retenir."
+\`\`\`
+
+## Structured Output : forcer le format JSON
+
+\`\`\`python
+from pydantic import BaseModel
+
+class AnalyseCode(BaseModel):
+    bugs: list[str]
+    securite: list[str]
+    score_qualite: int  # 0-100
+    recommandation_principale: str
+
+# OpenAI supporte le structured output natif
+response = client.beta.chat.completions.parse(
+    model="gpt-4o-mini",
+    messages=[
+        {"role": "user", "content": f"Analyse ce code : {code}"}
+    ],
+    response_format=AnalyseCode,
+)
+
+analyse = response.choices[0].message.parsed
+print(analyse.score_qualite)  # 78
+print(analyse.bugs)           # ["Variable non initialisée ligne 12", ...]
+\`\`\``
+      },
+      {
+        id: "llm-rag",
+        title: "RAG : connecter l'IA à tes données",
+        duration: "16 min",
+        content: `# RAG : Retrieval-Augmented Generation
+
+Le RAG permet à un LLM de répondre à des questions sur **tes propres données** sans les avoir vues pendant l'entraînement.
+
+## Le problème que RAG résout
+
+\`\`\`
+LLM classique :
+"Quelle est la politique de remboursement de notre entreprise ?"
+→ "Je n'ai pas accès à cette information."
+→ Ou pire : hallucination
+
+LLM + RAG :
+1. Cherche dans la documentation interne les passages pertinents
+2. Injecte ces passages dans le prompt
+3. Le LLM répond en s'appuyant sur les vraies données
+→ Réponse précise et sourcée
+\`\`\`
+
+## Comment ça fonctionne
+
+\`\`\`
+Phase 1 — Indexation (une seule fois) :
+┌─────────────────────────────────────────────────────┐
+│  Documents (PDF, Word, code, wiki...)               │
+│       ↓  découper en chunks (500-1000 tokens)       │
+│  [chunk1] [chunk2] [chunk3] ...                     │
+│       ↓  transformer en vecteurs (embeddings)       │
+│  [0.2, 0.8, -0.3, ...] (1536 dimensions)           │
+│       ↓  stocker dans une vector database           │
+│  Pinecone, Weaviate, pgvector (PostgreSQL)          │
+└─────────────────────────────────────────────────────┘
+
+Phase 2 — Requête (à chaque question) :
+Question utilisateur
+    ↓  convertir en vecteur (même modèle d'embedding)
+    ↓  chercher les N chunks les plus proches (cosine similarity)
+    ↓  construire le prompt :
+       "Contexte : [chunks pertinents]
+        Question : [question utilisateur]
+        Réponds uniquement à partir du contexte fourni."
+    ↓  envoyer au LLM → réponse précise et sourcée
+\`\`\`
+
+## Les embeddings : représenter le sens
+
+\`\`\`python
+# Un embedding transforme du texte en vecteur numérique
+# Textes similaires → vecteurs proches dans l'espace
+
+from openai import OpenAI
+client = OpenAI()
+
+def créer_embedding(texte: str) -> list[float]:
+    response = client.embeddings.create(
+        model="text-embedding-3-small",  # rapide et économique
+        input=texte
+    )
+    return response.data[0].embedding  # liste de 1536 floats
+
+# Exemple
+v1 = créer_embedding("Comment créer un index SQL ?")
+v2 = créer_embedding("Optimiser les requêtes de base de données")
+v3 = créer_embedding("Recette de tarte aux pommes")
+
+# v1 et v2 seront très proches (même sujet)
+# v3 sera très loin de v1 et v2
+\`\`\`
+
+## Implémentation simple avec pgvector
+
+\`\`\`python
+# PostgreSQL + extension pgvector = vector DB gratuite
+# pip install pgvector sqlalchemy
+
+# Modèle de table
+class Document(Base):
+    __tablename__ = "documents"
+    id = Column(Integer, primary_key=True)
+    contenu = Column(Text)
+    source = Column(String)
+    embedding = Column(Vector(1536))  # pgvector
+
+# Indexer un document
+async def indexer(contenu: str, source: str):
+    embedding = créer_embedding(contenu)
+    doc = Document(contenu=contenu, source=source, embedding=embedding)
+    db.add(doc)
+    await db.commit()
+
+# Rechercher les chunks pertinents
+async def rechercher(question: str, k: int = 5):
+    query_embedding = créer_embedding(question)
+    # Cosine similarity avec pgvector
+    résultats = await db.execute(
+        select(Document)
+        .order_by(Document.embedding.cosine_distance(query_embedding))
+        .limit(k)
+    )
+    return résultats.scalars().all()
+
+# Répondre avec RAG
+async def répondre_avec_rag(question: str) -> str:
+    chunks = await rechercher(question)
+    contexte = "\\n\\n".join([c.contenu for c in chunks])
+
+    response = client.chat.completions.create(
+        model="gpt-4o-mini",
+        messages=[
+            {"role": "system", "content": "Réponds uniquement à partir du contexte fourni. Si la réponse n'est pas dans le contexte, dis-le."},
+            {"role": "user", "content": f"Contexte :\\n{contexte}\\n\\nQuestion : {question}"}
+        ]
+    )
+    return response.choices[0].message.content
+\`\`\`
+
+## Bonnes pratiques RAG
+
+\`\`\`
+Taille des chunks :
+→ Trop petits (< 100 tokens) : manque de contexte
+→ Trop grands (> 1000 tokens) : bruit, moins précis
+→ Optimal : 300-600 tokens avec 50 tokens de chevauchement
+
+Améliorer la qualité :
+→ Re-ranking : après la recherche vectorielle, reclasser avec un modèle
+→ Hybrid search : combiner recherche vectorielle + BM25 (recherche par mots-clés)
+→ HyDE : générer une réponse hypothétique, puis chercher par similarité
+→ Métadonnées : filtrer par date, auteur, catégorie avant la recherche
+\`\`\``
+      },
+      {
+        id: "llm-agents",
+        title: "Agents IA et Function Calling",
+        duration: "15 min",
+        content: `# Agents IA et Function Calling
+
+Un **agent IA** est un LLM qui peut utiliser des **outils** (fonctions, APIs, bases de données) pour accomplir des tâches complexes.
+
+## Function Calling : donner des outils au LLM
+
+\`\`\`python
+# Définir les outils disponibles
+outils = [
+    {
+        "type": "function",
+        "function": {
+            "name": "chercher_meteo",
+            "description": "Obtenir la météo actuelle d'une ville",
+            "parameters": {
+                "type": "object",
+                "properties": {
+                    "ville": {"type": "string", "description": "Nom de la ville"},
+                    "unite": {"type": "string", "enum": ["celsius", "fahrenheit"]}
+                },
+                "required": ["ville"]
+            }
+        }
+    },
+    {
+        "type": "function",
+        "function": {
+            "name": "créer_rappel",
+            "description": "Créer un rappel dans le calendrier",
+            "parameters": {
+                "type": "object",
+                "properties": {
+                    "titre": {"type": "string"},
+                    "datetime": {"type": "string", "description": "Format ISO 8601"},
+                },
+                "required": ["titre", "datetime"]
+            }
+        }
+    }
+]
+
+# Le LLM décide quels outils utiliser
+response = client.chat.completions.create(
+    model="gpt-4o-mini",
+    messages=[{"role": "user", "content": "Quel temps fait-il à Paris ? Et crée un rappel pour sortir le parapluie demain à 8h si il pleut."}],
+    tools=outils,
+    tool_choice="auto"  # le modèle choisit
+)
+
+# Si le modèle veut appeler une fonction
+if response.choices[0].finish_reason == "tool_calls":
+    tool_call = response.choices[0].message.tool_calls[0]
+    print(tool_call.function.name)   # "chercher_meteo"
+    print(tool_call.function.arguments)  # '{"ville": "Paris", "unite": "celsius"}'
+\`\`\`
+
+## La boucle agentique complète
+
+\`\`\`python
+import json
+
+def exécuter_outil(nom: str, arguments: dict):
+    """Exécuter le vrai outil et retourner le résultat"""
+    if nom == "chercher_meteo":
+        # Appel réel à l'API météo
+        return {"ville": arguments["ville"], "temp": 12, "condition": "nuageux"}
+    elif nom == "créer_rappel":
+        return {"status": "créé", "id": "rem_123"}
+
+def agent(message_utilisateur: str):
+    messages = [{"role": "user", "content": message_utilisateur}]
+
+    while True:
+        response = client.chat.completions.create(
+            model="gpt-4o-mini",
+            messages=messages,
+            tools=outils,
+            tool_choice="auto"
+        )
+
+        choix = response.choices[0]
+        messages.append(choix.message)  # ajouter la réponse du modèle
+
+        # Pas d'appel d'outil → réponse finale
+        if choix.finish_reason == "stop":
+            return choix.message.content
+
+        # Exécuter tous les outils demandés
+        for tool_call in choix.message.tool_calls:
+            args = json.loads(tool_call.function.arguments)
+            résultat = exécuter_outil(tool_call.function.name, args)
+
+            # Ajouter le résultat dans l'historique
+            messages.append({
+                "role": "tool",
+                "tool_call_id": tool_call.id,
+                "content": json.dumps(résultat)
+            })
+        # Reboucle → le modèle reçoit les résultats et continue
+\`\`\`
+
+## Les frameworks d'agents
+
+\`\`\`
+LangChain :
+→ Le plus populaire, très complet
+→ Agents, RAG, chaînes de traitement, mémoire
+→ Peut devenir complexe et abstrait
+
+LlamaIndex :
+→ Spécialisé RAG et recherche sur documents
+→ Plus simple que LangChain pour ce cas d'usage
+
+CrewAI :
+→ Multi-agents : plusieurs IA avec des rôles différents
+→ Agent "chercheur" + Agent "rédacteur" + Agent "réviseur"
+
+Pydantic AI :
+→ Framework léger, type-safe
+→ Très bien intégré à FastAPI/Python moderne
+
+Claude Agent SDK (Anthropic) :
+→ Optimisé pour Claude
+→ Gestion native des outils et des agents longs
+\`\`\`
+
+## Quand utiliser un agent vs un LLM simple ?
+
+\`\`\`
+LLM simple (prompt + réponse) :
+→ Résumer un texte
+→ Traduire
+→ Générer du code à partir d'une description
+→ Répondre à une question simple
+
+Agent (avec outils) :
+→ "Recherche les 5 derniers articles sur React et fais-en un résumé"
+→ "Analyse ce CSV, génère un graphique, envoie-le par email"
+→ "Trouve des bugs dans ce repo GitHub et crée des issues"
+→ Tout ce qui nécessite plusieurs étapes et des données externes
+\`\`\``
+      }
+    ]
+  },
+  {
+    id: "algorithmes",
+    emoji: "🧮",
+    title: "Algorithmes & Structures de données",
+    description: "Les bases pour écrire du code efficace",
+    level: "Intermédiaire",
+    color: "#0EA5E9",
+    lessons: [
+      {
+        id: "complexite",
+        title: "Complexité algorithmique (Big O)",
+        duration: "13 min",
+        content: `# Complexité algorithmique (Big O)
+
+La notation **Big O** décrit comment le temps d'exécution ou la mémoire d'un algorithme évolue quand la taille des données augmente.
+
+## Pourquoi ça compte ?
+
+\`\`\`
+Chercher un email dans une liste de 1 000 000 d'utilisateurs :
+
+Algorithme O(n) — recherche linéaire :
+→ Parcourt tous les users un par un
+→ 1 000 000 comparaisons dans le pire cas
+→ 1 seconde sur un vieux PC
+
+Algorithme O(log n) — recherche binaire (si trié) :
+→ Divise la liste en 2 à chaque étape
+→ log₂(1 000 000) ≈ 20 comparaisons
+→ Quasi-instantané
+
+Différence : 1 000 000 vs 20 opérations.
+\`\`\`
+
+## Les complexités de la plus rapide à la plus lente
+
+\`\`\`
+O(1)       — Constant      : accès à un tableau par index, dictionnaire
+O(log n)   — Logarithmique : recherche binaire, arbre binaire équilibré
+O(n)       — Linéaire      : parcourir une liste, recherche simple
+O(n log n) — Quasi-linéaire: tri rapide (quicksort), mergesort
+O(n²)      — Quadratique   : double boucle imbriquée, tri à bulles
+O(2ⁿ)      — Exponentiel   : problèmes NP (éviter à tout prix)
+
+Pour n = 1000 :
+O(1)       = 1 opération
+O(log n)   = ~10 opérations
+O(n)       = 1 000 opérations
+O(n log n) = ~10 000 opérations
+O(n²)      = 1 000 000 opérations     ← 1000x plus lent que O(n)
+O(2ⁿ)      = 10^301 opérations        ← impossible
+\`\`\`
+
+## Reconnaître la complexité
+
+\`\`\`python
+# O(1) — temps constant
+def accéder(tableau, index):
+    return tableau[index]  # direct, peu importe la taille
+
+def est_vide(dict):
+    return len(dict) == 0
+
+# O(n) — une boucle
+def somme(tableau):
+    total = 0
+    for x in tableau:    # parcourt n éléments
+        total += x
+    return total
+
+# O(n²) — deux boucles imbriquées
+def a_des_doublons_naif(tableau):
+    for i in range(len(tableau)):
+        for j in range(i + 1, len(tableau)):  # boucle dans boucle
+            if tableau[i] == tableau[j]:
+                return True
+    return False
+
+# O(n) — même résultat, bien plus rapide
+def a_des_doublons_rapide(tableau):
+    return len(tableau) != len(set(tableau))  # set = hashset O(1) lookup
+\`\`\`
+
+## Complexité des opérations courantes
+
+\`\`\`
+Structure         Accès    Recherche  Insertion  Suppression
+───────────       ──────   ─────────  ─────────  ───────────
+Array/List        O(1)     O(n)       O(n)       O(n)
+Dict/HashMap      O(1)     O(1)       O(1)       O(1)      ← ultra polyvalent
+Set               -        O(1)       O(1)       O(1)
+Sorted Array      O(1)     O(log n)   O(n)       O(n)
+Linked List       O(n)     O(n)       O(1)*      O(1)*
+Binary Search Tree O(log n) O(log n)  O(log n)   O(log n)
+
+→ Le dictionnaire (hashmap) est ton meilleur ami pour les perfs
+\`\`\``
+      },
+      {
+        id: "structures-donnees",
+        title: "Structures de données essentielles",
+        duration: "15 min",
+        content: `# Structures de données essentielles
+
+## Le tableau (Array / List)
+
+\`\`\`
+Mémoire : [10][20][30][40][50]
+            0   1   2   3   4   ← indices
+
+Accès par index : O(1) — direct
+Recherche : O(n) — doit parcourir
+Ajout à la fin : O(1) amorti
+Ajout au milieu : O(n) — décale tous les éléments suivants
+
+Utilise pour : collections ordonnées, itération fréquente
+\`\`\`
+
+## Le dictionnaire (HashMap)
+
+\`\`\`
+{"alice": 25, "bob": 30, "claire": 22}
+
+Comment ça marche :
+1. hash("alice") → 4892 → position 4892 % taille_table
+2. stocke la valeur à cette position
+3. Pour lire : refait le hash → accès direct O(1)
+
+Utilise pour : lookup par clé, comptage, cache, dédoublonnage
+
+Exemples courants :
+# Compter les occurrences
+compteur = {}
+for mot in texte.split():
+    compteur[mot] = compteur.get(mot, 0) + 1
+
+# Cache simple (mémoïsation)
+cache = {}
+def fibonacci(n):
+    if n in cache: return cache[n]
+    if n <= 1: return n
+    cache[n] = fibonacci(n-1) + fibonacci(n-2)
+    return cache[n]
+\`\`\`
+
+## La pile (Stack) et la file (Queue)
+
+\`\`\`
+Stack (LIFO — Last In, First Out) :
+[1][2][3] ← push/pop par le haut
+Exemples : historique navigateur, undo/redo, appels de fonctions
+
+Queue (FIFO — First In, First Out) :
+→ [1][2][3] → sort par la gauche, entre par la droite
+Exemples : file d'attente de tâches, BFS, messages
+
+from collections import deque  # queue efficace en Python
+file = deque([1, 2, 3])
+file.append(4)       # ajoute à droite
+file.popleft()       # retire à gauche (O(1))
+\`\`\`
+
+## L'arbre binaire de recherche (BST)
+
+\`\`\`
+        8
+       / \\
+      3   10
+     / \\    \\
+    1   6    14
+
+Règle : gauche < nœud < droite
+→ Recherche, insertion, suppression : O(log n)
+→ Utilisé dans : bases de données (index B-tree), systèmes de fichiers
+
+Parcours :
+In-order (gauche→nœud→droite) : 1, 3, 6, 8, 10, 14 ← trié !
+\`\`\`
+
+## Le graphe
+
+\`\`\`
+Représente des relations entre objets :
+Nœuds (vertices) = entités
+Arêtes (edges)   = relations
+
+Exemples :
+- Réseau social : utilisateurs + relations
+- GPS : villes + routes
+- Dépendances npm : packages + imports
+
+Algorithmes fondamentaux :
+- BFS (Breadth-First Search) : parcourt couche par couche
+  → Trouver le chemin le plus court (non pondéré)
+- DFS (Depth-First Search) : va le plus loin possible avant de revenir
+  → Détecter les cycles, topological sort
+- Dijkstra : chemin le plus court avec poids
+  → Navigation GPS
+\`\`\``
+      }
+    ]
+  },
+  {
+    id: "design-patterns",
+    emoji: "🎭",
+    title: "Design Patterns",
+    description: "Solutions éprouvées aux problèmes récurrents",
+    level: "Intermédiaire",
+    color: "#F97316",
+    lessons: [
+      {
+        id: "patterns-creational",
+        title: "Patterns de création et de structure",
+        duration: "14 min",
+        content: `# Patterns de création et de structure
+
+Les **design patterns** sont des solutions réutilisables à des problèmes récurrents de conception logicielle.
+
+## Singleton — une seule instance
+
+\`\`\`python
+# Problème : on veut exactement une instance d'une classe
+# (connexion DB, configuration, logger)
+
+class ConnexionDB:
+    _instance = None
+
+    def __new__(cls):
+        if cls._instance is None:
+            cls._instance = super().__new__(cls)
+            cls._instance.connexion = créer_connexion()
+        return cls._instance
+
+# Peu importe combien de fois on l'appelle :
+db1 = ConnexionDB()
+db2 = ConnexionDB()
+assert db1 is db2  # True — même instance !
+\`\`\`
+
+**Quand l'utiliser** : connexion DB, configuration globale, logger
+**Attention** : difficile à tester (état global), à utiliser avec parcimonie
+
+## Factory — déléguer la création
+
+\`\`\`python
+# Problème : créer des objets sans spécifier leur classe exacte
+
+class Notification:
+    def envoyer(self, message): raise NotImplementedError
+
+class NotificationEmail(Notification):
+    def envoyer(self, message):
+        print(f"Email : {message}")
+
+class NotificationSMS(Notification):
+    def envoyer(self, message):
+        print(f"SMS : {message}")
+
+class NotificationPush(Notification):
+    def envoyer(self, message):
+        print(f"Push : {message}")
+
+# Factory : centralise la logique de création
+def créer_notification(type: str) -> Notification:
+    mapping = {
+        "email": NotificationEmail,
+        "sms": NotificationSMS,
+        "push": NotificationPush
+    }
+    if type not in mapping:
+        raise ValueError(f"Type inconnu : {type}")
+    return mapping[type]()
+
+# Utilisation : le code appelant ne connaît pas les classes concrètes
+notif = créer_notification("email")
+notif.envoyer("Votre commande est expédiée")
+\`\`\`
+
+## Repository — abstraire l'accès aux données
+
+\`\`\`python
+# Problème : mélanger la logique métier et les requêtes SQL
+
+# ❌ Sans Repository
+class CommandeService:
+    async def traiter(self, commande_id):
+        # Logique métier mélangée avec SQL !
+        result = await db.execute("SELECT * FROM commandes WHERE id = $1", commande_id)
+        commande = result.fetchone()
+        ...
+
+# ✅ Avec Repository
+class CommandeRepository:
+    async def trouver_par_id(self, id: int) -> Commande:
+        result = await db.execute("SELECT * FROM commandes WHERE id = $1", id)
+        return Commande(**result.fetchone())
+
+    async def sauvegarder(self, commande: Commande) -> None:
+        await db.execute("INSERT INTO commandes ...", ...)
+
+class CommandeService:
+    def __init__(self, repo: CommandeRepository):
+        self.repo = repo
+
+    async def traiter(self, commande_id):
+        commande = await self.repo.trouver_par_id(commande_id)
+        # Logique métier pure, sans SQL
+        commande.statut = "traité"
+        await self.repo.sauvegarder(commande)
+\`\`\`
+
+## Strategy — changer d'algorithme à la volée
+
+\`\`\`python
+# Problème : plusieurs algorithmes interchangeables
+
+class CalculateurPrix:
+    def __init__(self, stratégie_remise):
+        self.stratégie = stratégie_remise
+
+    def calculer(self, prix_base: float) -> float:
+        return self.stratégie(prix_base)
+
+# Différentes stratégies
+remise_fidélité    = lambda prix: prix * 0.9    # -10%
+remise_étudiant    = lambda prix: prix * 0.8    # -20%
+sans_remise        = lambda prix: prix           # 0%
+remise_black_friday = lambda prix: prix * 0.5   # -50%
+
+# À l'exécution, on choisit la stratégie
+calc = CalculateurPrix(remise_étudiant)
+print(calc.calculer(100))  # 80.0
+
+calc.stratégie = remise_black_friday  # changer sans modifier la classe
+print(calc.calculer(100))  # 50.0
+\`\`\``
+      },
+      {
+        id: "patterns-comportementaux",
+        title: "Patterns comportementaux",
+        duration: "13 min",
+        content: `# Patterns comportementaux
+
+## Observer — réagir aux événements
+
+\`\`\`python
+# Problème : notifier plusieurs objets quand un état change
+# Exemple : quand une commande est passée → notifier email, stock, analytics
+
+class EventBus:
+    """Bus d'événements simple"""
+    def __init__(self):
+        self._listeners = {}  # event → [callbacks]
+
+    def on(self, event: str, callback):
+        self._listeners.setdefault(event, []).append(callback)
+
+    def emit(self, event: str, data=None):
+        for callback in self._listeners.get(event, []):
+            callback(data)
+
+bus = EventBus()
+
+# Abonnements (découplés — chaque service s'abonne indépendamment)
+bus.on("commande.créée", lambda c: envoyer_email_confirmation(c))
+bus.on("commande.créée", lambda c: décrémenter_stock(c.items))
+bus.on("commande.créée", lambda c: analytics.track("purchase", c))
+bus.on("commande.payée",  lambda c: déclencher_préparation(c))
+
+# Émission (le créateur de commande ne connaît pas les observateurs)
+async def créer_commande(données):
+    commande = await repo.sauvegarder(données)
+    bus.emit("commande.créée", commande)
+    return commande
+\`\`\`
+
+## Middleware — chaîne de responsabilité
+
+\`\`\`
+Chaque middleware peut :
+1. Traiter la requête avant de la passer au suivant
+2. Court-circuiter la chaîne (retourner une réponse directement)
+3. Modifier la réponse au retour
+
+Requête →[Auth]→[Rate Limit]→[Logging]→[Handler]
+         ↑                               ↓
+Réponse ←[Auth]←[Rate Limit]←[Logging]←[Handler]
+
+Exemple FastAPI :
+@app.middleware("http")
+async def log_middleware(request, call_next):
+    start = time.time()
+    response = await call_next(request)  # ← passe au suivant
+    duration = time.time() - start
+    print(f"{request.method} {request.url} → {response.status_code} ({duration:.2f}s)")
+    return response
+\`\`\`
+
+## Dependency Injection — inversion de contrôle
+
+\`\`\`python
+# Problème : les classes créent leurs propres dépendances
+# → Difficile à tester, couplage fort
+
+# ❌ Sans DI
+class UserService:
+    def __init__(self):
+        self.db = PostgresDB()         # couplé à PostgreSQL !
+        self.mailer = SendGridMailer() # couplé à SendGrid !
+        self.cache = RedisCache()      # couplé à Redis !
+
+# ✅ Avec DI — les dépendances sont injectées de l'extérieur
+class UserService:
+    def __init__(self, db: Database, mailer: Mailer, cache: Cache):
+        self.db = db
+        self.mailer = mailer
+        self.cache = cache
+
+# En prod :
+service = UserService(
+    db=PostgresDB(),
+    mailer=SendGridMailer(),
+    cache=RedisCache()
+)
+
+# En test : injecter des faux (mocks)
+service = UserService(
+    db=FakeDB(),
+    mailer=FakeMailer(),  # pas d'emails envoyés pendant les tests !
+    cache=InMemoryCache()
+)
+\`\`\`
+
+## SOLID : les 5 principes
+
+\`\`\`
+S — Single Responsibility : une classe = une seule raison de changer
+O — Open/Closed : ouvert à l'extension, fermé à la modification
+L — Liskov Substitution : les sous-classes doivent remplacer les classes parentes
+I — Interface Segregation : mieux vaut plusieurs petites interfaces qu'une grosse
+D — Dependency Inversion : dépendre des abstractions, pas des implémentations
+
+Résumé pratique :
+→ Petites classes avec un seul rôle
+→ Ajouter des fonctionnalités sans modifier l'existant (Strategy, Plugin)
+→ Injecter les dépendances (DI)
+→ Tester avec des interfaces (pas des classes concrètes)
+\`\`\``
+      }
+    ]
+  },
+  {
+    id: "performance-web",
+    emoji: "⚡",
+    title: "Performance Web",
+    description: "Rendre son application rapide et fluide",
+    level: "Intermédiaire",
+    color: "#EAB308",
+    lessons: [
+      {
+        id: "core-web-vitals",
+        title: "Core Web Vitals et métriques",
+        duration: "12 min",
+        content: `# Core Web Vitals et métriques
+
+Google mesure 3 métriques clés qui impactent le SEO et l'expérience utilisateur.
+
+## Les 3 métriques essentielles
+
+\`\`\`
+LCP — Largest Contentful Paint
+→ Temps d'affichage du plus grand élément visible
+→ Objectif : < 2.5 secondes
+→ Typiquement : image hero, titre principal
+
+FID / INP — Interaction to Next Paint
+→ Réactivité aux interactions utilisateur (clic, touche clavier)
+→ Objectif : < 200 ms
+→ Causé par : JavaScript qui bloque le thread principal
+
+CLS — Cumulative Layout Shift
+→ Stabilité visuelle (est-ce que la page "saute" ?)
+→ Objectif : < 0.1
+→ Causé par : images sans dimensions, polices qui se chargent
+
+Comment mesurer :
+→ Chrome DevTools (onglet Performance, Lighthouse)
+→ PageSpeed Insights (pagespeed.web.dev)
+→ Web Vitals extension Chrome
+\`\`\`
+
+## Optimiser le chargement initial
+
+\`\`\`
+1. Réduire la taille des fichiers
+   → Minifier JS/CSS (Vite/Webpack le fait automatiquement)
+   → Compression gzip/brotli sur le serveur
+   → Images : WebP/AVIF au lieu de PNG/JPEG (50-80% plus léger)
+   → Lazy loading : charger images/composants à la demande
+
+2. Réduire les requêtes
+   → Bundling : regrouper les fichiers JS
+   → HTTP/2 : multiplexe les requêtes
+   → CDN : servir les assets depuis un serveur proche de l'utilisateur
+
+3. Prioriser ce qui est visible (above the fold)
+   → CSS critique inline dans le <head>
+   → Précharger les ressources importantes :
+     <link rel="preload" href="hero.jpg" as="image">
+     <link rel="preconnect" href="https://fonts.googleapis.com">
+\`\`\`
+
+## Code Splitting : ne charger que ce qui est nécessaire
+
+\`\`\`javascript
+// ❌ Tout dans un seul bundle (2MB chargés au départ)
+import { AdminPanel } from './AdminPanel'
+import { Dashboard } from './Dashboard'
+import { Settings } from './Settings'
+
+// ✅ Chargement à la demande (lazy loading)
+import { lazy, Suspense } from 'react'
+
+const AdminPanel = lazy(() => import('./AdminPanel'))
+const Dashboard  = lazy(() => import('./Dashboard'))
+const Settings   = lazy(() => import('./Settings'))
+
+// Dans ton composant :
+<Suspense fallback={<Spinner />}>
+  <AdminPanel />
+</Suspense>
+// AdminPanel.js ne sera téléchargé que quand ce composant est rendu
+\`\`\`
+
+## Optimiser les images
+
+\`\`\`html
+<!-- Toujours spécifier width/height pour éviter le CLS -->
+<img src="hero.jpg" width="800" height="400" alt="...">
+
+<!-- Lazy loading natif -->
+<img src="photo.jpg" loading="lazy" alt="...">
+
+<!-- Images responsive (servir la bonne taille selon l'écran) -->
+<picture>
+  <source media="(max-width: 768px)" srcset="hero-mobile.webp" type="image/webp">
+  <source srcset="hero-desktop.webp" type="image/webp">
+  <img src="hero-desktop.jpg" alt="...">
+</picture>
+\`\`\``
+      },
+      {
+        id: "optimisation-backend",
+        title: "Optimisation backend et DB",
+        duration: "13 min",
+        content: `# Optimisation backend et DB
+
+## Le N+1 Problem : l'ennemi caché
+
+\`\`\`python
+# ❌ Le problème : 1 requête pour les posts + 1 par post pour l'auteur
+posts = await db.execute("SELECT * FROM posts")  # 1 requête
+
+for post in posts:
+    auteur = await db.execute(
+        "SELECT * FROM users WHERE id = $1", post.user_id
+    )  # 1 requête PAR POST !
+# Si 100 posts → 101 requêtes SQL !
+
+# ✅ La solution : JOIN en une seule requête
+posts_avec_auteurs = await db.execute("""
+    SELECT posts.*, users.nom, users.avatar
+    FROM posts
+    JOIN users ON posts.user_id = users.id
+    ORDER BY posts.créé_le DESC
+    LIMIT 20
+""")
+# 1 seule requête, peu importe le nombre de posts
+\`\`\`
+
+## Pagination : ne jamais charger tout
+
+\`\`\`python
+# ❌ Charger toutes les données
+tous_les_articles = await db.execute("SELECT * FROM articles")
+# 1 million d'articles → timeout, crash mémoire
+
+# ✅ Cursor-based pagination (recommandée)
+# Avantage : stable si nouvelles données insérées
+async def paginer(cursor_id: int = None, limite: int = 20):
+    if cursor_id:
+        return await db.execute("""
+            SELECT * FROM articles
+            WHERE id < $1
+            ORDER BY id DESC
+            LIMIT $2
+        """, cursor_id, limite)
+    else:
+        return await db.execute("""
+            SELECT * FROM articles
+            ORDER BY id DESC
+            LIMIT $1
+        """, limite)
+
+# ✅ Offset pagination (simple mais moins stable)
+async def paginer_offset(page: int = 1, limite: int = 20):
+    offset = (page - 1) * limite
+    return await db.execute(
+        "SELECT * FROM articles ORDER BY id DESC LIMIT $1 OFFSET $2",
+        limite, offset
+    )
+\`\`\`
+
+## Connection Pooling : réutiliser les connexions
+
+\`\`\`
+Sans pool :
+Chaque requête → ouvrir connexion DB (~100ms) → requête → fermer
+100 req/sec → 100 connexions ouvertes/fermées/sec → surcharge
+
+Avec pool :
+Démarrage → ouvrir 10-20 connexions → garder en vie
+Requête → prendre connexion disponible → rendre après utilisation
+100 req/sec → max 20 connexions actives → très efficace
+
+Configuration optimale :
+pool_size = nombre de workers * 2-4
+max_overflow = pool_size * 0.5
+pool_timeout = 30 secondes
+
+asyncpg (Python async) :
+DATABASE_URL = "postgresql+asyncpg://..."
+engine = create_async_engine(
+    DATABASE_URL,
+    pool_size=10,
+    max_overflow=5
+)
+\`\`\`
+
+## Requêtes lentes : les détecter et les corriger
+
+\`\`\`sql
+-- PostgreSQL : trouver les requêtes lentes (activer slow query log)
+-- Ou utiliser EXPLAIN ANALYZE
+
+EXPLAIN ANALYZE
+SELECT * FROM commandes
+WHERE statut = 'en_attente'
+ORDER BY créé_le DESC;
+
+-- Si tu vois "Seq Scan" sur une grande table → créer un index !
+-- "Index Scan" = bien
+-- "Seq Scan" sur 100 000+ lignes = problème
+
+-- Créer l'index manquant
+CREATE INDEX idx_commandes_statut_date ON commandes(statut, créé_le DESC);
+
+-- Relancer → maintenant "Index Scan" → bien plus rapide
+\`\`\``
+      }
+    ]
+  },
+  {
+    id: "message-queues",
+    emoji: "📬",
+    title: "Files de Messages",
+    description: "Découpler et scaler avec les message queues",
+    level: "Avancé",
+    color: "#FF6B35",
+    lessons: [
+      {
+        id: "queues-concepts",
+        title: "Pourquoi et comment utiliser les queues",
+        duration: "14 min",
+        content: `# Files de messages (Message Queues)
+
+Une **message queue** est un tampon qui permet à des services de communiquer de façon **asynchrone** et **découplée**.
+
+## Le problème qu'elles résolvent
+
+\`\`\`
+Sans queue (appel synchrone) :
+Utilisateur → POST /commande → Serveur → envoie email → génère facture → met à jour stock → répond
+Durée totale : 2-3 secondes (l'utilisateur attend tout !)
+Si le service email est down → la commande échoue !
+
+Avec queue (asynchrone) :
+Utilisateur → POST /commande → Serveur → sauvegarde commande → répond immédiatement (50ms)
+                                          ↓ (en arrière-plan)
+                                     [Queue] ← messages publiés
+                                          ↓
+                                  Workers lisent et traitent :
+                                  - Worker Email → envoie email
+                                  - Worker Facture → génère PDF
+                                  - Worker Stock → décrémente
+\`\`\`
+
+## Les avantages
+
+\`\`\`
+1. Découplage
+   Producteur et consommateur ne se connaissent pas
+   → Ajouter un nouveau worker sans toucher le producteur
+
+2. Résilience
+   Si le service email est down → le message reste dans la queue
+   → Sera traité quand le service redémarre
+
+3. Absorber les pics de charge
+   1000 commandes en 1 minute → queue les absorbe
+   5 workers traitent à leur rythme
+   → Pas d'overload, pas de crash
+
+4. Retry automatique
+   Traitement échoué → le message revient dans la queue
+   → Réessaie X fois avant de mettre en dead letter queue
+\`\`\`
+
+## Les outils
+
+\`\`\`
+Redis (via Bull/BullMQ ou rq) :
+→ Simple, déjà souvent dans le stack
+→ Parfait pour les tâches simples (jobs, emails, webhooks)
+→ Pas de durabilité parfaite (données en RAM)
+
+RabbitMQ :
+→ Protocole AMQP, très fiable
+→ Routing complexe (exchanges, bindings)
+→ Bon pour les microservices
+
+Apache Kafka :
+→ Log distribué haute performance
+→ Millions de messages/seconde
+→ Rétention longue (rejouer les événements)
+→ Overkill pour une startup, indispensable à grande échelle
+
+Celery (Python) + Redis/RabbitMQ :
+→ Le plus populaire en Python
+→ Scheduling, retry, chaînes de tâches
+\`\`\`
+
+## Exemple avec Celery
+
+\`\`\`python
+# pip install celery redis
+
+# tasks.py
+from celery import Celery
+
+app = Celery("nexus", broker="redis://localhost:6379/0")
+
+@app.task(
+    bind=True,
+    max_retries=3,          # réessaie 3 fois si erreur
+    default_retry_delay=60  # attendre 60s entre les essais
+)
+def envoyer_email_bienvenue(self, user_id: int):
+    try:
+        user = User.get(user_id)
+        mailer.send(
+            to=user.email,
+            subject="Bienvenue sur Nexus !",
+            template="bienvenue"
+        )
+    except Exception as exc:
+        raise self.retry(exc=exc)  # remet dans la queue
+
+@app.task
+def générer_rapport_pdf(commande_id: int):
+    commande = Commande.get(commande_id)
+    pdf = générer_pdf(commande)
+    s3.upload(pdf, f"factures/{commande_id}.pdf")
+    commande.facture_url = s3.url(f"factures/{commande_id}.pdf")
+    commande.save()
+
+# Dans l'API FastAPI :
+@router.post("/commandes")
+async def créer_commande(données: CommandeCreate):
+    commande = await repo.créer(données)
+
+    # Lancer les tâches en arrière-plan (non bloquant)
+    envoyer_email_bienvenue.delay(commande.user_id)
+    générer_rapport_pdf.delay(commande.id)
+
+    return commande  # répond immédiatement, sans attendre les tâches
+
+# Lancer le worker :
+# celery -A tasks worker --loglevel=info
+\`\`\``
+      }
+    ]
+  },
+  {
+    id: "graphql",
+    emoji: "🔷",
+    title: "GraphQL",
+    description: "Requêtes flexibles et typées pour tes APIs",
+    level: "Intermédiaire",
+    color: "#E535AB",
+    lessons: [
+      {
+        id: "graphql-concepts",
+        title: "GraphQL vs REST : concepts et différences",
+        duration: "14 min",
+        content: `# GraphQL vs REST
+
+## Le problème que GraphQL résout
+
+\`\`\`
+Avec REST, pour afficher un profil utilisateur avec ses 3 derniers posts :
+
+Requête 1 : GET /api/users/42
+→ { id, nom, email, avatar, bio, créé_le, role, ... } ← overfetching (trop de données)
+
+Requête 2 : GET /api/users/42/posts?limit=3
+→ [{ id, titre, contenu, auteur_id, créé_le, ... }] ← overfetching encore
+
+Total : 2 requêtes réseau, données superflues
+
+Avec GraphQL, une seule requête :
+query {
+  utilisateur(id: 42) {
+    nom        ← exactement ce dont on a besoin
+    avatar
+    posts(limit: 3) {
+      titre
+      créé_le
+    }
+  }
+}
+→ 1 requête, exactement les données demandées
+\`\`\`
+
+## Les 3 opérations GraphQL
+
+\`\`\`graphql
+# 1. Query — lire des données
+query ObtenirUtilisateur {
+  utilisateur(id: 42) {
+    id
+    nom
+    email
+    posts {
+      titre
+      tags { nom }
+    }
+  }
+}
+
+# 2. Mutation — modifier des données
+mutation CréerArticle {
+  créerArticle(input: {
+    titre: "Mon article"
+    contenu: "Contenu..."
+    tags: ["javascript", "react"]
+  }) {
+    id
+    titre
+    créé_le
+  }
+}
+
+# 3. Subscription — écouter les changements en temps réel
+subscription NouveauxMessages {
+  messageCréé(channelId: "123") {
+    id
+    contenu
+    auteur { nom avatar }
+  }
+}
+\`\`\`
+
+## Le schéma : contrat entre frontend et backend
+
+\`\`\`graphql
+# schema.graphql — définit tous les types disponibles
+
+type Utilisateur {
+  id: ID!                    # ! = non nullable
+  nom: String!
+  email: String!
+  avatar: String
+  posts: [Article!]!         # liste d'articles non nullable
+  créé_le: DateTime!
+}
+
+type Article {
+  id: ID!
+  titre: String!
+  contenu: String!
+  auteur: Utilisateur!
+  tags: [Tag!]!
+  publié: Boolean!
+}
+
+# Point d'entrée pour les lectures
+type Query {
+  utilisateur(id: ID!): Utilisateur
+  articles(limit: Int = 10, offset: Int = 0): [Article!]!
+}
+
+# Point d'entrée pour les modifications
+type Mutation {
+  créerArticle(input: ArticleInput!): Article!
+  supprimerArticle(id: ID!): Boolean!
+}
+
+input ArticleInput {
+  titre: String!
+  contenu: String!
+  tags: [String!]
+}
+\`\`\`
+
+## Quand choisir GraphQL vs REST ?
+
+\`\`\`
+Choisir REST si :
+→ API simple avec peu d'endpoints
+→ Équipe peu familière avec GraphQL
+→ Cache HTTP important (GraphQL = tout via POST)
+→ API publique (REST plus universel)
+
+Choisir GraphQL si :
+→ Plusieurs clients avec des besoins différents (mobile, web, desktop)
+→ Données très imbriquées et liées
+→ Frontend fait beaucoup de requêtes pour assembler les données
+→ Évolution fréquente des besoins frontend
+
+La réalité : la plupart des apps marchent très bien avec REST bien conçu.
+GraphQL brille vraiment dans les grandes plateformes (GitHub, Shopify, Twitter/X).
+\`\`\``
+      }
+    ]
+  },
+  {
+    id: "gestion-projet",
+    emoji: "📋",
+    title: "Gestion de Projet Dev",
+    description: "Agile, Scrum, Kanban et collaboration en équipe",
+    level: "Débutant",
+    color: "#14B8A6",
+    lessons: [
+      {
+        id: "agile-scrum",
+        title: "Agile, Scrum et Kanban",
+        duration: "13 min",
+        content: `# Agile, Scrum et Kanban
+
+## Le problème avec le développement en cascade (Waterfall)
+
+\`\`\`
+Waterfall (modèle en cascade) :
+Analyse (2 mois) → Design (2 mois) → Dev (6 mois) → Test (2 mois) → Déploiement
+                                                                           ↑
+                              On découvre que les besoins ont changé ici, 12 mois plus tard
+
+Problèmes :
+- Feedback très tardif (12 mois pour voir quelque chose)
+- Changements très coûteux en fin de projet
+- Les vraies priorités changent pendant le projet
+\`\`\`
+
+## Agile : les 4 valeurs fondamentales
+
+\`\`\`
+1. Individus et interactions  >  processus et outils
+2. Logiciel fonctionnel       >  documentation exhaustive
+3. Collaboration client       >  négociation contractuelle
+4. Adaptation au changement   >  suivi d'un plan
+
+En pratique :
+→ Livraisons fréquentes (toutes les 1-2 semaines)
+→ Feedback rapide des utilisateurs
+→ Priorisation continue des fonctionnalités
+→ Équipes autonomes et pluridisciplinaires
+\`\`\`
+
+## Scrum : le framework le plus populaire
+
+\`\`\`
+Rôles :
+Product Owner (PO)  → priorise les fonctionnalités, parle aux stakeholders
+Scrum Master        → facilite le processus, enlève les obstacles
+Dev Team            → développe le produit
+
+Artefacts :
+Product Backlog     → liste de toutes les fonctionnalités souhaitées (priorisée)
+Sprint Backlog      → ce qu'on s'engage à faire ce sprint
+Increment           → version fonctionnelle livrée à la fin du sprint
+
+Cérémonies (Sprint = 1-2 semaines) :
+Sprint Planning     → choisir ce qu'on fait ce sprint (~2h)
+Daily Standup       → 15 min chaque matin :
+                      "Qu'est-ce que j'ai fait hier ?"
+                      "Qu'est-ce que je fais aujourd'hui ?"
+                      "Quels obstacles ai-je ?"
+Sprint Review       → démontrer ce qui a été fait aux stakeholders (~1h)
+Rétrospective       → "Qu'est-ce qui s'est bien passé ? Qu'améliorer ?" (~1h)
+\`\`\`
+
+## Kanban : visualiser le flux
+
+\`\`\`
+Tableau Kanban :
+┌─────────────┬──────────────┬──────────────┬──────────────┐
+│  À faire    │  En cours    │  En review   │  Terminé     │
+│  (Backlog)  │  (WIP: max 3)│              │              │
+├─────────────┼──────────────┼──────────────┼──────────────┤
+│  Feature A  │  Feature C   │  Feature E   │  Feature F   │
+│  Bug fix 1  │  Bug fix 2   │              │  Feature G   │
+│  Feature B  │  Feature D   │              │              │
+└─────────────┴──────────────┴──────────────┴──────────────┘
+
+WIP Limit (Work In Progress) :
+→ Limiter le nombre de tâches simultanées
+→ Evite le context-switching
+→ Identifie les goulots d'étranglement (colonne saturée)
+
+Kanban vs Scrum :
+→ Kanban : flux continu, pas de sprints, flexible
+→ Scrum : itérations fixes, cérémonies structurées
+→ Kanban pour la maintenance/support, Scrum pour le développement produit
+\`\`\`
+
+## User Stories et estimation
+
+\`\`\`
+Format User Story :
+"En tant que [utilisateur], je veux [action], afin de [bénéfice]"
+
+Exemple :
+"En tant qu'utilisateur, je veux réinitialiser mon mot de passe par email,
+afin de retrouver l'accès à mon compte si je l'oublie."
+
+Critères d'acceptation (Definition of Done) :
+✓ Formulaire de saisie d'email
+✓ Email envoyé avec lien valide 24h
+✓ Nouveau mot de passe mis à jour
+✓ Connexion possible avec le nouveau mot de passe
+✓ Tests unitaires et d'intégration
+
+Estimation en Story Points (Fibonacci) :
+1 = trivial, quelques minutes
+2 = simple, quelques heures
+3 = moyen, 1 jour
+5 = complexe, 2-3 jours
+8 = très complexe, découper en sous-tâches
+\`\`\``
+      },
+      {
+        id: "git-workflow-equipe",
+        title: "Git en équipe : branches et code review",
+        duration: "12 min",
+        content: `# Git en équipe
+
+## Git Flow vs Trunk-Based Development
+
+\`\`\`
+Git Flow (traditionnel) :
+main         ──────────────────────────────────────────► production
+develop      ─────────────────────────────────────────► intégration
+feature/xxx  ────────────╮
+feature/yyy          ────╯ merge dans develop
+release/1.2              ─────────╮ test → merge dans main
+hotfix/bug                        ───► correction urgente prod
+
+Trunk-Based Development (moderne, recommandé) :
+main         ──────────────────────────────────────────► production
+feature/xxx  ──╮ (max 1-2 jours de vie)
+feature/yyy    ╯ merge rapidement dans main
+→ Petites PR, intégration continue, feature flags
+\`\`\`
+
+## Le cycle d'une Pull Request
+
+\`\`\`
+1. Créer une branche depuis main
+   git checkout -b feature/authentification-google
+
+2. Développer avec des commits clairs
+   git commit -m "Add Google OAuth2 redirect endpoint"
+   git commit -m "Store OAuth tokens in session"
+   git commit -m "Add logout for OAuth users"
+
+3. Pousser et créer la PR sur GitHub
+   git push origin feature/authentification-google
+   → "New Pull Request" sur GitHub
+
+4. Description de la PR :
+   - Ce que ça fait
+   - Comment tester
+   - Screenshots si UI
+   - Issues liées (#42)
+
+5. Code Review :
+   - 1-2 reviewers minimum
+   - Vérifier : logique, sécurité, tests, lisibilité
+
+6. Approbation + merge dans main
+
+7. Supprimer la branche (elle a servi)
+\`\`\`
+
+## Faire une bonne code review
+
+\`\`\`
+Ce qu'on vérifie :
+✓ La logique est-elle correcte ?
+✓ Les cas d'erreur sont-ils gérés ?
+✓ Y a-t-il des problèmes de sécurité ? (injection, auth)
+✓ Les performances sont-elles acceptables ?
+✓ Le code est-il lisible et maintenable ?
+✓ Les tests couvrent-ils les cas importants ?
+
+Comment donner du feedback :
+✅ "Cette fonction fait trop de choses, je suggère de la découper en..."
+✅ "Question : pourquoi utiliser X ici plutôt que Y ?"
+✅ "Nit: nom de variable ambigu, 'data' → 'utilisateurs' serait plus clair"
+❌ "Ce code est nul"
+❌ "Pourquoi tu as fait ça ??" (ton agressif)
+
+Labels utiles :
+[blocking]   → doit être corrigé avant merge
+[suggestion] → amélioration optionnelle
+[question]   → demande de clarification
+[nit]        → détail mineur, style
+\`\`\`
+
+## Conventional Commits : messages standardisés
+
+\`\`\`
+Format : type(scope): description
+
+Types :
+feat     → nouvelle fonctionnalité
+fix      → correction de bug
+docs     → documentation
+style    → formatage (pas de changement logique)
+refactor → refactoring (ni feature ni fix)
+test     → ajout/modification de tests
+chore    → tâches de maintenance (CI, deps)
+perf     → amélioration de performance
+
+Exemples :
+feat(auth): add Google OAuth2 login
+fix(api): handle null user_id in /profile endpoint
+docs(readme): add deployment instructions
+refactor(db): extract repository pattern for users
+test(auth): add integration tests for JWT expiration
+
+Avantage : génération automatique du CHANGELOG, semantic versioning
+\`\`\``
+      }
+    ]
+  },
+  {
+    id: "typescript",
+    emoji: "🔷",
+    title: "TypeScript",
+    description: "JavaScript avec des types pour plus de robustesse",
+    level: "Intermédiaire",
+    color: "#3178C6",
+    lessons: [
+      {
+        id: "typescript-pourquoi",
+        title: "Pourquoi TypeScript et comment ça marche",
+        duration: "12 min",
+        content: `# Pourquoi TypeScript ?
+
+TypeScript est un **superset de JavaScript** qui ajoute un système de types statiques. Il se compile en JavaScript standard.
+
+## Le problème que TypeScript résout
+
+\`\`\`javascript
+// JavaScript : erreur découverte à l'exécution (en production !)
+function calculerTotal(commande) {
+  return commande.items.reduce((sum, item) => sum + item.prix * item.quantite, 0);
+}
+
+calculerTotal(null);        // 💥 TypeError: Cannot read properties of null
+calculerTotal({ items: [{ prix: "10" }] });  // 💥 "100" au lieu de 100 (string * number)
+\`\`\`
+
+\`\`\`typescript
+// TypeScript : erreur détectée dans l'éditeur, avant même d'exécuter
+interface Item {
+  prix: number;
+  quantite: number;
+}
+
+interface Commande {
+  items: Item[];
+}
+
+function calculerTotal(commande: Commande): number {
+  return commande.items.reduce((sum, item) => sum + item.prix * item.quantite, 0);
+}
+
+calculerTotal(null);                          // ❌ Erreur TS à la compilation
+calculerTotal({ items: [{ prix: "10" }] });   // ❌ Erreur : string au lieu de number
+calculerTotal({ items: [{ prix: 10, quantite: 2 }] });  // ✅ OK
+\`\`\`
+
+## Types fondamentaux
+
+\`\`\`typescript
+// Primitifs
+const nom: string = "Alice";
+const age: number = 25;
+const actif: boolean = true;
+
+// Tableaux
+const notes: number[] = [18, 15, 20];
+const tags: string[] = ["react", "typescript"];
+
+// Objets avec interface
+interface Utilisateur {
+  id: number;
+  email: string;
+  avatar?: string;    // ? = optionnel
+  readonly créé_le: Date;  // readonly = immuable
+}
+
+// Union types (soit l'un soit l'autre)
+type Statut = "actif" | "inactif" | "suspendu";
+type ID = string | number;
+
+// Generics : types paramétrables
+interface Réponse<T> {
+  données: T;
+  erreur: string | null;
+  timestamp: Date;
+}
+
+const réponseUser: Réponse<Utilisateur> = {
+  données: { id: 1, email: "alice@ex.com", créé_le: new Date() },
+  erreur: null,
+  timestamp: new Date()
+};
+\`\`\`
+
+## Types utilitaires intégrés
+
+\`\`\`typescript
+interface Utilisateur {
+  id: number;
+  email: string;
+  password: string;
+  role: "admin" | "user";
+}
+
+// Partial : tous les champs optionnels
+type MiseAJourUser = Partial<Utilisateur>;
+// { id?: number; email?: string; password?: string; role?: ... }
+
+// Pick : garder seulement certains champs
+type UserPublic = Pick<Utilisateur, "id" | "email" | "role">;
+// { id: number; email: string; role: ... }
+
+// Omit : exclure certains champs
+type UserSansPassword = Omit<Utilisateur, "password">;
+// { id: number; email: string; role: ... }
+
+// Readonly : tout immuable
+type UserImmuable = Readonly<Utilisateur>;
+
+// ReturnType : type de retour d'une fonction
+async function getUser(id: number): Promise<Utilisateur> { ... }
+type ResultatGetUser = Awaited<ReturnType<typeof getUser>>;  // Utilisateur
+\`\`\`
+
+## En pratique avec React
+
+\`\`\`typescript
+// Props typées
+interface BoutonProps {
+  texte: string;
+  onClick: () => void;
+  variante?: "primaire" | "secondaire" | "danger";
+  désactivé?: boolean;
+}
+
+const Bouton: React.FC<BoutonProps> = ({
+  texte,
+  onClick,
+  variante = "primaire",
+  désactivé = false
+}) => (
+  <button
+    onClick={onClick}
+    disabled={désactivé}
+    className={\`btn btn-\${variante}\`}
+  >
+    {texte}
+  </button>
+);
+
+// useState typé
+const [utilisateur, setUtilisateur] = useState<Utilisateur | null>(null);
+const [chargement, setChargement] = useState<boolean>(false);
+
+// useRef typé
+const inputRef = useRef<HTMLInputElement>(null);
+\`\`\``
+      }
+    ]
   }
 ];
