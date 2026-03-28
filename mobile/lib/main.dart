@@ -63,7 +63,7 @@ class _Root extends StatelessWidget {
 
     switch (auth.status) {
       case AuthStatus.loading:
-        return const Scaffold(
+        return Scaffold(
           backgroundColor: AppTheme.background,
           body: Center(
             child: Column(

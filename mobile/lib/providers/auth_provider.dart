@@ -20,20 +20,24 @@ class AuthProvider extends ChangeNotifier {
   bool get isAuthenticated => _status == AuthStatus.authenticated;
 
   Future<void> init() async {
-    final savedToken = await _authService.getToken();
-    if (savedToken != null) {
-      try {
-        _user = await _authService.getMe(savedToken).timeout(
-          const Duration(seconds: 10),
-          onTimeout: () => throw Exception('timeout'),
-        );
-        _token = savedToken;
-        _status = AuthStatus.authenticated;
-      } catch (_) {
-        await _authService.clearToken();
+    try {
+      final savedToken = await _authService.getToken();
+      if (savedToken != null) {
+        try {
+          _user = await _authService.getMe(savedToken).timeout(
+            const Duration(seconds: 10),
+            onTimeout: () => throw Exception('timeout'),
+          );
+          _token = savedToken;
+          _status = AuthStatus.authenticated;
+        } catch (_) {
+          await _authService.clearToken();
+          _status = AuthStatus.unauthenticated;
+        }
+      } else {
         _status = AuthStatus.unauthenticated;
       }
-    } else {
+    } catch (_) {
       _status = AuthStatus.unauthenticated;
     }
     notifyListeners();
