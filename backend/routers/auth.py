@@ -4,7 +4,7 @@ from fastapi.security import OAuth2PasswordBearer, OAuth2PasswordRequestForm
 from sqlalchemy.ext.asyncio import AsyncSession
 from sqlalchemy import select
 from jose import JWTError, jwt
-from passlib.context import CryptContext
+import bcrypt as _bcrypt
 from pydantic import BaseModel, EmailStr
 import os
 
@@ -17,7 +17,12 @@ SECRET_KEY = os.getenv("SECRET_KEY", "change-me")
 ALGORITHM = "HS256"
 ACCESS_TOKEN_EXPIRE_MINUTES = 60 * 24 * 7  # 7 days
 
-pwd_context = CryptContext(schemes=["bcrypt"], deprecated="auto")
+def _hash_password(password: str) -> str:
+    return _bcrypt.hashpw(password.encode(), _bcrypt.gensalt()).decode()
+
+def _verify_password(password: str, hashed: str) -> bool:
+    return _bcrypt.checkpw(password.encode(), hashed.encode())
+
 oauth2_scheme = OAuth2PasswordBearer(tokenUrl="/auth/login")
 
 
@@ -63,7 +68,7 @@ async def register(req: RegisterRequest, db: AsyncSession = Depends(get_db)):
             raise HTTPException(status_code=400, detail="Email déjà utilisé")
         user = User(
             email=req.email,
-            hashed_password=pwd_context.hash(req.password),
+            hashed_password=_hash_password(req.password),
             avatar_emoji=req.avatar_emoji,
             display_name=req.display_name or req.email.split("@")[0],
         )
@@ -88,7 +93,7 @@ async def register(req: RegisterRequest, db: AsyncSession = Depends(get_db)):
 async def login(form: OAuth2PasswordRequestForm = Depends(), db: AsyncSession = Depends(get_db)):
     result = await db.execute(select(User).where(User.email == form.username))
     user = result.scalar_one_or_none()
-    if not user or not pwd_context.verify(form.password, user.hashed_password):
+    if not user or not _verify_password(form.password, user.hashed_password):
         raise HTTPException(status_code=401, detail="Email ou mot de passe incorrect")
     return LoginResponse(
         access_token=create_token(user.id),
