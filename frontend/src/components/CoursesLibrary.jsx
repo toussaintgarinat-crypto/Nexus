@@ -115,15 +115,31 @@ function MarkdownRenderer({ content }) {
   );
 }
 
+const CATEGORIES = [
+  { id: 'all', label: 'Tous', emoji: '📚' },
+  { id: 'Frontend', label: 'Frontend', emoji: '🎨' },
+  { id: 'Backend', label: 'Backend', emoji: '⚙️' },
+  { id: 'Base de données', label: 'Base de données', emoji: '🗄️' },
+  { id: 'DevOps', label: 'DevOps', emoji: '🚀' },
+  { id: 'Sécurité', label: 'Sécurité', emoji: '🔒' },
+  { id: 'IA & LLM', label: 'IA & LLM', emoji: '🤖' },
+  { id: 'Fondamentaux', label: 'Fondamentaux', emoji: '🧱' },
+  { id: 'Serveurs & Infra', label: 'Serveurs & Infra', emoji: '🖥️' },
+  { id: 'Outils', label: 'Outils', emoji: '🛠️' },
+];
+
 export default function CoursesLibrary({ accentColor = '#8B5CF6' }) {
   const [selectedCourse, setSelectedCourse] = useState(null);
   const [selectedLesson, setSelectedLesson] = useState(null);
   const [search, setSearch] = useState('');
+  const [activeCategory, setActiveCategory] = useState('all');
 
-  const filtered = COURSES.filter(c =>
-    c.title.toLowerCase().includes(search.toLowerCase()) ||
-    c.description.toLowerCase().includes(search.toLowerCase())
-  );
+  const filtered = COURSES.filter(c => {
+    const matchesSearch = c.title.toLowerCase().includes(search.toLowerCase()) ||
+      c.description.toLowerCase().includes(search.toLowerCase());
+    const matchesCategory = activeCategory === 'all' || c.category === activeCategory;
+    return matchesSearch && matchesCategory;
+  });
 
   // Vue leçon
   if (selectedCourse && selectedLesson) {
@@ -255,7 +271,7 @@ export default function CoursesLibrary({ accentColor = '#8B5CF6' }) {
           <span style={{ fontSize: 20 }}>📚</span>
           <span style={{ color: '#e0e0e0', fontWeight: 700, fontSize: 16 }}>Bibliothèque de cours</span>
           <span style={{ marginLeft: 'auto', background: '#25252f', color: '#8a8aaa', fontSize: 11, padding: '2px 8px', borderRadius: 10 }}>
-            {COURSES.length} cours · Sans LLM
+            {filtered.length}/{COURSES.length} cours
           </span>
         </div>
         <input
@@ -265,9 +281,35 @@ export default function CoursesLibrary({ accentColor = '#8B5CF6' }) {
           style={{
             width: '100%', background: '#25252f', border: '1px solid #3a3a4a',
             borderRadius: 8, padding: '8px 12px', color: '#e0e0e0', fontSize: 13,
-            outline: 'none', boxSizing: 'border-box'
+            outline: 'none', boxSizing: 'border-box', marginBottom: 10
           }}
         />
+        {/* Category filters */}
+        <div style={{ display: 'flex', gap: 6, overflowX: 'auto', paddingBottom: 2 }}>
+          {CATEGORIES.map(cat => {
+            const count = cat.id === 'all'
+              ? COURSES.length
+              : COURSES.filter(c => c.category === cat.id).length;
+            const isActive = activeCategory === cat.id;
+            return (
+              <button
+                key={cat.id}
+                onClick={() => setActiveCategory(cat.id)}
+                style={{
+                  flexShrink: 0,
+                  background: isActive ? accentColor + '22' : '#25252f',
+                  border: `1px solid ${isActive ? accentColor : '#3a3a4a'}`,
+                  color: isActive ? accentColor : '#8a8aaa',
+                  borderRadius: 20, padding: '4px 10px', fontSize: 11,
+                  cursor: 'pointer', whiteSpace: 'nowrap', fontWeight: isActive ? 600 : 400,
+                  transition: 'all 0.15s'
+                }}
+              >
+                {cat.emoji} {cat.label} <span style={{ opacity: 0.6 }}>({count})</span>
+              </button>
+            );
+          })}
+        </div>
       </div>
 
       {/* Course grid */}

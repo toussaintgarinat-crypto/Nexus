@@ -1,6 +1,7 @@
 export const COURSES = [
   {
     id: "html-css",
+    category: "Frontend",
     emoji: "🌐",
     title: "HTML & CSS",
     description: "Les fondations du web : structure et style",
@@ -272,6 +273,7 @@ Un site **responsive** s'adapte automatiquement à toutes les tailles d'écran (
   },
   {
     id: "javascript",
+    category: "Frontend",
     emoji: "⚡",
     title: "JavaScript",
     description: "Le langage de programmation du web",
@@ -676,6 +678,7 @@ afficherPosts();
   },
   {
     id: "python",
+    category: "Backend",
     emoji: "🐍",
     title: "Python",
     description: "Programmation polyvalente et lisible",
@@ -990,6 +993,7 @@ def appeler_api(url):
   },
   {
     id: "git",
+    category: "Fondamentaux",
     emoji: "🔧",
     title: "Git & GitHub",
     description: "Versionner et collaborer sur son code",
@@ -1179,6 +1183,7 @@ git log --oneline --graph --all
   },
   {
     id: "sql",
+    category: "Base de données",
     emoji: "🗄️",
     title: "SQL & Bases de données",
     description: "Stocker et interroger des données",
@@ -1363,6 +1368,7 @@ COMMIT;  -- ou ROLLBACK si erreur
   },
   {
     id: "react",
+    category: "Frontend",
     emoji: "⚛️",
     title: "React",
     description: "Construire des interfaces modernes",
@@ -1581,6 +1587,7 @@ function ListePosts() {
   },
   {
     id: "api-rest",
+    category: "Backend",
     emoji: "📡",
     title: "APIs REST",
     description: "Concevoir et consommer des APIs web",
@@ -1775,6 +1782,7 @@ async def mon_profil(user = Depends(utilisateur_actuel)):
   },
   {
     id: "docker",
+    category: "Backend",
     emoji: "🐳",
     title: "Docker",
     description: "Conteneuriser et déployer ses applications",
@@ -2003,6 +2011,7 @@ docker compose --profile dev up
   },
   {
     id: "architecture-backend",
+    category: "Backend",
     emoji: "🏗️",
     title: "Architecture Backend",
     description: "Comment fonctionne un serveur, une API, une base de données",
@@ -2230,6 +2239,7 @@ Solutions :
   },
   {
     id: "conception-systeme",
+    category: "Fondamentaux",
     emoji: "🎨",
     title: "Conception Système",
     description: "Concevoir des systèmes scalables et robustes",
@@ -2461,6 +2471,7 @@ Quand NE PAS indexer :
   },
   {
     id: "devops",
+    category: "DevOps",
     emoji: "🚀",
     title: "DevOps",
     description: "CI/CD, déploiement, monitoring et infrastructure",
@@ -2721,6 +2732,7 @@ resource "aws_db_instance" "db" {
   },
   {
     id: "securite-web",
+    category: "Sécurité",
     emoji: "🔐",
     title: "Sécurité Web",
     description: "Comprendre et prévenir les attaques courantes",
@@ -2921,6 +2933,7 @@ Access-Control-Allow-Credentials: true  ← avec cookies/tokens
   },
   {
     id: "reseaux-http",
+    category: "DevOps",
     emoji: "🌍",
     title: "Réseaux & HTTP",
     description: "Comment Internet fonctionne vraiment",
@@ -3099,6 +3112,7 @@ notifications, mises à jour de statut en temps réel
   },
   {
     id: "bonnes-pratiques",
+    category: "Fondamentaux",
     emoji: "⭐",
     title: "Bonnes Pratiques Dev",
     description: "Écrire du code maintenable, lisible et solide",
@@ -3289,6 +3303,7 @@ Timely      : écrit en même temps que le code
   },
   {
     id: "ia-llm",
+    category: "IA & LLM",
     emoji: "🤖",
     title: "IA & LLMs",
     description: "Intégrer des modèles de langage dans tes applications",
@@ -3941,6 +3956,7 @@ Agent (avec outils) :
   },
   {
     id: "algorithmes",
+    category: "Fondamentaux",
     emoji: "🧮",
     title: "Algorithmes & Structures de données",
     description: "Les bases pour écrire du code efficace",
@@ -4143,6 +4159,7 @@ Algorithmes fondamentaux :
   },
   {
     id: "design-patterns",
+    category: "Fondamentaux",
     emoji: "🎭",
     title: "Design Patterns",
     description: "Solutions éprouvées aux problèmes récurrents",
@@ -4392,6 +4409,7 @@ Résumé pratique :
   },
   {
     id: "performance-web",
+    category: "Frontend",
     emoji: "⚡",
     title: "Performance Web",
     description: "Rendre son application rapide et fluide",
@@ -4603,6 +4621,7 @@ CREATE INDEX idx_commandes_statut_date ON commandes(statut, créé_le DESC);
   },
   {
     id: "message-queues",
+    category: "Backend",
     emoji: "📬",
     title: "Files de Messages",
     description: "Découpler et scaler avec les message queues",
@@ -4734,6 +4753,7 @@ async def créer_commande(données: CommandeCreate):
   },
   {
     id: "graphql",
+    category: "Backend",
     emoji: "🔷",
     title: "GraphQL",
     description: "Requêtes flexibles et typées pour tes APIs",
@@ -4877,6 +4897,7 @@ GraphQL brille vraiment dans les grandes plateformes (GitHub, Shopify, Twitter/X
   },
   {
     id: "gestion-projet",
+    category: "Fondamentaux",
     emoji: "📋",
     title: "Gestion de Projet Dev",
     description: "Agile, Scrum, Kanban et collaboration en équipe",
@@ -5098,6 +5119,7 @@ Avantage : génération automatique du CHANGELOG, semantic versioning
   },
   {
     id: "typescript",
+    category: "Frontend",
     emoji: "🔷",
     title: "TypeScript",
     description: "JavaScript avec des types pour plus de robustesse",
@@ -5251,6 +5273,7 @@ const inputRef = useRef<HTMLInputElement>(null);
 ,
   {
     id: "bases-de-donnees-sql",
+    category: "Base de données",
     emoji: "🗃️",
     title: "Bases de données relationnelles",
     description: "SQL, transactions ACID et modélisation des données",
@@ -5458,6 +5481,7 @@ ORDER BY s.total DESC;
   },
   {
     id: "postgresql-avance",
+    category: "Base de données",
     emoji: "🐘",
     title: "PostgreSQL en profondeur",
     description: "JSONB, full-text search, performance et fonctions avancées",
@@ -5696,6 +5720,7 @@ DROP TABLE logs_2024_01;  -- millisecondes, peu importe le volume !
   },
   {
     id: "nosql-mongodb",
+    category: "Base de données",
     emoji: "🍃",
     title: "MongoDB",
     description: "Base de données orientée documents, schéma flexible",
@@ -5926,6 +5951,7 @@ Idées reçues à corriger :
   },
   {
     id: "nosql-redis",
+    category: "Base de données",
     emoji: "⚡",
     title: "Redis",
     description: "Cache, structures de données et messagerie en mémoire",
@@ -6136,6 +6162,7 @@ Recommandation :
   },
   {
     id: "choisir-base-donnees",
+    category: "Base de données",
     emoji: "🧭",
     title: "Choisir sa base de données",
     description: "Panorama complet et guide de décision",
@@ -6352,6 +6379,2201 @@ Ajoute Redis quand tu as un problème de performance mesurable.
 Ajoute Elasticsearch quand la recherche devient vraiment nécessaire.
 N'ajoute Cassandra/Kafka/etc. que si tu as vraiment le problème qu'ils résolvent.
 \`\`\``
+      }
+    ]
+  },
+
+  // ─── SERVEURS & INFRASTRUCTURE ────────────────────────────────────────────
+  {
+    id: "serveurs-vm",
+    category: "Serveurs & Infra",
+    emoji: "🖥️",
+    title: "Serveurs & Machines Virtuelles",
+    description: "Des bases des serveurs jusqu'à Proxmox et les solutions de virtualisation",
+    level: "Débutant",
+    color: "#6366F1",
+    lessons: [
+      {
+        id: "serveurs-bases",
+        title: "Qu'est-ce qu'un serveur ?",
+        duration: "10 min",
+        content: `# Qu'est-ce qu'un serveur ?
+
+Un **serveur** est un ordinateur (ou un programme) qui répond aux demandes d'autres machines appelées **clients**. Il "sert" des ressources : fichiers, pages web, emails, bases de données…
+
+## Serveur physique vs ordinateur de bureau
+
+| Caractéristique | Ordinateur de bureau | Serveur |
+|----------------|---------------------|---------|
+| Disponibilité | Utilisé à la demande | Allumé 24h/24, 7j/7 |
+| Fiabilité | Standard | Composants redondants (PSU, disques) |
+| Refroidissement | Ventilateurs classiques | Refroidissement intensif |
+| Forme | Tour / portable | Rack 1U, 2U, lame |
+| Interface | Écran + clavier | Souvent sans (headless) |
+| OS | Windows, macOS | Linux (Debian, Ubuntu Server, RHEL…) |
+
+## Les types de serveurs
+
+### Bare metal (physique)
+Un vrai ordinateur dédié, sans couche d'abstraction. Les ressources sont à 100% disponibles.
+
+\`\`\`
+┌────────────────────────────┐
+│      Ton application       │
+│         Système d'exploitation (Linux)        │
+│    Matériel physique (CPU, RAM, disques)   │
+└────────────────────────────┘
+\`\`\`
+
+**Avantages :** performances maximales, contrôle total
+**Inconvénients :** coût élevé, difficile à scaler
+
+### Serveur dédié (hébergeur)
+Tu loues un serveur physique chez un hébergeur (OVH, Hetzner, Kimsufi…). Tu as le contrôle total du matériel, mais tu ne le possèdes pas.
+
+### VPS (Virtual Private Server)
+Un serveur virtuel qui émule un serveur physique. Tu obtiens une partition isolée d'un gros serveur. Moins cher qu'un dédié, légèrement moins performant.
+
+**Hébergeurs populaires :** DigitalOcean, Linode, OVH VPS, Scaleway, Vultr
+
+### Cloud (IaaS)
+Des ressources à la demande : tu paies à l'usage, tu peux scaler en quelques secondes.
+
+**Exemples :** AWS EC2, Google Compute Engine, Azure VMs
+
+## Anatomie d'un serveur physique
+
+\`\`\`
+┌──────────────────────────────────────────┐
+│  CPU(s)        │  RAM ECC (Error Correcting)  │
+│  1-4 sockets   │  32 Go à plusieurs To          │
+├────────────────┼──────────────────────────────┤
+│  Stockage      │  Réseau                       │
+│  HDD/SSD/NVMe  │  1G / 10G / 25G ports         │
+│  RAID hardware │  Multiples cartes réseau       │
+├────────────────┴──────────────────────────────┤
+│  IPMI / iDRAC / iLO (accès à distance même    │
+│  si le serveur est éteint ou planté)           │
+└────────────────────────────────────────────────┘
+\`\`\`
+
+## Les unités de mesure : le "rack"
+
+Les serveurs pros se montent dans des **baies rack** standardisées.
+
+- **1U** = 1 Unité = 4,45 cm de hauteur
+- **2U** = 8,9 cm (plus de place pour composants)
+- **Full tower** = jusqu'à 42U dans une baie standard
+
+\`\`\`
+┌─────────────────┐
+│  ████ Serveur 1U│ ← 1U : serveur compact
+│  ████ Serveur 1U│
+│  ██████████ 2U  │ ← 2U : plus de disques/RAM
+│  ██████████ 2U  │
+│  ┌──────────┐   │
+│  │  Switch  │   │ ← Équipement réseau
+│  └──────────┘   │
+└─────────────────┘
+      Baie rack
+\`\`\`
+
+## Où héberger son serveur ?
+
+| Option | Lieu | Coût | Contrôle |
+|--------|------|------|---------|
+| **Homelab** | Chez soi | Faible (électricité) | Total |
+| **Colocation** | Datacenter tiers | Moyen | Total (ton matériel) |
+| **Dédié loué** | Hébergeur | Moyen | Élevé |
+| **VPS** | Hébergeur | Faible | Moyen |
+| **Cloud** | AWS/GCP/Azure | Variable | Faible |`
+      },
+      {
+        id: "virtualisation-concepts",
+        title: "La virtualisation : comment ça marche ?",
+        duration: "14 min",
+        content: `# La virtualisation : comment ça marche ?
+
+La **virtualisation** permet de faire tourner plusieurs systèmes d'exploitation sur un seul serveur physique, en les isolant les uns des autres.
+
+## Le problème sans virtualisation
+
+Sans virtualisation, un serveur = un OS = une application principale.
+
+\`\`\`
+Serveur A          Serveur B          Serveur C
+(Web)              (BDD)              (Mail)
+CPU: 5% utilisé    CPU: 10% utilisé   CPU: 3% utilisé
+→ 82% de gaspillage de ressources !
+\`\`\`
+
+## La solution : l'hyperviseur
+
+Un **hyperviseur** est un logiciel qui crée et gère des **machines virtuelles (VMs)**. Chaque VM croit être un vrai ordinateur, mais partage les ressources physiques.
+
+\`\`\`
+┌────────────┬────────────┬────────────┐
+│   VM 1     │   VM 2     │   VM 3     │
+│  (Web)     │  (BDD)     │  (Mail)    │
+│  Ubuntu    │  Debian    │  Ubuntu    │
+├────────────┴────────────┴────────────┤
+│         HYPERVISEUR                 │
+├─────────────────────────────────────┤
+│      Matériel physique              │
+│    (CPU, RAM, Disques, Réseau)      │
+└─────────────────────────────────────┘
+\`\`\`
+
+## Type 1 vs Type 2
+
+### Hyperviseur de Type 1 (bare-metal)
+S'installe **directement sur le matériel**, sans OS hôte. Plus performant.
+
+\`\`\`
+VMs → Hyperviseur → Matériel
+\`\`\`
+
+**Exemples :** Proxmox VE, VMware ESXi, Microsoft Hyper-V, Xen
+
+### Hyperviseur de Type 2 (hosted)
+S'installe **au-dessus d'un OS existant** (Windows, macOS). Moins performant mais plus simple.
+
+\`\`\`
+VMs → Hyperviseur → OS hôte → Matériel
+\`\`\`
+
+**Exemples :** VirtualBox, VMware Workstation, Parallels Desktop
+
+## VMs vs Conteneurs
+
+| Aspect | Machine Virtuelle (VM) | Conteneur (Docker) |
+|--------|----------------------|-------------------|
+| Isolation | Complète (kernel propre) | Partielle (kernel partagé) |
+| Poids | Plusieurs Go (OS complet) | Quelques Mo |
+| Démarrage | 1-2 minutes | Quelques secondes |
+| Performance | Légèrement réduite | Quasi-native |
+| Cas d'usage | OS différents, isolation forte | Microservices, apps |
+
+\`\`\`
+VM                          Conteneur
+┌──────────────────┐         ┌──────────────────┐
+│ App              │         │ App              │
+│ Bibliothèques    │         │ Bibliothèques    │
+│ OS invité (3 Go) │         ├──────────────────┤
+│ Hyperviseur      │         │ Docker Engine    │
+│ OS hôte          │         │ OS hôte          │
+│ Matériel         │         │ Matériel         │
+└──────────────────┘         └──────────────────┘
+\`\`\`
+
+## Les conteneurs LXC
+
+**LXC** (Linux Containers) est un intermédiaire entre VMs et Docker : des conteneurs systèmes légers qui émulent un OS Linux complet sans kernel séparé. Proxmox les supporte nativement.
+
+## Concepts clés à retenir
+
+- **vCPU** : processeur virtuel alloué à une VM
+- **RAM allouée** : mémoire réservée pour la VM
+- **Snapshot** : photo de l'état d'une VM à un instant T (pour revenir en arrière)
+- **Clone** : copie complète d'une VM
+- **Template** : modèle de VM pour en créer de nouvelles rapidement
+- **Migration live** : déplacer une VM d'un hôte à l'autre sans coupure
+- **HA (High Availability)** : redémarrage automatique des VMs en cas de panne d'hôte`
+      },
+      {
+        id: "solutions-virtualisation",
+        title: "Les solutions de virtualisation",
+        duration: "12 min",
+        content: `# Les solutions de virtualisation
+
+Tour d'horizon des principales solutions, du homelab au datacenter.
+
+## Solutions Type 1 (bare-metal)
+
+### Proxmox VE
+**Gratuit, open source.** La référence du homelab et des petites infrastructures pro.
+
+\`\`\`
+✅ Gratuit (licence entreprise optionnelle)
+✅ Interface web complète
+✅ VMs (KVM) + Conteneurs (LXC) dans le même outil
+✅ Clustering multi-nœuds
+✅ Snapshots, backups intégrés
+✅ Communauté très active
+❌ Support officiel payant
+\`\`\`
+
+**Basé sur :** Debian Linux + KVM + LXC
+
+### VMware ESXi / vSphere
+La solution **leader en entreprise**. Très robuste, très cher.
+
+\`\`\`
+✅ Fiabilité éprouvée en production
+✅ Écosystème complet (vCenter, vSAN, NSX…)
+✅ Support professionnel
+❌ Licences très coûteuses (suite au rachat par Broadcom)
+❌ ESXi gratuit supprimé en 2024
+\`\`\`
+
+### Microsoft Hyper-V
+Intégré à Windows Server. Bon choix si tu es dans un environnement Microsoft.
+
+\`\`\`
+✅ Intégré à Windows Server (inclus dans la licence)
+✅ Bien intégré à Azure
+✅ Version gratuite (Hyper-V Server, arrêté en 2022)
+❌ Interface moins intuitive que Proxmox
+❌ Moins flexible hors écosystème Microsoft
+\`\`\`
+
+### XCP-ng
+Alternative open source à VMware XenServer. Bien adapté aux environnements pro.
+
+\`\`\`
+✅ Gratuit, open source (fork de XenServer)
+✅ Géré via Xen Orchestra (interface web)
+✅ Bon support commercial disponible
+❌ Moins populaire que Proxmox côté homelab
+\`\`\`
+
+---
+
+## Solutions Type 2 (sur OS existant)
+
+### VirtualBox
+**Parfait pour apprendre** sur son PC du quotidien.
+
+\`\`\`
+✅ Gratuit, open source (Oracle)
+✅ Windows / macOS / Linux
+✅ Idéal pour tester des OS
+❌ Performances limitées
+❌ Pas adapté à la production
+\`\`\`
+
+### VMware Workstation / Fusion
+Version desktop de VMware, plus performante que VirtualBox.
+
+\`\`\`
+✅ Très bonne performance
+✅ Workstation Pro gratuit depuis 2024 (usage perso)
+✅ Fusion (macOS) gratuit usage perso
+❌ Moins de fonctionnalités que ESXi
+\`\`\`
+
+### Parallels Desktop (macOS)
+La référence pour faire tourner Windows sur Mac, surtout Apple Silicon.
+
+\`\`\`
+✅ Excellent support Apple Silicon (M1/M2/M3/M4)
+✅ Intégration macOS parfaite
+❌ Payant (abonnement ~100€/an)
+\`\`\`
+
+---
+
+## Cloud : VMs à la demande
+
+| Provider | Service VM | Particularité |
+|---------|-----------|---------------|
+| AWS | EC2 | Le plus complet, le plus cher |
+| Google Cloud | Compute Engine | Bonne intégration données/ML |
+| Azure | Virtual Machines | Idéal écosystème Microsoft |
+| Hetzner | Cloud Servers | Excellent rapport qualité/prix (EU) |
+| OVHcloud | Public Cloud | Hébergeur européen |
+
+---
+
+## Quelle solution choisir ?
+
+\`\`\`
+Tu veux apprendre chez toi ?
+→ VirtualBox (simple) ou Proxmox sur un vieux PC
+
+Tu construis un homelab ?
+→ Proxmox VE (meilleur rapport fonctionnalités/coût)
+
+Tu es en entreprise avec budget ?
+→ VMware vSphere ou Hyper-V (selon l'écosystème existant)
+
+Tu veux de la flexibilité sans matériel ?
+→ AWS EC2, Hetzner Cloud, ou OVH VPS
+\`\`\``
+      },
+      {
+        id: "proxmox-pratique",
+        title: "Proxmox VE en pratique",
+        duration: "16 min",
+        content: `# Proxmox VE en pratique
+
+Proxmox VE (Virtual Environment) est la solution idéale pour débuter avec la virtualisation sérieuse. Voici comment l'appréhender.
+
+## Installation
+
+Proxmox s'installe sur un serveur physique (ou une VM pour tester), **en remplacement de l'OS existant**.
+
+### Prérequis matériels minimaux
+\`\`\`
+CPU : 64 bits avec support virtualisation (Intel VT-x / AMD-V)
+RAM : 4 Go minimum (8+ Go recommandé pour des VMs)
+Stockage : 1 disque pour Proxmox + idéalement 1+ pour les VMs
+Réseau : 1 carte réseau (2 recommandé pour séparer management/trafic)
+\`\`\`
+
+### Vérifier la virtualisation sur ton CPU
+
+**Linux :**
+\`\`\`bash
+egrep -c '(vmx|svm)' /proc/cpuinfo
+# Résultat > 0 = virtualisation activée
+\`\`\`
+
+**Windows :**
+\`\`\`cmd
+systeminfo | findstr "Hyper-V"
+\`\`\`
+
+### Processus d'installation
+1. Télécharger l'ISO Proxmox VE sur proxmox.com
+2. Flasher sur une clé USB (avec Ventoy, Rufus, balenaEtcher)
+3. Booter depuis la clé USB
+4. Suivre l'installateur graphique
+5. Accéder à l'interface : \`https://IP-DU-SERVEUR:8006\`
+
+---
+
+## L'interface web Proxmox
+
+Une fois connecté (port 8006, HTTPS), tu découvres :
+
+\`\`\`
+┌─────────────────────────────────────────────────┐
+│ Datacenter                                       │
+│  └─ pve (ton nœud)                              │
+│      ├─ local (stockage OS)                     │
+│      ├─ local-lvm (stockage VMs)                │
+│      ├─ 100 (vm) ubuntu-server                  │
+│      ├─ 101 (vm) debian-web                     │
+│      └─ 102 (ct) nginx-container               │
+└─────────────────────────────────────────────────┘
+\`\`\`
+
+- **Datacenter** : vue globale du cluster
+- **Nœud (pve)** : ton serveur physique
+- **VM (KVM)** : machine virtuelle complète
+- **CT** : conteneur LXC
+
+---
+
+## Créer sa première VM
+
+### Via l'interface web
+1. Clic droit sur ton nœud → **Créer une VM**
+2. Remplir les étapes :
+
+\`\`\`
+Onglet Général :
+  - VM ID : 100 (identifiant unique)
+  - Nom : ubuntu-server
+
+Onglet OS :
+  - Image ISO : sélectionner l'ISO uploadée
+  - Type : Linux, version 6.x
+
+Onglet Système :
+  - Carte graphique : Default
+  - BIOS : SeaBIOS (ou OVMF pour UEFI)
+
+Onglet Disques :
+  - Taille : 20 Go minimum
+  - Stockage : local-lvm
+
+Onglet CPU :
+  - Sockets : 1
+  - Cœurs : 2
+
+Onglet Mémoire :
+  - RAM : 2048 Mo (2 Go)
+
+Onglet Réseau :
+  - Bridge : vmbr0 (réseau par défaut)
+\`\`\`
+
+3. **Démarrer** la VM → Ouvrir la console pour installer l'OS
+
+---
+
+## Créer un conteneur LXC
+
+Beaucoup plus léger qu'une VM pour des services Linux.
+
+1. Télécharger un template : **Stockage local → CT Templates → Télécharger**
+2. Clic droit sur le nœud → **Créer CT**
+3. Configurer RAM, CPU, stockage, réseau
+4. Démarrer → accès shell immédiat
+
+---
+
+## Commandes Proxmox utiles (CLI)
+
+\`\`\`bash
+# Lister les VMs
+qm list
+
+# Démarrer / arrêter une VM
+qm start 100
+qm stop 100
+qm reboot 100
+
+# Créer un snapshot
+qm snapshot 100 snap-avant-maj
+
+# Restaurer un snapshot
+qm rollback 100 snap-avant-maj
+
+# Lister les conteneurs LXC
+pct list
+
+# Démarrer un conteneur
+pct start 102
+
+# Entrer dans un conteneur
+pct enter 102
+\`\`\`
+
+---
+
+## Les sauvegardes dans Proxmox
+
+### Backup manuel
+Clic droit sur une VM → **Backup** → choisir le mode :
+- **Stop** : éteint la VM pendant le backup (cohérence maximale)
+- **Suspend** : suspend la VM (rapide)
+- **Snapshot** : backup à chaud (VM reste allumée)
+
+### Backup automatique
+**Datacenter → Backup → Ajouter** : planifier des sauvegardes automatiques pour toutes les VMs.
+
+---
+
+## Réseaux dans Proxmox
+
+Proxmox crée un **bridge réseau** (\`vmbr0\`) par défaut, connecté à ta carte réseau physique. Les VMs se branchent dessus comme sur un switch virtuel.
+
+\`\`\`
+Internet
+   │
+[Routeur/Box]
+   │
+[vmbr0 - Bridge Proxmox]
+   │        │        │
+ VM 100   VM 101   CT 102
+192.168.1.10  .11    .12
+\`\`\`
+
+Tu peux créer des bridges supplémentaires pour isoler des réseaux (DMZ, réseau de gestion…).
+
+---
+
+## Proxmox en cluster
+
+Avec plusieurs serveurs Proxmox, tu peux former un **cluster** :
+- Migration live de VMs entre nœuds
+- Haute disponibilité (HA) : redémarrage automatique si un nœud tombe
+- Interface unifiée pour gérer tous les hôtes
+
+\`\`\`bash
+# Sur le premier nœud
+pvecm create mon-cluster
+
+# Sur les autres nœuds
+pvecm add IP-DU-PREMIER-NOEUD
+\`\`\``
+      }
+    ]
+  },
+
+  // ─── LANGAGES ─────────────────────────────────────────────────────────────
+  {
+    id: "choisir-langage",
+    category: "Fondamentaux",
+    emoji: "🧠",
+    title: "Choisir le bon langage de programmation",
+    description: "Idéal vs raisonnable : quel langage pour quel besoin, marché et budget",
+    level: "Débutant",
+    color: "#F59E0B",
+    lessons: [
+      {
+        id: "langages-panorama",
+        title: "Tour des langages et leur domaine",
+        duration: "14 min",
+        content: `# Tour des langages et leur domaine
+
+Chaque langage a été conçu pour répondre à des besoins précis. Comprendre ça, c'est déjà 80% du chemin pour faire le bon choix.
+
+## JavaScript / TypeScript
+
+**Ce que c'est :** Le seul langage natif du navigateur. TypeScript en est une version typée.
+
+**Forces :**
+- Incontournable pour le frontend web (React, Vue, Angular)
+- Fonctionne aussi côté backend (Node.js)
+- Un seul langage pour front + back = équipes plus petites
+- Communauté immense, npm = des millions de packages
+
+**Limites :**
+- Pas idéal pour le calcul intensif
+- JavaScript sans TypeScript peut vite devenir ingérable sur un gros projet
+
+**Utilisé chez :** Meta, Netflix, Airbnb, LinkedIn, presque partout sur le web
+
+---
+
+## Python
+
+**Ce que c'est :** Langage généraliste très lisible, roi de la data et de l'IA.
+
+**Forces :**
+- N°1 pour la data science, le machine learning, l'IA (TensorFlow, PyTorch, scikit-learn)
+- Excellent pour les scripts d'automatisation
+- Backend web avec Django, FastAPI, Flask
+- Syntaxe simple, idéal pour apprendre
+
+**Limites :**
+- Lent comparé à Go, Java, Rust (interprété, GIL)
+- Moins adapté aux apps mobiles ou embarquées
+- Typage dynamique peut causer des bugs en production
+
+**Utilisé chez :** Google, Instagram, Spotify, OpenAI, NASA
+
+---
+
+## Java
+
+**Ce que c'est :** Langage robuste, orienté objet, très présent en entreprise.
+
+**Forces :**
+- Extrêmement stable et éprouvé (30 ans d'existence)
+- Excellent pour les grosses applications d'entreprise (Spring Boot)
+- Android natif (historiquement)
+- Très bonne performance, typage fort
+- Vaste écosystème d'outils (Maven, Gradle, IntelliJ)
+
+**Limites :**
+- Verbeux (beaucoup de code pour peu de résultat)
+- Kotlin le remplace progressivement sur Android
+- Courbe d'apprentissage plus raide
+
+**Utilisé chez :** Amazon, LinkedIn, eBay, banques, assurances, administrations
+
+---
+
+## C# (.NET)
+
+**Ce que c'est :** Le Java de Microsoft, très utilisé en entreprise et dans le jeu vidéo.
+
+**Forces :**
+- Excellent pour les apps Windows et entreprise Microsoft
+- Moteur de jeu Unity = C# partout dans le jeu vidéo indie
+- .NET est désormais multiplateforme (Linux, macOS)
+- Typage fort, très bonne performance
+
+**Limites :**
+- Fortement lié à l'écosystème Microsoft
+- Moins de traction dans les startups tech
+
+**Utilisé chez :** Microsoft, Stack Overflow, studios de jeux Unity
+
+---
+
+## Go (Golang)
+
+**Ce que c'est :** Langage de Google, conçu pour la performance et la simplicité des systèmes distribués.
+
+**Forces :**
+- Très rapide (proche du C)
+- Excellente gestion de la concurrence (goroutines)
+- Binaires compilés autonomes, parfaits pour Docker/Kubernetes
+- Simple à apprendre (peu de concepts)
+
+**Limites :**
+- Pas de générics robustes (récemment amélioré)
+- Moins de packages que JavaScript ou Python
+- Pas adapté au frontend ni à la data science
+
+**Utilisé chez :** Google, Docker, Kubernetes, Dropbox, Cloudflare, Uber
+
+---
+
+## Rust
+
+**Ce que c'est :** Langage système ultra-performant avec sécurité mémoire garantie à la compilation.
+
+**Forces :**
+- Performances au niveau du C/C++
+- Aucune fuite mémoire possible par conception
+- Idéal pour les systèmes embarqués, OS, WebAssembly
+- Langage le plus aimé des développeurs (9 ans de suite, Stack Overflow)
+
+**Limites :**
+- Courbe d'apprentissage très raide (borrow checker)
+- Développement plus lent
+- Communauté encore petite, peu de devs disponibles
+- Overkill pour la plupart des projets web
+
+**Utilisé chez :** Mozilla, Microsoft, Amazon, Linux kernel, Discord
+
+---
+
+## PHP
+
+**Ce que c'est :** Langage du web historique, toujours très présent.
+
+**Forces :**
+- 77% du web tourne sur PHP (dont WordPress)
+- Hébergement pas cher et universel
+- Laravel est un framework moderne et productif
+- Énorme vivier de développeurs
+
+**Limites :**
+- Réputation parfois mauvaise (code legacy)
+- Moins utilisé dans les nouvelles startups tech
+
+**Utilisé chez :** WordPress, Facebook (origines), Wikipedia, Etsy
+
+---
+
+## Swift / Kotlin
+
+**Ce que c'est :** Les langages modernes pour le mobile natif.
+
+- **Swift** → Apple (iOS, macOS, iPadOS)
+- **Kotlin** → Android (remplace Java)
+
+**Forces :**
+- Performances natives maximales
+- Accès complet aux APIs système
+- UX parfaite, applis fluides
+
+**Limites :**
+- Chaque plateforme = un langage différent (coût x2)
+- Impossible sur l'autre plateforme (Swift ne fonctionne pas sur Android)
+
+---
+
+## Dart (Flutter)
+
+**Ce que c'est :** Le langage de Flutter, solution multiplateforme de Google.
+
+**Forces :**
+- Une codebase → iOS + Android + Web + Desktop
+- Très bonnes performances (compilé natif)
+- Productivité élevée
+
+**Limites :**
+- Communauté plus petite que React Native
+- Dart est peu utilisé en dehors de Flutter
+
+---
+
+## Tableau récapitulatif par domaine
+
+| Besoin | Langages adaptés |
+|--------|-----------------|
+| Frontend web | JavaScript, TypeScript |
+| Backend web | Python, JavaScript/Node, Java, Go, PHP, C# |
+| Mobile iOS | Swift (natif), Dart/Flutter, JS/React Native |
+| Mobile Android | Kotlin (natif), Dart/Flutter, JS/React Native |
+| Data / IA / ML | Python |
+| Systèmes / OS | Rust, C, C++ |
+| Jeu vidéo | C# (Unity), C++ (Unreal) |
+| Scripts / Automatisation | Python, Bash, PowerShell |
+| Infrastructure / DevOps | Go, Python, Bash |
+| Embarqué / IoT | C, C++, Rust |`
+      },
+      {
+        id: "langages-marche",
+        title: "Ce que dit le marché : devs, salaires, coûts",
+        duration: "12 min",
+        content: `# Ce que dit le marché : devs, salaires, coûts
+
+Choisir un langage "parfait" techniquement mais avec 50 développeurs disponibles dans ton pays, c'est se créer un problème. Voici la réalité du marché.
+
+## Popularité & disponibilité des développeurs
+
+D'après le Stack Overflow Developer Survey 2024 et les offres d'emploi réelles :
+
+| Langage | % de devs qui l'utilisent | Offres d'emploi (marché FR/EU) |
+|---------|--------------------------|-------------------------------|
+| JavaScript | 62% | ★★★★★ Très abondant |
+| Python | 51% | ★★★★★ Très abondant |
+| TypeScript | 38% | ★★★★☆ Abondant |
+| Java | 30% | ★★★★★ Très abondant |
+| C# | 27% | ★★★★☆ Abondant |
+| PHP | 18% | ★★★★☆ Abondant |
+| Go | 13% | ★★★☆☆ Modéré |
+| Rust | 12% | ★★☆☆☆ Rare |
+| Kotlin | 9% | ★★★☆☆ Modéré |
+| Swift | 5% | ★★☆☆☆ Rare |
+| Dart | 6% | ★★☆☆☆ Rare |
+
+> **À retenir :** JavaScript, Python, Java, C# et PHP = le gros du marché. Ce sont les langages pour lesquels tu trouveras facilement des devs.
+
+---
+
+## Coût approximatif d'un développeur (France, 2024)
+
+| Profil | Salaire annuel (CDI) | TJM freelance |
+|--------|---------------------|---------------|
+| Dev JS/React junior | 32-40 k€ | 350-450 €/j |
+| Dev JS/React senior | 50-70 k€ | 550-750 €/j |
+| Dev Python junior | 33-42 k€ | 350-480 €/j |
+| Dev Python senior | 52-72 k€ | 550-800 €/j |
+| Dev Java senior | 55-75 k€ | 600-850 €/j |
+| Dev Go senior | 65-85 k€ | 700-950 €/j |
+| Dev Rust senior | 75-95 k€ | 900-1200 €/j |
+| Dev Swift/iOS senior | 60-80 k€ | 700-1000 €/j |
+| Dev Kotlin/Android senior | 55-75 k€ | 650-900 €/j |
+
+> **La règle :** plus le langage est rare → plus le développeur est cher ET plus il est difficile à trouver.
+
+---
+
+## Les pièges à éviter
+
+### Le piège "langage tendance"
+\`\`\`
+❌ "On va faire le backend en Elixir, c'est génial pour la concurrence"
+→ 12 CVs reçus pour le poste en 3 mois
+→ 2 candidats qualifiés, salaires +40% au-dessus du marché
+→ Projet bloqué pendant 5 mois
+\`\`\`
+
+### Le piège "optimisation prématurée"
+\`\`\`
+❌ "Notre appli doit être en Rust pour les performances"
+→ Développement 3x plus lent
+→ L'appli n'a que 200 utilisateurs
+→ Python aurait largement suffi pendant 2 ans
+\`\`\`
+
+### Le piège "stack exotique"
+\`\`\`
+❌ "On fait mobile en Flutter + backend en Elixir + ML en Julia"
+→ 3 langages rares
+→ Impossible de recruter un dev full-stack
+→ Dépendance totale à 1-2 personnes clés
+\`\`\`
+
+---
+
+## La règle d'or du choix pragmatique
+
+\`\`\`
+Score d'un langage = (Adéquation technique × 0.4)
+                   + (Disponibilité des devs  × 0.35)
+                   + (Coût accessible         × 0.15)
+                   + (Pérennité / communauté  × 0.10)
+\`\`\`
+
+**La technique ne doit jamais peser plus de 40% dans ta décision.**
+
+---
+
+## Signaux d'alerte pour un choix de langage
+
+- Moins de 5 000 questions sur Stack Overflow → communauté trop petite
+- Moins de 2 000 packages/librairies disponibles → tu devras tout coder
+- Moins de 1 000 offres d'emploi sur LinkedIn (ton pays) → recrutement très difficile
+- Dernière version majeure > 2 ans → risque d'abandon
+- Un seul mainteneur principal → risque de discontinuité`
+      },
+      {
+        id: "langages-choix-par-besoin",
+        title: "Idéal vs raisonnable : le guide par besoin",
+        duration: "16 min",
+        content: `# Idéal vs raisonnable : le guide par besoin
+
+Pour chaque situation, voici le choix **techniquement parfait** et le choix **pragmatique** qui tient compte de la réalité du marché.
+
+---
+
+## Site web / Application web (startup)
+
+**Contexte :** tu lances un produit, l'équipe est petite, le budget limité.
+
+| | Langage | Pourquoi |
+|-|---------|---------|
+| ✨ Idéal technique | Go + React/TS | Performance, typage, efficacité |
+| ✅ Choix raisonnable | **Node.js/TypeScript + React** | Un seul langage JS front+back, pool de devs énorme, bibliothèques illimitées |
+
+> **Verdict :** Node.js + TypeScript. Tu recrutes facilement, la vélocité est maximale. Quand tu atteins 1M d'utilisateurs, tu migreras les services critiques en Go ou tu scalerasavec du cloud.
+
+---
+
+## Application d'entreprise (métier, ERP, gestion)
+
+**Contexte :** grosse équipe, longue durée de vie, intégrations avec d'autres systèmes.
+
+| | Langage | Pourquoi |
+|-|---------|---------|
+| ✨ Idéal technique | Kotlin + Spring ou Go | Typage fort, performances |
+| ✅ Choix raisonnable | **Java (Spring Boot) ou C#** | Marché saturé de devs Java/C#, stabilité prouvée 20 ans, excellent support entreprise |
+
+> **Verdict :** Java si tu vises de nombreux devs moins chers, C# si tu es dans l'écosystème Microsoft. Les deux sont solides pour 20 ans.
+
+---
+
+## Application mobile
+
+**Contexte :** tu veux être sur iOS ET Android.
+
+| | Choix | Pourquoi |
+|-|-------|---------|
+| ✨ Idéal technique | Swift (iOS) + Kotlin (Android) | Performances natives maximales, accès total aux APIs |
+| ✅ Choix raisonnable (budget serré) | **React Native (JS/TS)** | Une équipe web existante peut souvent l'utiliser, pool de devs énorme |
+| ✅ Choix raisonnable (nouvelle appli) | **Flutter (Dart)** | Performances quasi-natives, une seule codebase, en forte croissance |
+
+> **Verdict :**
+> - Tu as déjà une équipe web JS → **React Native**
+> - Tu pars de zéro et veux le meilleur cross-platform → **Flutter**
+> - Ton app est très complexe / liée aux hardware spécifiques → natif Swift/Kotlin
+
+---
+
+## Data Science / Intelligence Artificielle
+
+**Contexte :** analyse de données, modèles ML, IA générative.
+
+| | Langage | Pourquoi |
+|-|---------|---------|
+| ✨ Idéal technique | Python | PyTorch, TensorFlow, scikit-learn, pandas… l'écosystème IA est en Python |
+| ❌ Alternative risquée | Julia, R | Puissants mais communautés très petites, peu de devs |
+
+> **Verdict :** **Python, sans hésiter.** C'est l'un des rares domaines où le choix idéal ET le choix raisonnable sont identiques. L'écosystème IA est massivement en Python, il n'y a pas d'alternative crédible.
+
+---
+
+## API / Microservices haute performance
+
+**Contexte :** beaucoup de requêtes simultanées, latence critique.
+
+| | Langage | Pourquoi |
+|-|---------|---------|
+| ✨ Idéal technique | **Go ou Rust** | Performances exceptionnelles, faible empreinte mémoire |
+| ✅ Choix raisonnable | **Go** | Performances excellentes + beaucoup plus simple que Rust + pool de devs croissant |
+| ⚠️ Acceptable | Python (FastAPI) ou Node.js | Suffisant pour la majorité des projets, devs faciles à trouver |
+
+> **Verdict :** Si tu as vraiment des contraintes de performance mesurées → **Go**. Sinon, **FastAPI (Python) ou Node.js** suffisent pour 95% des projets.
+
+---
+
+## Logiciel système / Embarqué / Bas niveau
+
+**Contexte :** drivers, OS, firmware, IoT.
+
+| | Langage | Pourquoi |
+|-|---------|---------|
+| ✨ Idéal technique (moderne) | **Rust** | Sécurité mémoire sans garbage collector |
+| ✅ Choix raisonnable | **C / C++** | 50 ans d'existence, documentation immense, devs disponibles, tous les outils existent |
+
+> **Verdict :** C/C++ reste le standard. Rust est l'avenir mais peu de devs maîtrisent le borrow checker. Sauf si tu pars de zéro avec une équipe motivée → Rust. Sinon → C++.
+
+---
+
+## Jeu vidéo
+
+**Contexte :** jeu indie, mobile, ou AA/AAA.
+
+| | Moteur | Langage | Cas d'usage |
+|-|--------|---------|------------|
+| ✨ Indie / mobile | **Unity** | C# | Facile à apprendre, stores iOS/Android, assets store |
+| ✨ AA/AAA | **Unreal Engine** | C++ / Blueprints | Graphismes AAA, très complexe |
+| ✅ Web / casual | **Godot** | GDScript (Python-like) | Gratuit, open source, léger |
+
+> **Verdict :** Débutant ou indie → **Unity (C#)**. C# est aussi utilisé en entreprise, donc l'investissement n'est pas perdu.
+
+---
+
+## Script / Automatisation / DevOps
+
+**Contexte :** automatiser des tâches, CI/CD, infrastructure as code.
+
+| | Langage | Pourquoi |
+|-|---------|---------|
+| ✨ Universel | **Python** | Lisible, bibliothèques partout, fonctionne sur tout |
+| ✅ Shell Unix | **Bash** | Natif Linux/macOS, parfait pour scripts simples |
+| ✅ Windows | **PowerShell** | Natif Windows, intégré à Azure DevOps |
+| ✅ Infra as code | **HCL (Terraform)** | Standard pour Terraform |
+
+---
+
+## Résumé : la matrice de décision
+
+\`\`\`
+Mon besoin         Choix raisonnable       Choix idéal (si budget/temps)
+─────────────────────────────────────────────────────────────────────
+App web startup    Node.js + TypeScript    Go + TypeScript
+App entreprise     Java / C#               Kotlin / Go
+Mobile (les deux)  Flutter ou React Native Swift + Kotlin natif
+IA / Data          Python                  Python (même choix !)
+API performante    Node.js ou FastAPI      Go
+Système embarqué   C / C++                 Rust
+Jeu vidéo indie    Unity (C#)              Unreal (C++) si AAA
+Automatisation     Python / Bash           Python
+\`\`\`
+
+---
+
+## Les 3 questions à te poser avant de choisir
+
+**1. Combien de développeurs connaissent ce langage dans ma région / à distance ?**
+→ Si tu peux pas trouver 10 CVs en 1 mois, c'est un signal d'alarme.
+
+**2. Est-ce que la performance de ce langage va vraiment changer quelque chose pour mon projet à court terme ?**
+→ Si tu as moins de 100 000 utilisateurs, la réponse est presque toujours non.
+
+**3. Est-ce que l'écosystème (frameworks, bibliothèques, outils) répond à mes besoins sans tout coder from scratch ?**
+→ Un bon écosystème vaut souvent plus que les performances brutes du langage.`
+      }
+    ]
+  },
+
+  // ─── OPEN SOURCE ──────────────────────────────────────────────────────────
+  {
+    id: "open-source",
+    category: "Fondamentaux",
+    emoji: "🔓",
+    title: "Open Source & Licences",
+    description: "Comprendre l'open source, les licences et contribuer à des projets Git",
+    level: "Débutant",
+    color: "#10B981",
+    lessons: [
+      {
+        id: "open-source-intro",
+        title: "Qu'est-ce que l'open source ?",
+        duration: "10 min",
+        content: `# Qu'est-ce que l'open source ?
+
+Un logiciel **open source** est un logiciel dont le **code source est public**, librement consultable, modifiable et redistribuable selon les conditions d'une licence.
+
+## L'idée derrière l'open source
+
+À l'origine, dans les années 70-80, tous les logiciels s'échangeaient librement avec leur code. C'est la commercialisation des années 80 qui a créé le modèle du logiciel propriétaire (code source secret, pas de modification possible).
+
+En réaction, **Richard Stallman** lance en 1983 le projet GNU et en 1985 la **Free Software Foundation** avec 4 libertés fondamentales :
+
+| Liberté | Droit |
+|---------|-------|
+| 0 | Utiliser le programme pour n'importe quel usage |
+| 1 | Étudier le fonctionnement du programme (accès au code) |
+| 2 | Redistribuer des copies |
+| 3 | Modifier le programme et distribuer ses versions modifiées |
+
+En 1998, le terme **"Open Source"** est créé pour rendre l'idée plus accessible aux entreprises.
+
+## Open Source ≠ Gratuit
+
+C'est la confusion la plus fréquente.
+
+\\`\\`\\`
+Open Source = le code est visible et modifiable
+Gratuit     = aucun coût d'utilisation
+
+→ Un logiciel peut être open source ET payant (Red Hat Enterprise Linux)
+→ Un logiciel peut être gratuit ET propriétaire (Skype, Adobe Acrobat Reader)
+\\`\\`\\`
+
+## Pourquoi les entreprises font de l'open source ?
+
+- **Réputation et recrutement** : les devs font confiance aux entreprises qui contribuent
+- **Qualité du code** : des milliers de yeux repèrent les bugs
+- **Adoption** : si c'est gratuit, plus de monde l'adopte → standard de facto
+- **Contributions externes** : des devs du monde entier améliorent le produit gratuitement
+- **Modèle freemium** : code open source + services payants (support, cloud, enterprise)
+
+## Les grands projets open source qui font tourner le monde
+
+| Projet | Catégorie | Qui maintient |
+|--------|-----------|--------------|
+| Linux | Système d'exploitation | Linus Torvalds + communauté |
+| Git | Contrôle de version | Linus Torvalds + communauté |
+| Firefox | Navigateur | Mozilla Foundation |
+| PostgreSQL | Base de données | PostgreSQL Global Dev Group |
+| React | Framework UI | Meta |
+| VS Code | Éditeur de code | Microsoft |
+| Python | Langage | Python Software Foundation |
+| Kubernetes | Orchestration conteneurs | CNCF / Google |
+| Android | OS mobile | Google + communauté |
+| WordPress | CMS | Automattic + communauté |
+
+## Open Source vs Source Available vs Propriétaire
+
+| Modèle | Code visible | Modifiable | Redistribuable | Exemple |
+|--------|-------------|-----------|----------------|---------|
+| Open Source | ✅ | ✅ | ✅ (selon licence) | Linux, React |
+| Source Available | ✅ | ❌ ou limité | ❌ | Elasticsearch (SSPL) |
+| Freeware | ❌ | ❌ | ❌ | Skype |
+| Propriétaire | ❌ | ❌ | ❌ | Windows, macOS |`
+      },
+      {
+        id: "open-source-licences",
+        title: "Les licences open source expliquées",
+        duration: "16 min",
+        content: `# Les licences open source expliquées
+
+La licence est le **contrat légal** qui définit ce que tu as le droit de faire avec le code. Sans licence, le code est automatiquement soumis au droit d'auteur exclusif : personne ne peut légalement l'utiliser.
+
+## La grande division : permissive vs copyleft
+
+\\`\\`\\`
+PERMISSIVE                          COPYLEFT
+"Fais ce que tu veux,               "Tu peux utiliser, mais si tu
+ même fermer le code"                distribues, le code reste ouvert"
+
+MIT, Apache, BSD                    GPL, AGPL, LGPL
+\\`\\`\\`
+
+## MIT License — la plus utilisée
+
+\\`\\`\\`
+✅ Utiliser commercialement
+✅ Modifier et distribuer
+✅ Intégrer dans un projet propriétaire
+⚠️  Obligation : conserver la notice de copyright
+❌ Aucune garantie de l'auteur
+\\`\\`\\`
+
+**Utilisée par :** React, Vue.js, Node.js, jQuery, Bootstrap, Rails
+
+**Quand choisir MIT :** tu veux une adoption maximale, même commerciale.
+
+## Apache License 2.0 — pour les entreprises
+
+\\`\\`\\`
+✅ Tout ce que MIT autorise
+✅ Protection contre les poursuites pour brevets
+⚠️  Obligation : noter les modifications apportées
+⚠️  Inclure la licence et les notices
+\\`\\`\\`
+
+**Utilisée par :** Android, Kubernetes, TensorFlow, Kafka
+
+**Quand choisir Apache 2.0 :** domaines avec risques de brevets (tech, IA). Recommandée pour les projets d'entreprise.
+
+## GPL v2 / v3 — le copyleft fort
+
+La licence "virale". Si tu distribues un programme basé sur du code GPL, **tout ton code doit aussi être GPL**.
+
+\\`\\`\\`
+✅ Utiliser et modifier
+✅ Usage interne sans obligation
+❌ Si tu distribues → code source obligatoire
+❌ Impossible d'intégrer dans du code propriétaire distribué
+\\`\\`\\`
+
+**Utilisée par :** Linux kernel (v2), WordPress, Git, VLC, GIMP
+
+**La faille SaaS :** utiliser du GPL sur un serveur (sans distribution) ne t'oblige PAS à ouvrir ton code.
+
+## AGPL v3 — ferme la faille SaaS
+
+\\`\\`\\`
+Même chose que GPL v3, PLUS :
+→ Fournir le service via le réseau (SaaS, API) = distribution
+→ Tu dois quand même publier le code source
+\\`\\`\\`
+
+**Utilisée par :** Grafana, Nextcloud, Gitea, MongoDB (anciennement)
+
+**Attention :** beaucoup d'équipes juridiques d'entreprise interdisent l'usage de code AGPL.
+
+## LGPL — copyleft doux pour les bibliothèques
+
+\\`\\`\\`
+✅ Lier dynamiquement une lib LGPL dans ton code propriétaire
+❌ Modifier et redistribuer la lib → doit rester LGPL
+\\`\\`\\`
+
+**Utilisée par :** Qt (partiel), FFmpeg, GNU C Library
+
+## Tableau comparatif
+
+| Licence | Commercial | Code fermé distribué | Faille SaaS | Brevets |
+|---------|-----------|---------------------|-------------|---------|
+| MIT | ✅ | ✅ | ✅ | ❌ |
+| Apache 2.0 | ✅ | ✅ | ✅ | ✅ |
+| LGPL | ✅ partiel | ⚠️ | ✅ | ❌ |
+| GPL v2/v3 | ✅ interne | ❌ | ✅ | ✅ v3 |
+| AGPL v3 | ❌ SaaS | ❌ | ❌ | ✅ |
+
+## Comment choisir sa licence
+
+\\`\\`\\`
+Adoption maximale ?              → MIT
+Environnement brevets/entreprise → Apache 2.0
+Améliorations ouvertes (distribué) → GPL v3
+Bloquer les SaaS non contributeurs → AGPL v3
+Bibliothèque usage commercial libre → LGPL
+\\`\\`\\`
+
+## Le cas "sans licence"
+
+Un code sans licence n'est **pas libre d'utilisation**. Le droit d'auteur s'applique automatiquement. Pour tout céder → utilise **CC0** (domaine public).`
+      },
+      {
+        id: "open-source-contribuer",
+        title: "Contribuer à un projet open source",
+        duration: "14 min",
+        content: `# Contribuer à un projet open source
+
+Contribuer à l'open source est une des meilleures façons de progresser, de se faire connaître et d'aider la communauté.
+
+## Les types de contributions
+
+| Type | Exemples |
+|------|---------|
+| Code | Corriger un bug, ajouter une fonctionnalité |
+| Documentation | Améliorer le README, traduire |
+| Tests | Écrire des tests manquants, rapporter des bugs |
+| Review | Relire les Pull Requests des autres |
+| Support | Répondre aux issues, aider sur les forums |
+
+## Le workflow sur GitHub
+
+### 1. Trouver une issue
+
+Sur GitHub, cherche les labels :
+- \\`good first issue\\` → pour débutants
+- \\`help wanted\\` → mainteneurs cherchent de l'aide
+- \\`documentation\\` → améliorations de doc
+
+Lis **CONTRIBUTING.md** avant tout.
+
+### 2. Forker et cloner
+
+\\`\\`\\`bash
+# Fork sur GitHub (bouton "Fork")
+
+# Cloner ton fork
+git clone https://github.com/TON-PSEUDO/nom-du-projet.git
+cd nom-du-projet
+
+# Ajouter le repo original comme upstream
+git remote add upstream https://github.com/AUTEUR/nom-du-projet.git
+\\`\\`\\`
+
+### 3. Créer une branche dédiée
+
+\\`\\`\\`bash
+git fetch upstream
+git checkout upstream/main -b fix/description-du-bug
+\\`\\`\\`
+
+Convention de nommage :
+- \\`fix/nom-du-bug\\`
+- \\`feat/nom-feature\\`
+- \\`docs/section-concernee\\`
+
+### 4. Committer avec Conventional Commits
+
+\\`\\`\\`bash
+git commit -m "fix: corriger le crash au démarrage sans config"
+
+# Préfixes standards :
+# feat:     nouvelle fonctionnalité
+# fix:      correction de bug
+# docs:     documentation uniquement
+# refactor: restructuration du code
+# test:     ajout de tests
+# chore:    maintenance
+\\`\\`\\`
+
+### 5. Ouvrir une Pull Request
+
+\\`\\`\\`bash
+git push origin fix/description-du-bug
+\\`\\`\\`
+
+Une bonne PR :
+- Titre clair décrivant le changement
+- Explication du **pourquoi** dans la description
+- Référence l'issue : \\`Closes #123\\`
+- Minimum de changements (pas de reformatage parasite)
+
+### 6. Après le merge
+
+\\`\\`\\`bash
+git fetch upstream
+git checkout main
+git merge upstream/main
+git push origin main
+git branch -d fix/description-du-bug
+\\`\\`\\`
+
+## Les fichiers clés d'un projet open source
+
+| Fichier | Rôle |
+|---------|------|
+| \\`README.md\\` | Présentation, installation, usage |
+| \\`CONTRIBUTING.md\\` | Comment contribuer, règles |
+| \\`CODE_OF_CONDUCT.md\\` | Règles de comportement |
+| \\`LICENSE\\` | La licence |
+| \\`CHANGELOG.md\\` | Historique des versions |
+| \\`SECURITY.md\\` | Signaler une faille |
+
+## Étiquette dans l'open source
+
+- **Sois patient** : les mainteneurs sont souvent bénévoles
+- **Cherche avant de demander** : lis les issues existantes
+- **Sois précis dans les bug reports** : OS, version, étapes de reproduction
+- **Une PR = un problème** : ne mélange pas plusieurs corrections
+- **Respecte le style du projet**`
+      },
+      {
+        id: "open-source-creer",
+        title: "Créer et gérer son projet open source",
+        duration: "12 min",
+        content: `# Créer et gérer son projet open source
+
+Publier un projet open source va au-delà de "mettre le code sur GitHub".
+
+## Structure minimale recommandée
+
+\\`\\`\\`
+mon-projet/
+├── src/                    # Code source
+├── tests/                  # Tests
+├── README.md               # OBLIGATOIRE
+├── LICENSE                 # OBLIGATOIRE
+├── CONTRIBUTING.md         # Recommandé
+└── .gitignore
+\\`\\`\\`
+
+## Le versionnage sémantique (SemVer)
+
+Convention universelle : **MAJEURE.MINEURE.CORRECTIF**
+
+\\`\\`\\`
+v2.4.1
+│ │ └── CORRECTIF (patch) : bug fix, rétrocompatible
+│ └──── MINEURE (minor)   : nouvelle feature, rétrocompatible
+└────── MAJEURE (major)   : breaking change
+
+Exemples :
+1.0.0 → 1.0.1  bug fix
+1.0.1 → 1.1.0  nouvelle feature
+1.1.0 → 2.0.0  API incompatible
+\\`\\`\\`
+
+En \\`0.x.x\\` : tout peut changer. À \\`1.0.0\\` tu t'engages à respecter SemVer.
+
+## Labels GitHub utiles
+
+\\`\\`\\`
+good first issue    → pour les débutants
+help wanted         → tu cherches des contributeurs
+bug                 → comportement anormal confirmé
+enhancement         → nouvelle fonctionnalité
+duplicate           → issue déjà signalée
+wontfix             → hors périmètre
+\\`\\`\\`
+
+## CI avec GitHub Actions
+
+\\`\\`\\`yaml
+# .github/workflows/ci.yml
+name: CI
+on: [push, pull_request]
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+      - run: npm install
+      - run: npm test
+\\`\\`\\`
+
+## Monétiser son open source
+
+| Modèle | Comment | Exemples |
+|--------|---------|---------|
+| Open Core | Version libre + fonctionnalités premium | GitLab |
+| SaaS | Hébergement payant | GitHub (basé sur Git) |
+| Support | Vendre du support professionnel | Red Hat |
+| Donations | GitHub Sponsors, Open Collective | Curl, VLC |`
+      }
+    ]
+  },
+
+  // ─── CODER AVEC L'IA ──────────────────────────────────────────────────────
+  {
+    id: "coder-avec-ia",
+    category: "IA & LLM",
+    emoji: "🤖",
+    title: "Coder avec l'IA",
+    description: "MCP, agents, sous-agents, RAG : maîtriser les outils IA pour développer",
+    level: "Intermédiaire",
+    color: "#8B5CF6",
+    lessons: [
+      {
+        id: "ia-coder-intro",
+        title: "L'IA comme partenaire de développement",
+        duration: "10 min",
+        content: `# L'IA comme partenaire de développement
+
+Les LLMs (GPT-4, Claude, Gemini…) ont transformé la façon de coder. Bien les utiliser demande de comprendre leurs forces, limites et les bons patterns.
+
+## Ce que l'IA fait très bien
+
+| Tâche | Efficacité |
+|-------|-----------|
+| Générer du code boilerplate | ★★★★★ |
+| Expliquer du code existant | ★★★★★ |
+| Convertir d'un langage à l'autre | ★★★★★ |
+| Écrire des tests unitaires | ★★★★☆ |
+| Déboguer avec un message d'erreur | ★★★★☆ |
+| Refactorer du code | ★★★★☆ |
+| Concevoir une architecture complexe | ★★★☆☆ |
+| Code métier très spécifique | ★★☆☆☆ |
+
+## Ce que l'IA fait mal
+
+- **Code récent** : les modèles ont une date de coupure
+- **Contexte long** : perd le fil sur de très gros fichiers
+- **Logique métier** : ne connaît pas ton domaine
+- **Sécurité** : peut générer du code vulnérable sans le signaler
+- **Hallucinations** : inventer des fonctions ou libs qui n'existent pas
+
+## Prompter efficacement pour le code
+
+**Mauvais :**
+\\`\\`\\`
+Fais-moi une fonction Python
+\\`\\`\\`
+
+**Bon :**
+\\`\\`\\`
+Écris une fonction Python qui :
+- Prend une liste de dicts avec clés "nom" et "score"
+- Filtre les entrées avec score > 80
+- Trie par score décroissant
+- Retourne les 3 premiers
+- Inclus un exemple et les cas limites (liste vide, ex aequo)
+\\`\\`\\`
+
+## La règle du contexte
+
+Donne toujours à l'IA :
+\\`\\`\\`
+1. Contexte du projet    → "C'est une API FastAPI, Python 3.11"
+2. Code existant         → colle les fichiers concernés
+3. Message d'erreur exact → copie-colle l'erreur complète
+4. Ce que tu as essayé   → évite les suggestions déjà testées
+5. La contrainte clé     → "doit être compatible Python 3.9"
+\\`\\`\\`
+
+## Outils IA pour coder
+
+| Outil | Type | Forces |
+|-------|------|--------|
+| GitHub Copilot | Complétion IDE | Inline, très réactif |
+| Claude | Chat + agent | Long contexte, précis |
+| Cursor | IDE complet IA | Contexte codebase entier |
+| Claude Code | CLI agent | Terminal, fichiers, git |
+| GPT-4o | Chat + agent | Polyvalent |`
+      },
+      {
+        id: "ia-mcp",
+        title: "Le protocole MCP : connecter l'IA à tes outils",
+        duration: "14 min",
+        content: `# Le protocole MCP : connecter l'IA à tes outils
+
+**MCP** (Model Context Protocol) est un protocole open source créé par Anthropic qui permet à un LLM de se connecter à des outils et sources de données externes de façon standardisée.
+
+## Le problème que MCP résout
+
+\\`\\`\\`
+Avant MCP :
+Claude ─── intégration custom ──→ GitHub
+Claude ─── intégration custom ──→ Notion
+Claude ─── intégration custom ──→ PostgreSQL
+(N outils × M LLMs = NxM intégrations à maintenir)
+
+Avec MCP :
+Claude ──→ protocole MCP ──→ serveur MCP GitHub
+                          ──→ serveur MCP Notion
+                          ──→ serveur MCP PostgreSQL
+(N outils + M LLMs = N+M implémentations seulement)
+\\`\\`\\`
+
+## Architecture MCP
+
+MCP fonctionne en client-serveur :
+
+\\`\\`\\`
+Application hôte (Claude Desktop, Claude Code...)
+  │
+  │  protocole MCP (JSON-RPC sur stdio/HTTP)
+  │
+  ├──→ Serveur MCP GitHub  ──→ API GitHub
+  ├──→ Serveur MCP BDD     ──→ PostgreSQL
+  └──→ Serveur MCP Fichiers ──→ Système de fichiers
+\\`\\`\\`
+
+## Ce qu'un serveur MCP expose
+
+### Tools (Outils)
+Des fonctions que le LLM peut appeler :
+
+\\`\\`\\`json
+{
+  "name": "create_github_issue",
+  "description": "Crée une issue GitHub",
+  "inputSchema": {
+    "type": "object",
+    "properties": {
+      "repo": { "type": "string" },
+      "title": { "type": "string" },
+      "body": { "type": "string" }
+    }
+  }
+}
+\\`\\`\\`
+
+### Resources
+Des données que le LLM peut lire (fichiers, pages, BDD…)
+
+### Prompts
+Des templates préconfigurés pour des tâches récurrentes
+
+## Créer un serveur MCP simple (Python)
+
+\\`\\`\\`python
+from mcp.server import Server
+from mcp.server.stdio import stdio_server
+from mcp.types import Tool, TextContent
+import asyncio
+
+app = Server("mon-serveur-mcp")
+
+@app.list_tools()
+async def list_tools():
+    return [
+        Tool(
+            name="get_weather",
+            description="Récupère la météo d'une ville",
+            inputSchema={
+                "type": "object",
+                "properties": {
+                    "city": {"type": "string"}
+                },
+                "required": ["city"]
+            }
+        )
+    ]
+
+@app.call_tool()
+async def call_tool(name: str, arguments: dict):
+    if name == "get_weather":
+        city = arguments["city"]
+        # Appel API réel ici
+        return [TextContent(type="text", text=f"Météo à {city} : 22°C")]
+
+async def main():
+    async with stdio_server() as (read, write):
+        await app.run(read, write, app.create_initialization_options())
+
+asyncio.run(main())
+\\`\\`\\`
+
+## Configurer MCP dans Claude Desktop
+
+\\`\\`\\`json
+{
+  "mcpServers": {
+    "github": {
+      "command": "npx",
+      "args": ["-y", "@modelcontextprotocol/server-github"],
+      "env": { "GITHUB_PERSONAL_ACCESS_TOKEN": "ton-token" }
+    },
+    "filesystem": {
+      "command": "npx",
+      "args": ["-y", "@modelcontextprotocol/server-filesystem", "/Users/toi/projets"]
+    },
+    "postgres": {
+      "command": "npx",
+      "args": ["-y", "@modelcontextprotocol/server-postgres", "postgresql://localhost/madb"]
+    }
+  }
+}
+\\`\\`\\`
+
+## Serveurs MCP populaires
+
+| Serveur | Capacités |
+|---------|----------|
+| \\`server-github\\` | Issues, PRs, repos, code |
+| \\`server-filesystem\\` | Lire/écrire fichiers locaux |
+| \\`server-postgres\\` | Requêtes SQL |
+| \\`server-brave-search\\` | Recherche web |
+| \\`server-slack\\` | Messages Slack |
+| \\`mcp-server-fetch\\` | Récupérer des URLs |`
+      },
+      {
+        id: "ia-agents",
+        title: "Agents et sous-agents : l'IA qui agit",
+        duration: "16 min",
+        content: `# Agents et sous-agents : l'IA qui agit
+
+Un **agent IA** est un LLM capable d'utiliser des **outils** pour accomplir des tâches de façon autonome, en décidant lui-même quelles actions enchaîner.
+
+## LLM vs Agent
+
+\\`\\`\\`
+LLM seul :
+  Tu → Question → LLM → Réponse texte
+
+Agent :
+  Tu → Objectif → Agent → [choisit un outil]
+                        → Exécute l'outil
+                        → Reçoit le résultat
+                        → [décide de l'étape suivante]
+                        → ... répète ...
+                        → Résultat final
+\\`\\`\\`
+
+## Le pattern ReAct (Reason + Act)
+
+\\`\\`\\`
+Objectif : "Trouve le prix de l'action Apple et fais un graphique"
+
+THOUGHT : Je dois chercher le prix AAPL
+ACTION  : search_web("Apple stock price AAPL")
+RESULT  : AAPL = 189.45$
+
+THOUGHT : Je dois créer le graphique
+ACTION  : run_code("import matplotlib... plt.bar(['AAPL'], [189.45])")
+RESULT  : graphique.png créé
+
+FINAL   : Prix Apple = 189.45$. Voici le graphique.
+\\`\\`\\`
+
+## Les sous-agents (subagents)
+
+Un agent peut **déléguer des sous-tâches** à d'autres agents spécialisés :
+
+\\`\\`\\`
+Agent Orchestrateur : "Audit complet de mon app"
+         │
+         ├──→ Sous-agent Sécurité    → rapport vulnérabilités
+         ├──→ Sous-agent Performance → rapport temps de réponse
+         └──→ Sous-agent Qualité     → rapport code quality
+                    │
+         Orchestrateur synthétise → Rapport final
+\\`\\`\\`
+
+**Avantages :** tâches en parallèle, contexte spécialisé par agent, pas de saturation du contexte principal.
+
+## Créer un agent avec l'API Claude
+
+\\`\\`\\`python
+import anthropic
+
+client = anthropic.Anthropic()
+
+tools = [{
+    "name": "read_file",
+    "description": "Lit le contenu d'un fichier",
+    "input_schema": {
+        "type": "object",
+        "properties": {
+            "path": {"type": "string"}
+        },
+        "required": ["path"]
+    }
+}]
+
+def run_agent(objective: str):
+    messages = [{"role": "user", "content": objective}]
+
+    while True:
+        response = client.messages.create(
+            model="claude-opus-4-5",
+            max_tokens=4096,
+            tools=tools,
+            messages=messages
+        )
+
+        if response.stop_reason == "end_turn":
+            return response.content[0].text
+
+        if response.stop_reason == "tool_use":
+            tool_use = next(b for b in response.content if b.type == "tool_use")
+
+            if tool_use.name == "read_file":
+                with open(tool_use.input["path"]) as f:
+                    result = f.read()
+
+            messages.append({"role": "assistant", "content": response.content})
+            messages.append({
+                "role": "user",
+                "content": [{
+                    "type": "tool_result",
+                    "tool_use_id": tool_use.id,
+                    "content": result
+                }]
+            })
+\\`\\`\\`
+
+## Patterns d'architecture multi-agents
+
+| Pattern | Schéma | Idéal pour |
+|---------|--------|------------|
+| Séquentiel | A → B → C | Pipelines étape par étape |
+| Parallèle | Entrée → [A, B, C] → Agrégateur | Tâches indépendantes |
+| Hiérarchique | Orchestrateur → sous-agents | Tâches complexes adaptatives |
+
+## Garder le contrôle
+
+\\`\\`\\`
+✅ Confirmation humaine avant actions irréversibles
+✅ Sandbox (pas d'accès direct à la prod)
+✅ Logging de toutes les actions
+✅ Timeout et budget de tokens max
+✅ Principe du moindre privilège (outils minimaux nécessaires)
+\\`\\`\\``
+      },
+      {
+        id: "ia-rag",
+        title: "Le RAG : donner de la mémoire à l'IA",
+        duration: "14 min",
+        content: `# Le RAG : donner de la mémoire à l'IA
+
+**RAG** (Retrieval-Augmented Generation) permet à un LLM de répondre à des questions en s'appuyant sur **tes propres données** qu'il ne connaît pas de base.
+
+## Le problème sans RAG
+
+\\`\\`\\`
+"Quelle est notre politique de remboursement ?"
+→ LLM : "Je n'ai pas accès à vos documents internes..."
+
+"Résume la réunion du 15 mars 2025"
+→ LLM : "Je n'ai pas connaissance de cette réunion..."
+\\`\\`\\`
+
+## Comment fonctionne le RAG
+
+\\`\\`\\`
+PHASE 1 : INDEXATION (une fois)
+Documents → Découper en chunks → Embeddings → Base vectorielle
+
+PHASE 2 : REQUÊTE (à chaque question)
+Question → Embedding → Recherche similarité → Top 3 chunks
+        → Prompt : "Voici les extraits : [chunks]. Réponds à : [question]"
+        → LLM génère la réponse
+\\`\\`\\`
+
+## Les embeddings
+
+Un embedding est une représentation numérique d'un texte. Des textes sémantiquement proches ont des vecteurs proches.
+
+\\`\\`\\`python
+"le chien court"   → [0.23, -0.45, 0.12, ...]  # voisins
+"le chiot galope"  → [0.21, -0.43, 0.14, ...]  # proches
+"la voiture roule" → [-0.34, 0.67, -0.23, ...] # éloigné
+\\`\\`\\`
+
+## RAG avec ChromaDB (exemple complet)
+
+\\`\\`\\`python
+import chromadb
+from chromadb.utils import embedding_functions
+import anthropic
+
+# Base vectorielle locale
+chroma = chromadb.Client()
+embed_fn = embedding_functions.SentenceTransformerEmbeddingFunction(
+    model_name="all-MiniLM-L6-v2"  # modèle gratuit, local
+)
+collection = chroma.create_collection("mes_docs", embedding_function=embed_fn)
+
+# Indexer des documents
+documents = [
+    "Notre politique de retour est de 30 jours sans justificatif.",
+    "Le service client est disponible du lundi au vendredi 9h-18h.",
+    "Les commandes supérieures à 50€ sont livrées gratuitement.",
+]
+collection.add(documents=documents, ids=["doc1", "doc2", "doc3"])
+
+# Requête RAG
+def rag_query(question: str) -> str:
+    # 1. Retrouver les chunks pertinents
+    results = collection.query(query_texts=[question], n_results=2)
+    context = "\n\n".join(results["documents"][0])
+
+    # 2. Générer la réponse avec Claude
+    client = anthropic.Anthropic()
+    response = client.messages.create(
+        model="claude-opus-4-5",
+        max_tokens=1024,
+        messages=[{
+            "role": "user",
+            "content": f"""Extraits de documentation :
+
+{context}
+
+---
+Question : {question}
+Réponds uniquement à partir des extraits. Si absent, dis-le clairement."""
+        }]
+    )
+    return response.content[0].text
+
+print(rag_query("Comment retourner un produit ?"))
+# → "Notre politique de retour est de 30 jours sans justificatif."
+\\`\\`\\`
+
+## Les bases de données vectorielles
+
+| Outil | Type | Points forts |
+|-------|------|-------------|
+| ChromaDB | Local/Cloud | Simple, gratuit, Python natif |
+| Pinecone | Cloud | Scalable, géré |
+| Qdrant | Open source | Très rapide (Rust) |
+| pgvector | Extension PostgreSQL | Dans ta BDD existante |
+| FAISS | Bibliothèque Meta | Très rapide, local |
+
+## Pièges classiques du RAG
+
+\\`\\`\\`
+Chunks trop grands   → contexte utile noyé dans le bruit
+Chunks trop petits   → manque de contexte pour comprendre
+Mauvais découpage    → couper une phrase au milieu perd le sens
+Données périmées     → re-indexer régulièrement si les docs changent
+Hallucination        → le LLM invente si les chunks n'ont pas la réponse
+\\`\\`\\`
+
+## RAG vs Fine-tuning
+
+| | RAG | Fine-tuning |
+|--|-----|------------|
+| Données changeantes | ✅ Idéal | ❌ À refaire |
+| Données confidentielles | ✅ Restent locales | ⚠️ Risque cloud |
+| Style / ton spécifique | ❌ Limité | ✅ Idéal |
+| Coût | Faible | Élevé |
+| Rapidité de mise en place | Rapide | Long |
+
+**Règle :** commence toujours par le RAG. Le fine-tuning est rarement nécessaire.`
+      }
+    ]
+  },
+
+  // ─── OUTILS ───────────────────────────────────────────────────────────────
+  {
+    id: "terminal",
+    category: "Outils",
+    emoji: "💻",
+    title: "Terminal & Ligne de commande",
+    description: "Maîtrise le terminal sur macOS et Windows",
+    level: "Débutant",
+    color: "#06B6D4",
+    lessons: [
+      {
+        id: "terminal-introduction",
+        title: "Qu'est-ce que le terminal ?",
+        duration: "8 min",
+        content: `# Qu'est-ce que le terminal ?
+
+Le **terminal** (aussi appelé invite de commande, shell ou console) est une interface textuelle qui te permet de communiquer directement avec ton ordinateur en tapant des commandes.
+
+## Pourquoi apprendre le terminal ?
+
+- Automatiser des tâches répétitives
+- Naviguer dans les fichiers plus rapidement qu'avec la souris
+- Utiliser des outils de développement (Git, Node.js, Python…)
+- Déployer des applications sur des serveurs
+- Comprendre comment fonctionne vraiment ton système
+
+## Le terminal selon ton OS
+
+| Système | Terminal par défaut | Shell |
+|---------|--------------------|----|
+| macOS | Terminal.app / iTerm2 | zsh (depuis macOS Catalina) |
+| Windows | Invite de commandes (cmd) | cmd.exe |
+| Windows | PowerShell | powershell.exe |
+| Windows 11 | Windows Terminal | PowerShell / cmd / WSL |
+
+## Comment ouvrir le terminal
+
+**macOS :**
+- Spotlight : \`⌘ + Espace\`, tape "Terminal", Entrée
+- Finder → Applications → Utilitaires → Terminal
+
+**Windows :**
+- \`Win + R\`, tape \`cmd\` ou \`powershell\`, Entrée
+- Barre de recherche → "Terminal" ou "Invite de commandes"
+- Clic droit sur le bureau → "Ouvrir dans le terminal" (Windows 11)
+
+## Anatomie d'une commande
+
+\`\`\`
+$ commande  option  argument
+$ ls        -la     /Users/moi
+\`\`\`
+
+- **\`$\`** : invite de commande (ne pas taper)
+- **commande** : l'action à exécuter
+- **option** (ou flag) : modifie le comportement (\`-l\`, \`--help\`)
+- **argument** : sur quoi agit la commande (fichier, dossier…)`
+      },
+      {
+        id: "terminal-navigation",
+        title: "Naviguer dans les fichiers",
+        duration: "12 min",
+        content: `# Naviguer dans les fichiers
+
+La compétence de base du terminal : se déplacer dans l'arborescence de fichiers.
+
+## macOS / Linux
+
+### Voir où tu es
+\`\`\`bash
+pwd
+# /Users/alice/Documents
+\`\`\`
+
+### Lister les fichiers
+\`\`\`bash
+ls              # liste simple
+ls -l           # liste détaillée (permissions, taille, date)
+ls -la          # idem + fichiers cachés (commençant par .)
+ls -lh          # tailles lisibles (KB, MB…)
+\`\`\`
+
+### Se déplacer
+\`\`\`bash
+cd Documents            # aller dans Documents
+cd ..                   # remonter d'un niveau
+cd ../..                # remonter de deux niveaux
+cd ~                    # aller dans le dossier personnel
+cd -                    # retourner au dossier précédent
+cd /Users/alice/Desktop # chemin absolu
+\`\`\`
+
+### Créer des dossiers et fichiers
+\`\`\`bash
+mkdir mon-projet        # créer un dossier
+mkdir -p a/b/c          # créer des dossiers imbriqués
+touch fichier.txt       # créer un fichier vide
+\`\`\`
+
+---
+
+## Windows (cmd)
+
+### Voir où tu es
+\`\`\`cmd
+cd
+# C:\\Users\\alice\\Documents
+\`\`\`
+
+### Lister les fichiers
+\`\`\`cmd
+dir             # liste détaillée
+dir /a          # inclure les fichiers cachés
+\`\`\`
+
+### Se déplacer
+\`\`\`cmd
+cd Documents            :: aller dans Documents
+cd ..                   :: remonter d'un niveau
+cd /                    :: aller à la racine du disque
+cd C:\\Users\\alice      :: chemin absolu
+D:                      :: changer de disque (D:, E:…)
+\`\`\`
+
+### Créer des dossiers et fichiers
+\`\`\`cmd
+mkdir mon-projet        :: créer un dossier
+mkdir a\\b\\c            :: créer des dossiers imbriqués
+type nul > fichier.txt  :: créer un fichier vide
+\`\`\`
+
+## Windows (PowerShell)
+
+PowerShell comprend les commandes Unix ET ses propres alias :
+
+\`\`\`powershell
+pwd             # ou Get-Location
+ls              # ou Get-ChildItem
+ls -Force       # inclure fichiers cachés
+cd Documents    # ou Set-Location
+mkdir dossier   # ou New-Item -ItemType Directory -Name "dossier"
+New-Item fichier.txt   # créer un fichier
+\`\`\`
+
+## Tableau comparatif
+
+| Action | macOS/Linux | Windows cmd | PowerShell |
+|--------|-------------|-------------|------------|
+| Où suis-je ? | \`pwd\` | \`cd\` | \`pwd\` |
+| Lister | \`ls\` | \`dir\` | \`ls\` |
+| Aller dans dossier | \`cd nom\` | \`cd nom\` | \`cd nom\` |
+| Remonter | \`cd ..\` | \`cd ..\` | \`cd ..\` |
+| Créer dossier | \`mkdir\` | \`mkdir\` | \`mkdir\` |`
+      },
+      {
+        id: "terminal-fichiers",
+        title: "Gérer les fichiers et dossiers",
+        duration: "14 min",
+        content: `# Gérer les fichiers et dossiers
+
+Copier, déplacer, supprimer, lire des fichiers directement depuis le terminal.
+
+## macOS / Linux
+
+### Copier
+\`\`\`bash
+cp fichier.txt copie.txt            # copier un fichier
+cp fichier.txt /autre/dossier/      # copier vers un dossier
+cp -r mon-projet/ sauvegarde/       # copier un dossier (récursif)
+\`\`\`
+
+### Déplacer / Renommer
+\`\`\`bash
+mv ancien.txt nouveau.txt           # renommer
+mv fichier.txt /autre/dossier/      # déplacer
+mv dossier/ /nouveau/chemin/        # déplacer un dossier
+\`\`\`
+
+### Supprimer
+\`\`\`bash
+rm fichier.txt                      # supprimer un fichier
+rm -r mon-dossier/                  # supprimer un dossier (récursif)
+rm -rf node_modules/                # forcer la suppression (ATTENTION !)
+\`\`\`
+
+> **⚠️ Attention** : \`rm\` est définitif, pas de corbeille !
+
+### Lire des fichiers
+\`\`\`bash
+cat fichier.txt                     # afficher tout le contenu
+less fichier.txt                    # afficher page par page (q pour quitter)
+head -n 10 fichier.txt              # afficher les 10 premières lignes
+tail -n 10 fichier.txt              # afficher les 10 dernières lignes
+tail -f logs.txt                    # suivre un fichier en temps réel
+\`\`\`
+
+### Rechercher
+\`\`\`bash
+find . -name "*.txt"                # trouver tous les .txt dans le dossier courant
+find . -name "index.js"             # chercher un fichier par nom
+grep "erreur" fichier.log           # chercher un texte dans un fichier
+grep -r "TODO" ./src/               # chercher dans tous les fichiers d'un dossier
+\`\`\`
+
+---
+
+## Windows (cmd)
+
+### Copier
+\`\`\`cmd
+copy fichier.txt copie.txt          :: copier un fichier
+copy fichier.txt C:\\autre\\         :: copier vers un dossier
+xcopy mon-projet\\ sauvegarde\\ /E  :: copier un dossier (récursif)
+\`\`\`
+
+### Déplacer / Renommer
+\`\`\`cmd
+ren ancien.txt nouveau.txt          :: renommer
+move fichier.txt C:\\autre\\         :: déplacer
+\`\`\`
+
+### Supprimer
+\`\`\`cmd
+del fichier.txt                     :: supprimer un fichier
+rmdir /s /q mon-dossier             :: supprimer un dossier
+\`\`\`
+
+### Lire des fichiers
+\`\`\`cmd
+type fichier.txt                    :: afficher le contenu
+more fichier.txt                    :: afficher page par page
+\`\`\`
+
+### Rechercher
+\`\`\`cmd
+dir /s /b *.txt                     :: trouver des fichiers par pattern
+findstr "erreur" fichier.log        :: chercher du texte dans un fichier
+\`\`\`
+
+---
+
+## Windows (PowerShell)
+
+\`\`\`powershell
+# Copier
+Copy-Item fichier.txt copie.txt
+Copy-Item -Recurse mon-projet\\ sauvegarde\\
+
+# Déplacer / Renommer
+Rename-Item ancien.txt nouveau.txt
+Move-Item fichier.txt C:\\autre\\
+
+# Supprimer
+Remove-Item fichier.txt
+Remove-Item -Recurse -Force mon-dossier\\
+
+# Lire
+Get-Content fichier.txt
+Get-Content -Tail 10 fichier.txt    # 10 dernières lignes
+
+# Rechercher
+Get-ChildItem -Recurse -Filter "*.txt"
+Select-String "erreur" fichier.log
+\`\`\`
+
+## Tableau comparatif
+
+| Action | macOS/Linux | Windows cmd | PowerShell |
+|--------|-------------|-------------|------------|
+| Copier fichier | \`cp\` | \`copy\` | \`Copy-Item\` |
+| Copier dossier | \`cp -r\` | \`xcopy /E\` | \`Copy-Item -Recurse\` |
+| Déplacer | \`mv\` | \`move\` | \`Move-Item\` |
+| Renommer | \`mv\` | \`ren\` | \`Rename-Item\` |
+| Supprimer fichier | \`rm\` | \`del\` | \`Remove-Item\` |
+| Supprimer dossier | \`rm -r\` | \`rmdir /s /q\` | \`Remove-Item -Recurse\` |
+| Lire un fichier | \`cat\` | \`type\` | \`Get-Content\` |
+| Chercher texte | \`grep\` | \`findstr\` | \`Select-String\` |`
+      },
+      {
+        id: "terminal-astuces",
+        title: "Astuces et raccourcis indispensables",
+        duration: "10 min",
+        content: `# Astuces et raccourcis indispensables
+
+Ces astuces vont multiplier ta productivité dans le terminal.
+
+## Raccourcis clavier universels
+
+| Raccourci | Action |
+|-----------|--------|
+| \`↑\` / \`↓\` | Naviguer dans l'historique des commandes |
+| \`Tab\` | Auto-complétion (nom de fichier, commande) |
+| \`Tab Tab\` | Lister toutes les complétions possibles |
+| \`Ctrl+C\` | Annuler / arrêter une commande en cours |
+| \`Ctrl+L\` | Effacer l'écran (ou taper \`clear\`) |
+| \`Ctrl+A\` | Aller au début de la ligne |
+| \`Ctrl+E\` | Aller à la fin de la ligne |
+| \`Ctrl+U\` | Effacer du curseur au début de la ligne |
+
+## Opérateurs pratiques (macOS/Linux et PowerShell)
+
+### Chaîner des commandes
+\`\`\`bash
+mkdir projet && cd projet       # exécuter si la première réussit
+commande1 ; commande2           # exécuter les deux quoi qu'il arrive
+commande1 || commande2          # exécuter la seconde si la première échoue
+\`\`\`
+
+### Redirection
+\`\`\`bash
+ls > liste.txt                  # écrire la sortie dans un fichier
+ls >> liste.txt                 # ajouter à la fin du fichier
+commande 2> erreurs.txt         # rediriger les erreurs
+\`\`\`
+
+### Pipe (|) — enchaîner les commandes
+\`\`\`bash
+ls -la | grep ".js"             # filtrer la liste des fichiers
+cat fichier.txt | wc -l         # compter les lignes
+history | grep "git"            # chercher dans l'historique
+\`\`\`
+
+## Variables et environnement
+
+**macOS/Linux :**
+\`\`\`bash
+echo $HOME                      # afficher une variable
+echo $PATH                      # chemin des exécutables
+export MA_VAR="valeur"          # définir une variable de session
+\`\`\`
+
+**Windows cmd :**
+\`\`\`cmd
+echo %USERPROFILE%              :: dossier personnel
+echo %PATH%                     :: chemin des exécutables
+set MA_VAR=valeur               :: définir une variable de session
+\`\`\`
+
+**PowerShell :**
+\`\`\`powershell
+echo $env:USERPROFILE           # dossier personnel
+echo $env:PATH
+$env:MA_VAR = "valeur"          # définir une variable
+\`\`\`
+
+## Commandes utiles au quotidien
+
+**macOS/Linux :**
+\`\`\`bash
+history                         # voir l'historique des commandes
+which python3                   # trouver où est installé un programme
+man ls                          # manuel d'aide (q pour quitter)
+ls --help                       # aide rapide
+open .                          # ouvrir le dossier courant dans Finder
+code .                          # ouvrir VS Code dans le dossier courant
+\`\`\`
+
+**Windows cmd :**
+\`\`\`cmd
+doskey /history                 :: historique des commandes
+where python                    :: trouver où est installé un programme
+help dir                        :: aide sur une commande
+cls                             :: effacer l'écran
+start .                         :: ouvrir le dossier dans l'Explorateur
+code .                          :: ouvrir VS Code
+\`\`\`
+
+**PowerShell :**
+\`\`\`powershell
+Get-History                     # historique
+Get-Command python               # trouver un programme
+Get-Help Get-ChildItem          # aide détaillée
+Clear-Host                      # effacer l'écran
+Invoke-Item .                   # ouvrir dans l'Explorateur
+code .                          # ouvrir VS Code
+\`\`\`
+
+## Gérer les processus
+
+**macOS/Linux :**
+\`\`\`bash
+ps aux                          # lister les processus
+kill 1234                       # arrêter un processus (par son PID)
+top                             # moniteur de processus interactif
+\`\`\`
+
+**Windows :**
+\`\`\`cmd
+tasklist                        :: lister les processus
+taskkill /PID 1234 /F           :: arrêter un processus
+\`\`\`
+
+**PowerShell :**
+\`\`\`powershell
+Get-Process                     # lister les processus
+Stop-Process -Id 1234           # arrêter un processus
+\`\`\`
+
+## Mémo final
+
+> **La règle d'or** : si tu ne sais pas ce que fait une commande, utilise \`man commande\` (macOS/Linux) ou \`Get-Help commande\` (PowerShell) avant de l'exécuter.`
       }
     ]
   }
