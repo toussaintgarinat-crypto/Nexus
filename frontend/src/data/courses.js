@@ -5248,4 +5248,1111 @@ const inputRef = useRef<HTMLInputElement>(null);
       }
     ]
   }
+,
+  {
+    id: "bases-de-donnees-sql",
+    emoji: "🗃️",
+    title: "Bases de données relationnelles",
+    description: "SQL, transactions ACID et modélisation des données",
+    level: "Débutant",
+    color: "#2563EB",
+    lessons: [
+      {
+        id: "bdd-relationnelle-concepts",
+        title: "Comment fonctionne une base relationnelle",
+        duration: "14 min",
+        content: `# Comment fonctionne une base de données relationnelle
+
+Une base de données **relationnelle** organise les données en **tables** liées entre elles par des références. C'est le modèle dominant depuis 50 ans.
+
+## Le modèle relationnel
+
+\`\`\`
+Table "utilisateurs" :
+┌────┬──────────────┬───────────────────┐
+│ id │ nom          │ email             │
+├────┼──────────────┼───────────────────┤
+│  1 │ Alice Dupont │ alice@example.com │
+│  2 │ Bob Martin   │ bob@example.com   │
+└────┴──────────────┴───────────────────┘
+
+Table "commandes" :
+┌────┬─────────────┬──────────┬──────────┐
+│ id │ user_id     │ total    │ statut   │
+├────┼─────────────┼──────────┼──────────┤
+│  1 │     1       │  89.90€  │ livré    │  ← appartient à Alice
+│  2 │     1       │  45.00€  │ en cours │  ← appartient à Alice
+│  3 │     2       │ 120.00€  │ livré    │  ← appartient à Bob
+└────┴─────────────┴──────────┴──────────┘
+
+user_id est une CLEF ÉTRANGÈRE → pointe vers utilisateurs.id
+\`\`\`
+
+## Clef primaire et clef étrangère
+
+\`\`\`sql
+CREATE TABLE utilisateurs (
+    id    SERIAL PRIMARY KEY,        -- unique, identifie chaque ligne
+    email VARCHAR(255) UNIQUE NOT NULL,
+    nom   VARCHAR(100) NOT NULL
+);
+
+CREATE TABLE commandes (
+    id             SERIAL PRIMARY KEY,
+    utilisateur_id INTEGER NOT NULL REFERENCES utilisateurs(id),
+    -- ↑ garantit qu'on ne peut pas mettre un user_id inexistant
+    total          DECIMAL(10,2) NOT NULL,
+    créé_le        TIMESTAMP DEFAULT NOW()
+);
+
+-- Comportement à la suppression d'un user :
+-- ON DELETE CASCADE   → supprime aussi ses commandes
+-- ON DELETE RESTRICT  → interdit la suppression (défaut)
+-- ON DELETE SET NULL  → met la colonne à NULL
+\`\`\`
+
+## Les propriétés ACID
+
+\`\`\`
+A — Atomicité
+Une transaction réussit en entier ou échoue en entier.
+
+BEGIN;
+  UPDATE comptes SET solde = solde - 500 WHERE id = 1;
+  UPDATE comptes SET solde = solde + 500 WHERE id = 2;
+COMMIT;
+-- Si la 2e requête plante → ROLLBACK automatique des deux
+-- Impossible d'avoir l'argent débité sans être crédité
+
+C — Cohérence
+La DB passe d'un état valide à un autre état valide.
+Les contraintes (UNIQUE, NOT NULL, FK) sont toujours respectées.
+
+I — Isolation
+Les transactions concurrentes ne se voient pas pendant leur exécution.
+2 personnes réservent le dernier billet en même temps :
+→ l'une réussit, l'autre obtient une erreur. Pas de double réservation.
+
+D — Durabilité
+Une fois COMMIT, les données sont sauvegardées même si le serveur plante.
+Écrit sur disque avec un WAL (Write-Ahead Log) avant de confirmer.
+\`\`\`
+
+## Normalisation vs Dénormalisation
+
+\`\`\`
+Normalisation (éviter la redondance) :
+→ Chaque info stockée UNE seule fois → intégrité garantie
+→ Plus de JOINs nécessaires
+
+Dénormalisation (dupliquer pour la performance) :
+→ Copier des données dans plusieurs tables
+→ Évite les JOINs coûteux
+→ Risque d'incohérence si mal géré
+
+Exemple dénormalisé :
+commandes.nom_client = "Alice Dupont"  ← copié depuis users
+→ Si Alice change de nom → doit mettre à jour partout
+
+Règle : normaliser par défaut, dénormaliser seulement si
+performances insuffisantes et mesurées.
+\`\`\``
+      },
+      {
+        id: "bdd-index-avances",
+        title: "Index avancés et optimisation",
+        duration: "14 min",
+        content: `# Index avancés et optimisation
+
+## Comment fonctionne un index
+
+\`\`\`
+Sans index — Seq Scan :
+"Trouver email = 'alice@example.com'"
+→ Lire CHAQUE ligne une par une → 1 000 000 lectures
+→ O(n) : très lent sur grandes tables
+
+Avec index B-Tree :
+Structure en arbre équilibré :
+          [M]
+        /     \
+    [E-L]     [N-Z]
+    /   \      /   \
+[A-D][E-L] [N-S] [T-Z]
+
+→ Descend l'arbre → ~20 comparaisons
+→ O(log n) : quasi-instantané
+\`\`\`
+
+## Types d'index PostgreSQL
+
+\`\`\`sql
+-- B-Tree (défaut) : pour =, <, >, BETWEEN, ORDER BY
+CREATE INDEX idx_users_email ON utilisateurs(email);
+
+-- Index composite : plusieurs colonnes
+CREATE INDEX idx_commandes_user_date ON commandes(utilisateur_id, créé_le DESC);
+-- Optimise : WHERE utilisateur_id = X ORDER BY créé_le DESC
+
+-- Index partiel : seulement un sous-ensemble
+CREATE INDEX idx_commandes_actives ON commandes(statut, créé_le)
+WHERE statut IN ('en_attente', 'en_cours');
+-- Plus petit, plus rapide, pertinent si peu de commandes actives
+
+-- GIN : pour tableaux, JSONB, full-text search
+CREATE INDEX idx_articles_tags ON articles USING gin(tags);
+
+-- Index CONCURRENTLY : sans bloquer la table
+CREATE INDEX CONCURRENTLY idx_users_nom ON utilisateurs(nom);
+\`\`\`
+
+## EXPLAIN ANALYZE : comprendre l'exécution
+
+\`\`\`sql
+EXPLAIN ANALYZE
+SELECT u.nom, COUNT(c.id) as nb_commandes
+FROM utilisateurs u
+LEFT JOIN commandes c ON c.utilisateur_id = u.id
+WHERE u.créé_le > '2024-01-01'
+GROUP BY u.id;
+
+-- Mots-clés à surveiller :
+-- "Seq Scan" sur grande table → envisager un index
+-- "Index Scan" → bien, utilise l'index
+-- actual time >> cost → statistiques obsolètes (lancer ANALYZE)
+\`\`\`
+
+## Le problème N+1
+
+\`\`\`sql
+-- ❌ N+1 : 1 requête pour les users + 1 PAR USER
+SELECT * FROM utilisateurs;
+-- Pour chaque user :
+SELECT * FROM commandes WHERE utilisateur_id = $1;
+-- 100 users = 101 requêtes !
+
+-- ✅ JOIN : tout en une requête
+SELECT
+    u.id, u.nom,
+    COUNT(c.id)  AS nb_commandes,
+    SUM(c.total) AS total_dépensé
+FROM utilisateurs u
+LEFT JOIN commandes c ON c.utilisateur_id = u.id
+GROUP BY u.id, u.nom;
+
+-- ✅ CTE : lisible et réutilisable
+WITH stats_commandes AS (
+    SELECT utilisateur_id, COUNT(*) AS nb, SUM(total) AS total
+    FROM commandes
+    WHERE créé_le > NOW() - INTERVAL '30 days'
+    GROUP BY utilisateur_id
+)
+SELECT u.nom, u.email, s.nb, s.total
+FROM utilisateurs u
+JOIN stats_commandes s ON s.utilisateur_id = u.id
+WHERE s.total > 1000
+ORDER BY s.total DESC;
+\`\`\``
+      }
+    ]
+  },
+  {
+    id: "postgresql-avance",
+    emoji: "🐘",
+    title: "PostgreSQL en profondeur",
+    description: "JSONB, full-text search, performance et fonctions avancées",
+    level: "Intermédiaire",
+    color: "#336791",
+    lessons: [
+      {
+        id: "postgresql-jsonb",
+        title: "JSONB et fonctionnalités uniques",
+        duration: "15 min",
+        content: `# Ce qui rend PostgreSQL unique
+
+PostgreSQL est bien plus qu'une base SQL standard. Il combine le meilleur du relationnel et du NoSQL.
+
+## JSONB : SQL + NoSQL en un seul outil
+
+\`\`\`sql
+CREATE TABLE produits (
+    id        SERIAL PRIMARY KEY,
+    nom       VARCHAR(200) NOT NULL,
+    prix      DECIMAL(10,2),
+    attributs JSONB  -- données semi-structurées
+);
+
+INSERT INTO produits (nom, prix, attributs) VALUES
+('MacBook Pro', 2499, '{"ram": 16, "stockage": 512, "processeur": "M3", "ports": ["USB-C","MagSafe"]}'),
+('T-shirt',     29.99, '{"tailles": ["S","M","L","XL"], "couleur": "noir", "matière": "coton"}');
+
+-- Accéder aux champs JSON
+SELECT nom, attributs->>'couleur' AS couleur
+FROM produits WHERE attributs->>'couleur' = 'noir';
+
+-- Opérateurs JSONB :
+attributs->'tailles'         → JSON : ["S","M","L","XL"]
+attributs->>'couleur'        → texte : "noir"
+attributs @> '{"ram": 16}'  → contient ce JSON ?
+attributs ? 'couleur'        → la clef existe ?
+
+-- Index GIN → requêtes JSON ultra rapides
+CREATE INDEX idx_produits_attrs ON produits USING gin(attributs);
+
+-- Trouver tous les produits avec taille "M"
+SELECT nom FROM produits
+WHERE attributs->'tailles' @> '"M"';
+\`\`\`
+
+## Full-Text Search intégré
+
+\`\`\`sql
+-- Ajouter une colonne de recherche
+ALTER TABLE articles ADD COLUMN search_vector tsvector;
+
+-- Remplir le vecteur (en français)
+UPDATE articles SET search_vector =
+    to_tsvector('french', COALESCE(titre,'') || ' ' || COALESCE(contenu,''));
+
+-- Index GIN pour la recherche
+CREATE INDEX idx_articles_fts ON articles USING gin(search_vector);
+
+-- Trigger pour mettre à jour automatiquement
+CREATE TRIGGER articles_search_update
+BEFORE INSERT OR UPDATE ON articles
+FOR EACH ROW EXECUTE FUNCTION
+tsvector_update_trigger(search_vector, 'pg_catalog.french', titre, contenu);
+
+-- Recherche avec score de pertinence
+SELECT titre, ts_rank(search_vector, query) AS pertinence
+FROM articles, to_tsquery('french', 'python & performance') query
+WHERE search_vector @@ query
+ORDER BY pertinence DESC;
+
+-- Extraits avec mots en surbrillance
+SELECT titre,
+    ts_headline('french', contenu, to_tsquery('french', 'python')) AS extrait
+FROM articles
+WHERE search_vector @@ to_tsquery('french', 'python');
+\`\`\`
+
+## Window Functions
+
+\`\`\`sql
+-- Rang des clients par dépenses
+SELECT
+    nom, total_dépensé,
+    RANK() OVER (ORDER BY total_dépensé DESC) AS rang,
+    NTILE(4) OVER (ORDER BY total_dépensé DESC) AS quartile
+FROM clients;
+
+-- Croissance mois par mois
+SELECT
+    mois, ventes,
+    LAG(ventes) OVER (ORDER BY mois) AS mois_précédent,
+    ventes - LAG(ventes) OVER (ORDER BY mois) AS variation,
+    SUM(ventes) OVER (ORDER BY mois) AS cumul
+FROM ventes_mensuelles;
+
+-- Comparer chaque commande à la moyenne de l'utilisateur
+SELECT
+    utilisateur_id, id, total,
+    AVG(total) OVER (PARTITION BY utilisateur_id) AS moyenne_user,
+    total - AVG(total) OVER (PARTITION BY utilisateur_id) AS écart
+FROM commandes;
+\`\`\`
+
+## Extensions incontournables
+
+\`\`\`sql
+-- pgvector : embeddings pour l'IA (RAG, similarité sémantique)
+CREATE EXTENSION vector;
+ALTER TABLE documents ADD COLUMN embedding vector(1536);
+SELECT contenu FROM documents
+ORDER BY embedding <=> '[0.1, 0.2, ...]'::vector  -- cosine distance
+LIMIT 5;
+
+-- uuid-ossp : générer des UUIDs
+CREATE EXTENSION "uuid-ossp";
+ALTER TABLE sessions ADD COLUMN token UUID DEFAULT uuid_generate_v4();
+
+-- PostGIS : données géographiques
+CREATE EXTENSION postgis;
+-- Restaurants dans 1km autour de Paris
+SELECT nom FROM restaurants
+WHERE ST_DWithin(position, ST_MakePoint(2.3522, 48.8566)::geography, 1000);
+
+-- pg_cron : jobs planifiés dans la DB
+SELECT cron.schedule('0 3 * * *',
+    'DELETE FROM sessions WHERE expire_le < NOW()');
+\`\`\``
+      },
+      {
+        id: "postgresql-performance",
+        title: "Performance et configuration",
+        duration: "13 min",
+        content: `# Performance et configuration PostgreSQL
+
+## Paramètres essentiels (postgresql.conf)
+
+\`\`\`
+# Mémoire (règle : ~25% de la RAM pour shared_buffers)
+shared_buffers = 2GB            # buffer pool (défaut 128MB, trop petit !)
+work_mem = 64MB                 # mémoire par tri/hash (défaut 4MB)
+maintenance_work_mem = 512MB    # pour VACUUM, CREATE INDEX
+effective_cache_size = 6GB      # estimation cache OS (info planificateur)
+
+# WAL (Write-Ahead Log)
+wal_buffers = 64MB
+checkpoint_completion_target = 0.9  # écriture progressive
+
+# Connexions
+max_connections = 100            # chaque connexion ≈ 5MB RAM
+# → utiliser PgBouncer (connection pooler) plutôt qu'augmenter
+
+# Autovacuum
+autovacuum = on                 # ne jamais désactiver !
+autovacuum_vacuum_scale_factor = 0.02  # déclenche si 2% de lignes mortes
+\`\`\`
+
+## MVCC et VACUUM : pourquoi PostgreSQL a besoin de nettoyage
+
+\`\`\`
+MVCC (Multi-Version Concurrency Control) :
+PostgreSQL ne supprime jamais vraiment les lignes mises à jour.
+→ UPDATE = INSERT nouvelle version + marquer l'ancienne comme "morte"
+→ DELETE = marquer la ligne comme "morte"
+
+Pourquoi ?
+Transaction A lit pendant que Transaction B modifie la même ligne
+→ A voit l'ancienne version, B voit la nouvelle
+→ Pas de lock en lecture → concurrence maximale
+
+Conséquence : les "dead tuples" s'accumulent → table grossit (bloat)
+
+VACUUM : nettoie les dead tuples
+VACUUM ANALYZE : nettoie + met à jour les statistiques du planificateur
+
+-- Voir l'état des tables
+SELECT
+    relname AS table,
+    n_live_tup AS vivantes,
+    n_dead_tup AS mortes,
+    last_autovacuum,
+    pg_size_pretty(pg_total_relation_size(relid)) AS taille
+FROM pg_stat_user_tables
+ORDER BY n_dead_tup DESC;
+\`\`\`
+
+## Surveillance
+
+\`\`\`sql
+-- Top 10 des requêtes les plus lentes (extension pg_stat_statements)
+SELECT
+    LEFT(query, 80) AS requête,
+    calls AS appels,
+    ROUND(mean_exec_time::numeric, 2) AS temps_moyen_ms
+FROM pg_stat_statements
+ORDER BY mean_exec_time DESC
+LIMIT 10;
+
+-- Index inutilisés (occupent de l'espace, ralentissent les écritures)
+SELECT indexrelname AS index, idx_scan AS nb_utilisations
+FROM pg_stat_user_indexes
+WHERE idx_scan = 0
+ORDER BY pg_relation_size(indexrelid) DESC;
+
+-- Taille des tables
+SELECT
+    tablename,
+    pg_size_pretty(pg_table_size(schemaname||'.'||tablename)) AS données,
+    pg_size_pretty(pg_indexes_size(schemaname||'.'||tablename)) AS index
+FROM pg_tables WHERE schemaname = 'public'
+ORDER BY pg_total_relation_size(schemaname||'.'||tablename) DESC;
+\`\`\`
+
+## Partitionnement : gérer les très grandes tables
+
+\`\`\`sql
+-- Pour les tables avec des centaines de millions de lignes
+CREATE TABLE logs (
+    id         BIGSERIAL,
+    message    TEXT,
+    créé_le    TIMESTAMP NOT NULL
+) PARTITION BY RANGE (créé_le);
+
+CREATE TABLE logs_2024_01 PARTITION OF logs
+    FOR VALUES FROM ('2024-01-01') TO ('2024-02-01');
+
+CREATE TABLE logs_2024_02 PARTITION OF logs
+    FOR VALUES FROM ('2024-02-01') TO ('2024-03-01');
+
+-- PostgreSQL route automatiquement INSERT et SELECT vers la bonne partition
+-- Supprimer 1 mois de logs instantanément :
+DROP TABLE logs_2024_01;  -- millisecondes, peu importe le volume !
+\`\`\``
+      }
+    ]
+  },
+  {
+    id: "nosql-mongodb",
+    emoji: "🍃",
+    title: "MongoDB",
+    description: "Base de données orientée documents, schéma flexible",
+    level: "Intermédiaire",
+    color: "#47A248",
+    lessons: [
+      {
+        id: "mongodb-concepts",
+        title: "Concepts et modélisation",
+        duration: "15 min",
+        content: `# MongoDB : base de données orientée documents
+
+MongoDB stocke les données sous forme de **documents JSON** regroupés dans des **collections**.
+
+## SQL vs MongoDB : vocabulaire
+
+\`\`\`
+SQL              MongoDB
+─────────────    ────────────────────
+Base de données = Base de données
+Table           = Collection
+Ligne           = Document
+Colonne         = Champ (field)
+JOIN            = $lookup ou embedded
+Schéma fixe     = Schéma flexible
+\`\`\`
+
+## Structure d'un document
+
+\`\`\`json
+{
+  "_id": ObjectId("65a1b2c3d4e5f6a7b8c9d0e1"),
+  "nom": "MacBook Pro 14",
+  "prix": 2499.99,
+  "catégorie": "informatique",
+  "attributs": {
+    "processeur": "M3 Pro",
+    "ram": 18,
+    "couleurs": ["Noir Sidéral", "Argent"]
+  },
+  "tags": ["apple", "laptop", "pro"],
+  "avis": [
+    { "auteur": "Alice", "note": 5, "commentaire": "Excellent !" },
+    { "auteur": "Bob",   "note": 4, "commentaire": "Très bien mais cher" }
+  ]
+}
+\`\`\`
+
+## Embedding vs Referencing
+
+\`\`\`
+Embedding (sous-documents intégrés) :
+✅ Utilise si les données sont toujours lues ensemble
+✅ Peu de sous-documents (< quelques dizaines)
+✅ Les sous-documents changent rarement
+
+// Bon exemple : articles d'une commande
+{
+  "_id": ...,
+  "articles": [
+    { "nom": "T-shirt", "prix": 29.99, "quantite": 2 },
+    { "nom": "Jean",    "prix": 79.99, "quantite": 1 }
+  ]
+}
+
+Referencing (stocker des IDs) :
+✅ Utilise si les données sont souvent modifiées
+✅ Données partagées entre plusieurs documents
+✅ Sous-documents volumineux
+
+// Bon exemple : auteur d'un article (modifié souvent)
+{
+  "_id": ...,
+  "titre": "Mon article",
+  "auteur_id": ObjectId("...")  ← référence vers users
+}
+\`\`\`
+
+## CRUD avec Python (Motor async)
+
+\`\`\`python
+from motor.motor_asyncio import AsyncIOMotorClient
+from bson import ObjectId
+
+client = AsyncIOMotorClient("mongodb://localhost:27017")
+db = client.nexus_db
+
+# INSERT
+await db.produits.insert_one({"nom": "T-shirt", "prix": 29.99, "tailles": ["S","M","L"]})
+
+# FIND
+produit = await db.produits.find_one({"_id": ObjectId("...")})
+curseur  = db.produits.find({"prix": {"$lt": 50}})
+résultats = await curseur.sort("prix", 1).limit(10).to_list(10)
+
+# UPDATE
+await db.produits.update_one(
+    {"_id": ObjectId("...")},
+    {
+        "$set":   {"prix": 34.99},
+        "$inc":   {"stock": -1},
+        "$push":  {"tags": "promo"},
+        "$pull":  {"tags": "hors-saison"}
+    }
+)
+
+# DELETE
+await db.produits.delete_one({"_id": ObjectId("...")})
+\`\`\`
+
+## Filtres courants
+
+\`\`\`javascript
+{"prix": {"$gt": 100}}           // > 100
+{"prix": {"$gte": 100}}          // >= 100
+{"statut": {"$ne": "archivé"}}   // != "archivé"
+{"catégorie": {"$in": ["A","B"]}} // dans la liste
+{"$or": [{"cat": "A"}, {"cat": "B"}]}
+{"tags": "promo"}                // tableau contient "promo"
+{"tailles": {"$all": ["S","M"]}} // tableau contient tous les éléments
+{"attributs.ram": {"$gte": 16}}  // champ imbriqué (dot notation)
+\`\`\``
+      },
+      {
+        id: "mongodb-aggregation",
+        title: "Aggregation Pipeline et cas d'usage",
+        duration: "13 min",
+        content: `# Aggregation Pipeline MongoDB
+
+## Comment fonctionne le pipeline
+
+Les documents passent à travers des étapes de traitement, comme une chaîne de montage.
+
+\`\`\`javascript
+// Statistiques de ventes par catégorie ce mois
+await db.commandes.aggregate([
+  // 1. Filtrer (comme WHERE)
+  { $match: { créé_le: { $gte: new Date("2024-01-01") }, statut: "livré" }},
+
+  // 2. Dérouler le tableau d'articles
+  { $unwind: "$articles" },
+
+  // 3. Regrouper et calculer (comme GROUP BY)
+  { $group: {
+      _id: "$articles.catégorie",
+      nb_ventes: { $sum: "$articles.quantite" },
+      chiffre_affaires: { $sum: { $multiply: ["$articles.prix", "$articles.quantite"] }},
+      prix_moyen: { $avg: "$articles.prix" }
+  }},
+
+  // 4. Trier (comme ORDER BY)
+  { $sort: { chiffre_affaires: -1 } },
+
+  // 5. Limiter
+  { $limit: 10 },
+
+  // 6. Renommer les champs
+  { $project: { catégorie: "$_id", nb_ventes: 1, chiffre_affaires: 1, _id: 0 }}
+]).toArray();
+\`\`\`
+
+## $lookup : jointure entre collections
+
+\`\`\`javascript
+await db.commandes.aggregate([
+  { $match: { statut: "en_attente" } },
+  { $lookup: {
+      from: "clients",
+      localField: "client_id",
+      foreignField: "_id",
+      as: "client"
+  }},
+  { $unwind: "$client" },
+  { $project: { "client.email": 1, "client.nom": 1, total: 1 }}
+]).toArray();
+\`\`\`
+
+## Index MongoDB
+
+\`\`\`javascript
+// Index simple
+await db.utilisateurs.createIndex({ email: 1 }, { unique: true })
+
+// Index composé
+await db.commandes.createIndex({ client_id: 1, créé_le: -1 })
+
+// Index sur champ imbriqué
+await db.produits.createIndex({ "attributs.ram": 1 })
+
+// Index full-text
+await db.articles.createIndex({ titre: "text", contenu: "text" })
+await db.articles.find({ $text: { $search: "javascript performance" } })
+
+// Index TTL : suppression automatique
+await db.sessions.createIndex(
+    { créé_le: 1 },
+    { expireAfterSeconds: 86400 }  // supprime après 24h
+)
+
+// Analyser une requête
+await db.commandes.find({ client_id: "..." }).explain("executionStats")
+// Chercher "COLLSCAN" (à éviter) vs "IXSCAN" (bon)
+\`\`\`
+
+## Quand choisir MongoDB vs PostgreSQL
+
+\`\`\`
+MongoDB excelle pour :
+✅ Données avec schéma vraiment variable (attributs produits)
+✅ Données hiérarchiques naturellement (profils, configurations)
+✅ Prototypage rapide (pas de migrations)
+✅ Documents volumineux avec peu de relations
+
+PostgreSQL est souvent meilleur pour :
+✅ Données relationnelles (beaucoup de JOINs)
+✅ Transactions multi-tables complexes
+✅ Intégrité des données critique
+✅ Requêtes analytiques complexes
+✅ Données JSONB (PostgreSQL le fait aussi très bien !)
+
+Idées reçues à corriger :
+"MongoDB est plus rapide" → FAUX, ça dépend du cas d'usage
+"MongoDB scale mieux"     → PostgreSQL scale très bien avec replicas
+"MongoDB = sans schéma"   → On DEVRAIT valider le schéma en prod
+\`\`\``
+      }
+    ]
+  },
+  {
+    id: "nosql-redis",
+    emoji: "⚡",
+    title: "Redis",
+    description: "Cache, structures de données et messagerie en mémoire",
+    level: "Intermédiaire",
+    color: "#DC382D",
+    lessons: [
+      {
+        id: "redis-structures",
+        title: "Structures de données et commandes",
+        duration: "14 min",
+        content: `# Redis : la base de données en mémoire
+
+Redis stocke tout en **RAM** → ~100 000 opérations/seconde, lectures en < 1ms.
+
+## Les 5 structures de données
+
+### String : clef → valeur simple
+
+\`\`\`bash
+SET  user:42:email "alice@example.com"
+GET  user:42:email              # "alice@example.com"
+SETEX session:abc 3600 "user=42" # valeur avec TTL 1h
+TTL  session:abc                # temps restant en secondes
+INCR page:accueil:vues          # incrémenter (atomique)
+INCRBY stats:clics 10           # incrémenter de N
+\`\`\`
+
+### Hash : objet structuré
+
+\`\`\`bash
+HSET    user:42 nom "Alice" email "alice@ex.com" role "admin"
+HGET    user:42 email       # "alice@ex.com"
+HGETALL user:42             # tous les champs
+HINCRBY user:42 points 100  # incrémenter un champ numérique
+\`\`\`
+
+### List : file / historique ordonné
+
+\`\`\`bash
+# File FIFO
+RPUSH queue:emails "email1" "email2"  # ajouter à droite
+LPOP  queue:emails                    # retirer à gauche
+
+# Garder les 100 derniers éléments
+LPUSH feed:user:42 "post:123"
+LTRIM feed:user:42 0 99    # garder seulement les 100 premiers
+LRANGE feed:user:42 0 9    # lire les 10 premiers
+\`\`\`
+
+### Set : ensemble sans doublons
+
+\`\`\`bash
+SADD     online:users "user:42" "user:17"
+SREM     online:users "user:17"
+SISMEMBER online:users "user:42"  # membre ? → 1
+SCARD    online:users              # combien de membres ?
+
+# Opérations ensemblistes
+SINTER abonnés:alice abonnés:bob  # amis en commun
+SUNION tags:art1 tags:art2         # tous les tags
+\`\`\`
+
+### Sorted Set : ensemble trié par score
+
+\`\`\`bash
+ZADD    leaderboard 9500 "alice"
+ZADD    leaderboard 12000 "claire"
+ZINCRBY leaderboard 500 "alice"   # +500 points
+ZRANGE  leaderboard 0 9 WITHSCORES REV  # top 10
+ZRANK   leaderboard "alice"        # position (0-indexé)
+
+# Articles les plus vus
+ZINCRBY populaires 1 "article:42"
+ZRANGE  populaires 0 4 WITHSCORES REV  # top 5
+\`\`\``
+      },
+      {
+        id: "redis-patterns",
+        title: "Patterns avancés : cache, rate limit, locks",
+        duration: "14 min",
+        content: `# Patterns Redis avancés
+
+## Cache avec invalidation
+
+\`\`\`python
+import redis, json
+r = redis.Redis(host='localhost', decode_responses=True)
+
+def mettre_en_cache(clef: str, ttl: int = 300):
+    def décorateur(func):
+        async def wrapper(*args, **kwargs):
+            # Cache HIT ?
+            en_cache = r.get(clef.format(*args))
+            if en_cache:
+                return json.loads(en_cache)
+
+            # Cache MISS → exécuter la fonction
+            résultat = await func(*args, **kwargs)
+            r.setex(clef.format(*args), ttl, json.dumps(résultat, default=str))
+            return résultat
+        return wrapper
+    return décorateur
+
+@mettre_en_cache("user:{0}", ttl=600)
+async def get_utilisateur(user_id: int):
+    return await db.execute("SELECT * FROM users WHERE id = $1", user_id)
+
+# Invalider quand les données changent
+async def mettre_a_jour_user(user_id, données):
+    await db.execute("UPDATE users SET ...", user_id)
+    r.delete(f"user:{user_id}")  # ← invalider le cache
+\`\`\`
+
+## Rate Limiting (sliding window)
+
+\`\`\`python
+import time
+
+def vérifier_rate_limit(user_id: str, max_req: int = 100, fenêtre: int = 60) -> bool:
+    clef = f"ratelimit:{user_id}"
+    maintenant = time.time()
+
+    pipeline = r.pipeline()
+    pipeline.zremrangebyscore(clef, 0, maintenant - fenêtre)  # supprimer anciens
+    pipeline.zadd(clef, {str(maintenant): maintenant})         # ajouter maintenant
+    pipeline.zcard(clef)                                        # compter
+    pipeline.expire(clef, fenêtre)
+    résultats = pipeline.execute()
+
+    return résultats[2] <= max_req  # True = autorisé
+
+# Dans FastAPI
+@app.post("/api/chat")
+async def chat(...):
+    if not vérifier_rate_limit(str(current_user.id), max_req=10, fenêtre=60):
+        raise HTTPException(429, "Trop de requêtes, réessaie dans 1 minute")
+\`\`\`
+
+## Pub/Sub : messagerie temps réel
+
+\`\`\`python
+# Publier un événement
+r.publish("notifications:user:42", json.dumps({
+    "type": "nouveau_message",
+    "de": "Bob",
+    "aperçu": "Salut !"
+}))
+
+# S'abonner et écouter
+pubsub = r.pubsub()
+pubsub.subscribe("notifications:user:42")
+for message in pubsub.listen():
+    if message["type"] == "message":
+        données = json.loads(message["data"])
+        await ws_manager.send(user_id=42, data=données)
+\`\`\`
+
+## Distributed Lock : verrou entre serveurs
+
+\`\`\`python
+import uuid
+
+def acquérir_verrou(ressource: str, ttl: int = 30) -> str | None:
+    verrou_id = str(uuid.uuid4())
+    # SET NX = seulement si n'existe pas (atomique)
+    acquis = r.set(f"lock:{ressource}", verrou_id, nx=True, ex=ttl)
+    return verrou_id if acquis else None
+
+def libérer_verrou(ressource: str, verrou_id: str):
+    # Lua script pour vérifier et supprimer atomiquement
+    script = """
+    if redis.call("get", KEYS[1]) == ARGV[1] then
+        return redis.call("del", KEYS[1])
+    end
+    return 0
+    """
+    r.eval(script, 1, f"lock:{ressource}", verrou_id)
+
+# Usage : éviter que 2 serveurs traitent la même tâche
+verrou = acquérir_verrou("facture:42", ttl=30)
+if verrou:
+    try:
+        traiter_facture(42)
+    finally:
+        libérer_verrou("facture:42", verrou)
+\`\`\`
+
+## Persistance Redis
+
+\`\`\`
+RDB (snapshots périodiques) :
+→ Sauvegarde sur disque toutes les N minutes
+→ Perd les données depuis le dernier snapshot
+→ Parfait pour le cache (la perte est acceptable)
+
+AOF (Append Only File) :
+→ Toutes les écritures loggées sur disque
+→ Perte < 1 seconde en général
+→ Pour les données importantes (sessions, queues)
+
+Recommandation :
+- Cache pur → pas de persistance ou RDB
+- Queues/sessions → AOF
+- Données critiques → PostgreSQL, Redis en complément
+\`\`\``
+      }
+    ]
+  },
+  {
+    id: "choisir-base-donnees",
+    emoji: "🧭",
+    title: "Choisir sa base de données",
+    description: "Panorama complet et guide de décision",
+    level: "Intermédiaire",
+    color: "#7C3AED",
+    lessons: [
+      {
+        id: "panorama-bdd",
+        title: "Panorama des bases de données",
+        duration: "15 min",
+        content: `# Panorama complet des bases de données
+
+Il existe de nombreuses familles de bases de données, chacune optimisée pour un cas d'usage.
+
+## Les grandes familles
+
+\`\`\`
+1. RELATIONNEL (SQL)
+   PostgreSQL, MySQL, SQLite, SQL Server
+   → Tables avec lignes et colonnes, schéma fixe
+   → Force : intégrité, transactions ACID, requêtes complexes
+   → Usage : 80-90% des applications
+
+2. DOCUMENT
+   MongoDB, CouchDB, Firestore
+   → Documents JSON imbriqués, schéma flexible
+   → Force : données hiérarchiques, évolution rapide du schéma
+   → Usage : catalogues, CMS, profils utilisateurs
+
+3. CLÉ-VALEUR
+   Redis, DynamoDB, Memcached
+   → Ultra simple, tout en RAM
+   → Force : vitesse extrême (<1ms)
+   → Usage : cache, sessions, rate limiting, real-time
+
+4. COLONNE (Wide-Column)
+   Apache Cassandra, ScyllaDB
+   → Distribué, haute disponibilité
+   → Force : écriture massive à grande échelle
+   → Usage : IoT, logs, Netflix/Instagram à des milliards de lignes
+
+5. GRAPHE
+   Neo4j, Amazon Neptune
+   → Nœuds et relations
+   → Force : requêtes de relations complexes
+   → Usage : réseaux sociaux, détection de fraude, recommandations
+
+6. SÉRIE TEMPORELLE
+   InfluxDB, TimescaleDB (extension PostgreSQL), Prometheus
+   → Optimisé pour données chronologiques
+   → Force : compression, requêtes temporelles, agrégations
+   → Usage : métriques serveur, IoT, monitoring
+
+7. MOTEUR DE RECHERCHE
+   Elasticsearch, Meilisearch, Typesense
+   → Index inversé pour la recherche textuelle
+   → Force : fuzzy search, facettes, pertinence
+   → Usage : barre de recherche, logs (ELK Stack)
+\`\`\`
+
+## Comparatif détaillé
+
+\`\`\`
+PostgreSQL :
+→ Meilleure DB open-source toutes catégories
+→ JSONB, full-text search, extensions (pgvector, PostGIS...)
+→ Très fiable, excellentes performances
+→ À choisir par défaut pour 90% des projets
+
+MySQL / MariaDB :
+→ Plus simple que PostgreSQL
+→ Très répandu (WordPress, Drupal)
+→ Moins de fonctionnalités avancées
+→ Bon pour les apps simples, stack LAMP
+
+SQLite :
+→ Base de données dans UN fichier, sans serveur
+→ Parfait : apps mobiles, prototypes, tests, électronique embarquée
+→ Pas adapté à plusieurs utilisateurs simultanés
+→ Utilisé par iOS, Android, Firefox, Chrome en interne
+
+MongoDB :
+→ Meilleur choix NoSQL document
+→ Aggregation pipeline puissant
+→ Pertinent si les données sont vraiment variables/hiérarchiques
+
+Redis :
+→ Incontournable pour le cache et le temps-réel
+→ Utilisé EN COMPLÉMENT d'une DB principale
+→ Pas pour les données critiques (RAM)
+
+Elasticsearch :
+→ N°1 pour la recherche full-text avancée
+→ Utilisé avec PostgreSQL : la DB principale stocke, ES indexe
+→ Complexe à opérer → Meilisearch/Typesense pour petits projets
+
+Cassandra :
+→ Volumes ÉNORMES (pétaoctets), multi-région
+→ Overkill pour < 500M lignes
+→ Pas de JOINs, requêtes limitées, mais écriture ultra-rapide
+\`\`\``
+      },
+      {
+        id: "guide-choix-bdd",
+        title: "Guide de décision et erreurs à éviter",
+        duration: "15 min",
+        content: `# Guide de décision
+
+## L'arbre de décision
+
+\`\`\`
+Tu démarres un projet ?
+    ↓
+Données très relationnelles (beaucoup de JOINs, intégrité) ?
+    ├── OUI → PostgreSQL  ← choix par défaut, 90% des cas
+    └── NON → Données vraiment hiérarchiques/variables ?
+                  ├── OUI → MongoDB
+                  └── NON → PostgreSQL quand même :)
+
+Besoin de vitesse extrême sur données simples ?
+    → Redis (en complément de ta DB principale)
+
+Besoin de recherche full-text ?
+    → Meilisearch (< 1M docs, simple)
+    → Elasticsearch (gros volumes, fonctionnalités avancées)
+
+Métriques / séries temporelles ?
+    → TimescaleDB (extension PostgreSQL, simple)
+    → InfluxDB (standalone, plus de fonctionnalités)
+
+Relations complexes (graphes) ?
+    → Neo4j
+    → "Amis des amis", "produits souvent achetés ensemble"
+
+Volume > 500M lignes, multi-région, écriture massive ?
+    → DynamoDB (AWS) ou Cassandra
+    → Mais vraiment seulement si tu as ce problème
+\`\`\`
+
+## Architecture polyglotte : plusieurs bases ensemble
+
+\`\`\`
+Architecture courante en production :
+
+Application
+    │
+    ├──► PostgreSQL    (source de vérité, données critiques)
+    │
+    ├──► Redis         (cache + sessions + real-time)
+    │
+    └──► Elasticsearch (recherche full-text)
+
+Flux de données :
+Écriture → PostgreSQL
+Lecture fréquente → Redis (cache invalidé quand PG change)
+Recherche texte → Elasticsearch (synchronisé depuis PG via triggers/CDC)
+
+Exemple réel de stack :
+Supabase (PostgreSQL + Auth + Storage)
++ Upstash Redis (cache, sessions)
++ Meilisearch (recherche)
+= 3 services, gratuits ou très peu chers, couvrent 99% des besoins
+\`\`\`
+
+## Tableau récapitulatif par cas d'usage
+
+\`\`\`
+Cas d'usage               Solution recommandée
+─────────────────────     ──────────────────────────────────────
+Blog / CMS                PostgreSQL
+E-commerce                PostgreSQL + Redis (panier)
+SaaS B2B                  PostgreSQL
+App mobile backend        PostgreSQL ou Supabase (PostgreSQL managé)
+Catalogue produits        PostgreSQL + JSONB (ou MongoDB si très variable)
+Logs applicatifs          Elasticsearch ou Loki
+Métriques serveur         Prometheus + Grafana + TimescaleDB
+Sessions utilisateurs     Redis
+Cache API                 Redis
+Recherche dans l'app      Meilisearch ou Elasticsearch
+Recommandations IA        PostgreSQL + pgvector
+Chat temps réel           Redis Pub/Sub + PostgreSQL (stockage)
+IoT / séries temporelles  InfluxDB ou TimescaleDB
+Fichiers (images, vidéos) S3 ou équivalent (pas une DB !)
+\`\`\`
+
+## Les 5 erreurs classiques
+
+\`\`\`
+1. "MongoDB parce que c'est plus cool que SQL"
+   → Choisir pour la hype, pas l'adéquation
+   → PostgreSQL est le meilleur choix généraliste
+
+2. "On va utiliser Cassandra au cas où ça scale"
+   → Over-engineering extrême
+   → PostgreSQL scale jusqu'à plusieurs téraoctets
+   → Cassandra est très complexe à opérer
+
+3. "Tout dans Redis"
+   → Redis = cache, pas DB principale
+   → Les données RAM se perdent sans persistance configurée
+
+4. "On changera de DB si nécessaire"
+   → Migrer une DB de prod = projet à part entière
+   → Bien choisir dès le début, sans sur-ingénierer
+
+5. "Plus de bases = meilleure architecture"
+   → Chaque base supplémentaire = coût opérationnel
+   → PostgreSQL peut faire le travail de 3-4 autres bases
+     (JSONB ≈ MongoDB, pgvector ≈ Pinecone, full-text ≈ Elasticsearch basique)
+
+Règle d'or :
+Commence avec PostgreSQL seul.
+Ajoute Redis quand tu as un problème de performance mesurable.
+Ajoute Elasticsearch quand la recherche devient vraiment nécessaire.
+N'ajoute Cassandra/Kafka/etc. que si tu as vraiment le problème qu'ils résolvent.
+\`\`\``
+      }
+    ]
+  }
 ];
