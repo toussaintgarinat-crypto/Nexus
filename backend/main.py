@@ -22,6 +22,8 @@ ALLOWED_ORIGINS = [
     "https://nexus-dididev.vercel.app",
     "https://frontend-sable-eta-60.vercel.app",
     "https://nexus-app-dididev.vercel.app",
+    "https://nexus-one-gold.vercel.app",
+    "https://nexus-iota-fawn.vercel.app",
 ]
 
 app.add_middleware(
