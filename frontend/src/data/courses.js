@@ -2239,7 +2239,7 @@ Solutions :
   },
   {
     id: "conception-systeme",
-    category: "Fondamentaux",
+    category: "Architecture",
     emoji: "🎨",
     title: "Conception Système",
     description: "Concevoir des systèmes scalables et robustes",
@@ -2933,7 +2933,7 @@ Access-Control-Allow-Credentials: true  ← avec cookies/tokens
   },
   {
     id: "reseaux-http",
-    category: "DevOps",
+    category: "Backend",
     emoji: "🌍",
     title: "Réseaux & HTTP",
     description: "Comment Internet fonctionne vraiment",
@@ -3956,7 +3956,7 @@ Agent (avec outils) :
   },
   {
     id: "algorithmes",
-    category: "Fondamentaux",
+    category: "Architecture",
     emoji: "🧮",
     title: "Algorithmes & Structures de données",
     description: "Les bases pour écrire du code efficace",
@@ -4159,7 +4159,7 @@ Algorithmes fondamentaux :
   },
   {
     id: "design-patterns",
-    category: "Fondamentaux",
+    category: "Architecture",
     emoji: "🎭",
     title: "Design Patterns",
     description: "Solutions éprouvées aux problèmes récurrents",
@@ -8176,7 +8176,7 @@ Hallucination        → le LLM invente si les chunks n'ont pas la réponse
   // ─── OUTILS ───────────────────────────────────────────────────────────────
   {
     id: "terminal",
-    category: "Outils",
+    category: "Fondamentaux",
     emoji: "💻",
     title: "Terminal & Ligne de commande",
     description: "Maîtrise le terminal sur macOS et Windows",
@@ -8574,6 +8574,1043 @@ Stop-Process -Id 1234           # arrêter un processus
 ## Mémo final
 
 > **La règle d'or** : si tu ne sais pas ce que fait une commande, utilise \`man commande\` (macOS/Linux) ou \`Get-Help commande\` (PowerShell) avant de l'exécuter.`
+      }
+    ]
+  },
+  {
+    id: "machines-virtuelles",
+    category: "Serveurs & Infra",
+    emoji: "💻",
+    title: "Virtualisation & Machines Virtuelles",
+    description: "Comprendre la virtualisation, les hyperviseurs et créer ses propres VMs",
+    level: "Débutant",
+    duration: "3h",
+    lessons: [
+      {
+        id: "vm-intro",
+        title: "Qu'est-ce que la virtualisation ?",
+        duration: "20 min",
+        content: `# Qu'est-ce que la virtualisation ?
+
+La virtualisation permet de faire tourner plusieurs systèmes d'exploitation sur une seule machine physique. C'est la base de toute infrastructure moderne.
+
+## Le problème avant la virtualisation
+
+Avant, chaque service avait son propre serveur physique :
+- 1 serveur = 1 application
+- Gaspillage énorme des ressources (CPU souvent à 10%)
+- Coûts matériels élevés
+- Maintenance complexe
+
+## La solution : la virtualisation
+
+Une **machine virtuelle (VM)** est un ordinateur simulé logiciellement qui :
+- Croit être un vrai ordinateur
+- A son propre OS, disque dur virtuel, réseau
+- Est isolé des autres VMs
+- Peut être sauvegardé, cloné, déplacé
+
+## Les niveaux de virtualisation
+
+\`\`\`
+Niveau 1 (bare metal)
+┌─────────────────────────┐
+│  VM1  │  VM2  │  VM3   │
+├────────────────────────┤
+│      Hyperviseur        │
+├────────────────────────┤
+│    Matériel physique    │
+└─────────────────────────┘
+
+Niveau 2 (hosted)
+┌─────────────────────────┐
+│  VM1  │  VM2  │  VM3   │
+├────────────────────────┤
+│  Logiciel hyperviseur   │
+├────────────────────────┤
+│    OS hôte (Windows)    │
+├────────────────────────┤
+│    Matériel physique    │
+└─────────────────────────┘
+\`\`\`
+
+## Vocabulaire clé
+
+| Terme | Définition |
+|-------|-----------|
+| **Hôte (host)** | La machine physique réelle |
+| **Invité (guest)** | La VM qui tourne sur l'hôte |
+| **Hyperviseur** | Logiciel qui gère les VMs |
+| **Snapshot** | Photo de l'état d'une VM |
+| **Migration live** | Déplacer une VM sans l'éteindre |
+
+> La virtualisation est la fondation du cloud computing. AWS, Azure, Google Cloud — tout repose sur ce principe.`
+      },
+      {
+        id: "vm-hyperviseurs",
+        title: "Types d'hyperviseurs : Type 1 vs Type 2",
+        duration: "25 min",
+        content: `# Types d'hyperviseurs
+
+## Hyperviseur Type 1 — Bare Metal
+
+Installé **directement sur le matériel**, sans OS hôte.
+
+**Exemples :**
+- **VMware ESXi** (entreprise, payant)
+- **Microsoft Hyper-V** (Windows Server)
+- **KVM/QEMU** (Linux, open source)
+- **Proxmox VE** (open source, basé sur KVM)
+- **XenServer**
+
+**Avantages :**
+- Performances optimales (accès direct au matériel)
+- Plus stable et sécurisé
+- Idéal pour la production
+
+**Inconvénients :**
+- Pas d'interface graphique habituelle
+- Machine dédiée aux VMs uniquement
+
+---
+
+## Hyperviseur Type 2 — Hosted
+
+Installé **comme un logiciel sur un OS existant** (Windows, macOS, Linux).
+
+**Exemples :**
+- **VirtualBox** (Oracle, gratuit)
+- **VMware Workstation** (payant)
+- **VMware Fusion** (macOS)
+- **Parallels** (macOS)
+- **QEMU** (Linux)
+
+**Avantages :**
+- Simple à installer sur sa machine perso
+- Interface graphique intuitive
+- Idéal pour le développement et les tests
+
+**Inconvénients :**
+- Moins performant (couche OS en plus)
+- Consomme des ressources de ta machine
+
+---
+
+## Quand choisir quoi ?
+
+| Cas d'usage | Recommandation |
+|------------|----------------|
+| Dev/test sur ton PC | VirtualBox ou VMware Workstation |
+| Serveur de production | Proxmox ou ESXi |
+| Infrastructure cloud | KVM (AWS, GCP, Azure) |
+| Mac avec puce M | Parallels ou UTM |
+
+---
+
+## La conteneurisation : alternative aux VMs
+
+Docker et les containers ne sont **pas** des VMs mais une alternative légère :
+
+\`\`\`
+VM : OS complet (4GB RAM) → 10 VMs = 40GB RAM
+Container : juste l'app (50MB) → 10 containers = 500MB
+\`\`\`
+
+Les containers partagent le noyau de l'hôte → beaucoup plus léger.
+Mais les VMs offrent un meilleur isolement et permettent différents OS.`
+      },
+      {
+        id: "vm-virtualbox",
+        title: "Créer sa première VM avec VirtualBox",
+        duration: "30 min",
+        content: `# Créer sa première VM avec VirtualBox
+
+VirtualBox est gratuit, open source, et disponible sur Windows, macOS et Linux.
+
+## Installation
+
+1. Va sur virtualbox.org
+2. Télécharge la version pour ton OS
+3. Installe également le **VirtualBox Extension Pack**
+
+## Créer une VM Ubuntu
+
+### Étape 1 : Télécharger une ISO
+
+Télécharge Ubuntu Server ou Ubuntu Desktop depuis ubuntu.com
+
+### Étape 2 : Créer la VM dans VirtualBox
+
+1. Clique **"Nouvelle"**
+2. **Nom** : ubuntu-test
+3. **Type** : Linux
+4. **Version** : Ubuntu (64-bit)
+5. **RAM** : minimum 2048 MB (2 GB)
+6. **Disque dur** : VDI, allocation dynamique, 20 GB
+
+### Étape 3 : Configurer et lancer
+
+**Avant de démarrer, configure :**
+- **Processeurs** : Système → Processeur → 2 CPUs
+- **Réseau** : Pont réseau (pour accès internet) ou NAT
+- **ISO** : Stockage → Lecteur optique → Choisir l'ISO Ubuntu
+
+**Lance la VM** → suis l'installation Ubuntu normale.
+
+## Fonctionnalités essentielles
+
+### Snapshots (sauvegardes)
+Machine → Prendre un instantané → Donne un nom : "avant-installation-apache" → OK
+
+Si quelque chose se passe mal, **restaure** le snapshot.
+
+### Dossiers partagés
+
+Partage un dossier entre ton hôte et la VM :
+Périphériques → Dossiers partagés → Ajouter
+
+### Réseau (modes)
+
+| Mode | Usage |
+|------|-------|
+| **NAT** | VM accède à internet, hôte ne voit pas la VM |
+| **Pont** | VM = machine du réseau local (IP propre) |
+| **Réseau hôte uniquement** | VM ↔ hôte seulement |
+
+## Commandes utiles depuis la VM
+
+\`\`\`bash
+# Voir l'IP de la VM
+ip a
+
+# Mettre à jour le système
+sudo apt update && sudo apt upgrade
+
+# Installer un serveur web pour tester
+sudo apt install nginx
+curl http://localhost
+\`\`\`
+
+## Astuce : Guest Additions
+
+Installe les **VirtualBox Guest Additions** dans la VM pour :
+- Copier-coller entre hôte et VM
+- Dossiers partagés automatiques
+- Résolution d'écran adaptative`
+      },
+      {
+        id: "vm-reseau",
+        title: "Réseau virtuel : interconnecter ses VMs",
+        duration: "20 min",
+        content: `# Réseau virtuel
+
+## Pourquoi le réseau virtuel ?
+
+Dans un vrai lab ou en production, tes VMs doivent communiquer entre elles : une VM base de données, une VM app, une VM load balancer...
+
+## Architecture classique
+
+\`\`\`
+Internet
+    │
+┌───▼──────────────────┐
+│  VM Reverse Proxy     │  (nginx)
+└───┬──────────────────┘
+    │ réseau privé virtuel
+    ├──────────────┐
+┌───▼────┐    ┌───▼────┐
+│ VM App │    │ VM App │
+└───┬────┘    └───┬────┘
+    └──────┬───────┘
+      ┌────▼────┐
+      │ VM BDD  │
+      └─────────┘
+\`\`\`
+
+## Réseau hôte uniquement dans VirtualBox
+
+Crée un réseau privé entre l'hôte et les VMs :
+
+1. **Fichier → Gestionnaire de réseau hôte** → Créer
+2. Adresse : 192.168.56.1/24
+3. Active le serveur DHCP
+
+## Exemple : 2 VMs qui communiquent
+
+**VM1 (serveur)** : IP 192.168.56.101
+\`\`\`bash
+sudo apt install nginx
+# nginx écoute sur le port 80
+\`\`\`
+
+**VM2 (client)** : IP 192.168.56.102
+\`\`\`bash
+curl http://192.168.56.101
+# → affiche la page d'accueil nginx de VM1
+\`\`\`
+
+## Sécurité réseau des VMs
+
+- Les VMs en mode **NAT** ne sont pas accessibles depuis l'extérieur
+- Les VMs en mode **pont** ont une IP sur ton réseau local
+- Mets à jour ton OS invité régulièrement`
+      },
+      {
+        id: "vm-usecases",
+        title: "Cas d'usage : quand et comment utiliser les VMs",
+        duration: "15 min",
+        content: `# Cas d'usage des machines virtuelles
+
+## 1. Lab de développement
+
+\`\`\`
+VM Ubuntu → tester un script bash
+VM Windows → tester une app Windows
+VM Debian → reproduire l'environnement de prod
+\`\`\`
+
+## 2. Isolation de sécurité
+
+- Analyse de malware dans une VM isolée
+- Navigation sur des sites suspects
+- Tests de sécurité (pentesting)
+
+> Toujours **désactiver le réseau** d'une VM d'analyse malware !
+
+## 3. Infrastructure de serveurs
+
+\`\`\`
+Serveur physique (32 cœurs, 128 GB RAM)
+├── VM Web Server (4 cœurs, 8 GB)
+├── VM Database (8 cœurs, 32 GB)
+├── VM Cache Redis (2 cœurs, 4 GB)
+└── VM Monitoring (2 cœurs, 4 GB)
+\`\`\`
+
+## 4. Test de migrations
+
+Avant de migrer un serveur de production :
+1. Clone la prod en VM
+2. Teste la migration
+3. Valide que tout fonctionne
+4. Applique en production
+
+## Choisir la bonne solution
+
+| Besoin | Solution |
+|--------|----------|
+| Test rapide sur ta machine | VirtualBox |
+| Infrastructure maison | Proxmox |
+| Cloud professionnel | AWS EC2 / Azure VM |
+| App légère et rapide | Docker (pas de VM) |
+| Isolation maximale | VM (pas Docker) |`
+      }
+    ]
+  },
+  {
+    id: "proxmox",
+    category: "Serveurs & Infra",
+    emoji: "🖥️",
+    title: "Proxmox VE : virtualisation open source",
+    description: "Installe et gère une infrastructure de VMs avec Proxmox, l'hyperviseur open source de référence",
+    level: "Intermédiaire",
+    duration: "4h",
+    lessons: [
+      {
+        id: "proxmox-intro",
+        title: "Qu'est-ce que Proxmox VE ?",
+        duration: "20 min",
+        content: `# Proxmox VE
+
+## Présentation
+
+**Proxmox Virtual Environment (Proxmox VE)** est un hyperviseur open source de type 1, basé sur Debian Linux et KVM. C'est la solution gratuite la plus utilisée pour créer une infrastructure de virtualisation maison ou en entreprise.
+
+## Pourquoi Proxmox ?
+
+| Critère | Proxmox | VMware ESXi | Hyper-V |
+|---------|---------|-------------|---------|
+| Prix | **Gratuit** | Payant | Inclus Windows Server |
+| Open source | ✓ | ✗ | ✗ |
+| Interface web | ✓ | ✓ | ✓ |
+| KVM + LXC | ✓ | KVM seul | Hyper-V seul |
+| Cluster | ✓ | Payant | Payant |
+
+## Deux types de virtualisation dans Proxmox
+
+### 1. VMs KVM (Machines Virtuelles complètes)
+- OS invité complet (Windows, Linux, FreeBSD...)
+- Isolation totale
+- Nécessite l'activation de la virtualisation dans le BIOS
+
+### 2. Containers LXC (Linux Containers)
+- Partage le noyau Linux de l'hôte
+- Ultra-léger (démarrage en 1-2 secondes)
+- Idéal pour services Linux uniquement
+
+\`\`\`
+Proxmox (Debian)
+├── VM 101 : Windows Server 2022
+├── VM 102 : Ubuntu 22.04 (Serveur Web)
+├── VM 103 : pfSense (Pare-feu)
+├── CT 200 : Nginx (Container LXC)
+├── CT 201 : PostgreSQL (Container LXC)
+└── CT 202 : Nextcloud (Container LXC)
+\`\`\`
+
+## Architecture matérielle recommandée
+
+| Composant | Minimum | Recommandé |
+|-----------|---------|-----------|
+| CPU | 4 cœurs (VT-x/AMD-V) | 8+ cœurs |
+| RAM | 8 GB | 32+ GB |
+| Stockage OS | 32 GB SSD | 128 GB SSD |
+| Stockage VMs | 500 GB HDD | 1+ TB NVMe |
+
+> Le CPU doit supporter la **virtualisation matérielle** : Intel VT-x ou AMD-V. Active-le dans le BIOS.`
+      },
+      {
+        id: "proxmox-install",
+        title: "Installer Proxmox VE",
+        duration: "30 min",
+        content: `# Installation de Proxmox VE
+
+## Prérequis
+
+1. Un PC ou serveur dédié (Proxmox prend toute la machine)
+2. Une clé USB 8 GB minimum
+3. Accès au BIOS pour activer la virtualisation
+
+## Étape 1 : Préparer la clé USB bootable
+
+1. Télécharge l'ISO sur proxmox.com/en/downloads
+2. Grave sur clé USB avec Balena Etcher ou Rufus (Windows)
+3. Boote sur la clé USB (F12 au démarrage)
+
+## Étape 2 : Installation
+
+1. **Install Proxmox VE** → Entrée
+2. **Accepte la licence** → I agree
+3. **Disque cible** : sélectionne le disque principal (⚠️ efface tout)
+4. **Localisation** : Country, Timezone, Keyboard Layout
+5. **Mot de passe root** : choisis un mot de passe fort
+6. **Réseau** :
+   - **Hostname** : proxmox.homelab
+   - **IP address** : 192.168.1.10/24
+   - **Gateway** : 192.168.1.1
+   - **DNS** : 1.1.1.1
+7. **Install** → attend ~5 minutes
+
+## Étape 3 : Premier accès
+
+1. Retire la clé USB, le serveur redémarre
+2. Ouvre : **https://192.168.1.10:8006**
+3. Connecte-toi : **root** / ton mot de passe
+
+## Étape 4 : Configuration initiale
+
+### Désactiver l'avertissement "pas d'abonnement"
+
+\`\`\`bash
+sed -i "s/data.status !== 'Active'/false/" /usr/share/javascript/proxmox-widget-toolkit/proxmoxlib.js
+systemctl restart pveproxy
+\`\`\`
+
+### Mettre à jour sans abonnement payant
+
+\`\`\`bash
+echo "deb http://download.proxmox.com/debian/pve bookworm pve-no-subscription" > /etc/apt/sources.list.d/pve-no-subscription.list
+sed -i 's/^deb/#deb/' /etc/apt/sources.list.d/pve-enterprise.list
+apt update && apt dist-upgrade -y
+\`\`\``
+      },
+      {
+        id: "proxmox-vms",
+        title: "Créer et gérer des VMs",
+        duration: "35 min",
+        content: `# Créer des VMs dans Proxmox
+
+## Uploader une ISO
+
+1. **Datacenter → pve → local (pve) → ISO Images**
+2. **Upload** → sélectionne ton ISO
+3. Ou **Download from URL** → colle l'URL directe
+
+## Créer une VM via "Create VM"
+
+- **General** : Node pve, VM ID 100, Name ubuntu-server
+- **OS** : Sélectionne ubuntu ISO, Type Linux
+- **System** : Machine q35, QEMU Agent activé
+- **Disks** : VirtIO Block, 32 GB, local-lvm
+- **CPU** : 2 cœurs, Type host
+- **Memory** : 2048 MB
+- **Network** : vmbr0, VirtIO
+
+## QEMU Guest Agent
+
+Une fois l'OS installé :
+
+\`\`\`bash
+# Dans la VM (Ubuntu/Debian)
+sudo apt install qemu-guest-agent
+sudo systemctl enable --now qemu-guest-agent
+\`\`\`
+
+## Commandes CLI Proxmox
+
+\`\`\`bash
+qm list                    # Lister toutes les VMs
+qm start 100               # Démarrer VM 100
+qm stop 100                # Arrêter VM 100
+qm shutdown 100            # Arrêt propre
+qm snapshot 100 avant-maj  # Créer un snapshot
+qm rollback 100 avant-maj  # Restaurer un snapshot
+qm clone 100 101           # Cloner la VM 100 en 101
+\`\`\``
+      },
+      {
+        id: "proxmox-lxc",
+        title: "Containers LXC : légers et rapides",
+        duration: "25 min",
+        content: `# Containers LXC dans Proxmox
+
+## LXC vs VM : quand choisir ?
+
+| | LXC Container | VM KVM |
+|--|---------------|--------|
+| Démarrage | 1-2 secondes | 20-60 secondes |
+| RAM utilisée | 50-200 MB | 512 MB - 4 GB |
+| OS supportés | Linux uniquement | Tout OS |
+| Isolation | Partage le noyau hôte | Isolation complète |
+
+## Télécharger des templates LXC
+
+**Datacenter → pve → local → CT Templates → Templates**
+
+Exemples : debian-12-standard, ubuntu-22.04-standard, alpine-3.18-default
+
+## Créer un container LXC
+
+**Bouton "Create CT"** :
+- CT ID 200, Hostname nginx-ct
+- Template debian-12-standard
+- Disk 8 GB, CPU 1 cœur, Memory 512 MB
+- Network DHCP sur vmbr0
+
+## Commandes LXC
+
+\`\`\`bash
+pct list                    # Lister tous les containers
+pct start 200               # Démarrer CT 200
+pct enter 200               # Shell interactif
+pct exec 200 -- apt update  # Exécuter une commande
+pct snapshot 200 snap1      # Snapshot
+pct clone 200 201           # Cloner
+\`\`\`
+
+## Cas d'usage parfaits pour LXC
+
+\`\`\`
+CT 200 : Nginx (reverse proxy)
+CT 201 : PostgreSQL
+CT 202 : Redis
+CT 203 : Nextcloud
+CT 204 : Gitea (GitHub privé)
+CT 205 : Vaultwarden (gestionnaire de mots de passe)
+\`\`\``
+      },
+      {
+        id: "proxmox-backup",
+        title: "Sauvegardes, snapshots et haute disponibilité",
+        duration: "30 min",
+        content: `# Sauvegardes et HA dans Proxmox
+
+## Snapshots vs Backups
+
+| | Snapshot | Backup |
+|--|----------|--------|
+| Vitesse | Instantané | Minutes à heures |
+| Stockage | Sur le même disque | Disque externe/réseau |
+| Usage | Test rapide | Disaster recovery |
+
+## Créer un snapshot
+
+\`\`\`bash
+qm snapshot 100 avant-maj-php --description "Avant mise à jour PHP"
+qm rollback 100 avant-maj-php
+qm listsnapshot 100
+\`\`\`
+
+## Configurer les backups automatiques
+
+**Datacenter → Backup → Add** :
+- Storage : local
+- Schedule : 02:00 (quotidien)
+- Mode : Snapshot (sans interruption)
+- Compression : ZSTD
+- Max Backups : 7
+
+\`\`\`bash
+# Backup manuel
+vzdump 100 --storage local --mode snapshot --compress zstd
+
+# Restaurer
+qmrestore /var/lib/vz/dump/vzdump-qemu-100-*.vma.zst 101
+\`\`\`
+
+## Haute Disponibilité (HA) — Cluster
+
+Pour les environnements critiques (3 nœuds minimum) :
+
+\`\`\`bash
+# Sur le premier nœud
+pvecm create mon-cluster
+
+# Sur les autres nœuds
+pvecm add 192.168.1.10
+
+# Activer HA pour une VM : Datacenter → HA → Add → VM 100
+\`\`\`
+
+## Bonne pratique Proxmox
+
+\`\`\`
+✓ Snapshots avant toute modification
+✓ Backups quotidiens sur stockage séparé
+✓ Surveille les ressources
+✓ Mets à jour régulièrement
+✓ QEMU Agent dans toutes les VMs
+✓ Utilise LXC pour les services Linux simples
+\`\`\``
+      }
+    ]
+  },
+  {
+    id: "construire-avec-ia",
+    category: "IA & LLM",
+    emoji: "🏗️",
+    title: "Construire un produit avec l'IA",
+    description: "Intègre les LLMs dans tes apps : APIs, prompt engineering, RAG, agents et bonnes pratiques produit",
+    level: "Intermédiaire",
+    duration: "4h30",
+    lessons: [
+      {
+        id: "ia-produit-intro",
+        title: "Penser produit avec l'IA",
+        duration: "20 min",
+        content: `# Construire un produit avec l'IA
+
+## L'IA générative comme brique produit
+
+L'IA n'est plus un projet de recherche — c'est une **brique qu'on intègre dans les produits** comme une base de données ou une API de paiement.
+
+## Ce que l'IA apporte à un produit
+
+| Fonctionnalité | Exemple concret |
+|---------------|----------------|
+| Génération de texte | Rédaction assistée, résumés |
+| Analyse de documents | Extraction d'infos depuis des PDFs |
+| Chatbot intelligent | Support client, assistant produit |
+| Génération de code | Complétion, review, refactoring |
+| Classification | Modération, catégorisation |
+
+## Les modèles disponibles
+
+| Fournisseur | Modèle phare | Points forts |
+|------------|-------------|-------------|
+| **Anthropic** | Claude Sonnet/Opus | Raisonnement, code, sécurité |
+| **OpenAI** | GPT-4o | Multimodal, ecosystem large |
+| **Google** | Gemini 1.5 | Contexte très long (1M tokens) |
+| **Mistral** | Mistral Large | Européen, rapide, moins cher |
+| **Groq** | Llama 3 | Ultra-rapide, gratuit en test |
+
+## Modèles locaux (gratuit, privé)
+
+- **Ollama** : fait tourner Llama, Mistral, Gemma sur ta machine
+- **LM Studio** : interface graphique pour modèles locaux
+
+## Choisir son modèle
+
+\`\`\`
+Qualité max → Claude Opus / GPT-4
+Équilibre coût/qualité → Claude Sonnet / GPT-4o-mini
+Ultra rapide / prototype → Groq + Llama
+Données privées → Ollama local
+Long contexte (PDFs) → Gemini 1.5 Pro
+\`\`\`
+
+## Le coût en production
+
+Les LLMs facturent au **token** (≈ 0.75 mot).
+
+\`\`\`
+Claude Sonnet : $3 input / $15 output par million de tokens
+1000 conversations de 500 mots ≈ $3-15
+→ Très accessible pour un SaaS avec utilisateurs payants
+\`\`\``
+      },
+      {
+        id: "ia-api-integration",
+        title: "Intégrer une API LLM dans son app",
+        duration: "40 min",
+        content: `# Intégrer une API LLM
+
+## Exemple avec l'API Anthropic (Python)
+
+\`\`\`bash
+pip install anthropic
+\`\`\`
+
+\`\`\`python
+import anthropic
+
+client = anthropic.Anthropic(api_key="sk-ant-...")
+
+message = client.messages.create(
+    model="claude-sonnet-4-5",
+    max_tokens=1024,
+    messages=[
+        {"role": "user", "content": "Résume ce texte en 3 points : ..."}
+    ]
+)
+
+print(message.content[0].text)
+\`\`\`
+
+## Exemple avec OpenAI (Python)
+
+\`\`\`python
+from openai import OpenAI
+
+client = OpenAI(api_key="sk-...")
+
+completion = client.chat.completions.create(
+    model="gpt-4o",
+    messages=[
+        {"role": "system", "content": "Tu es un assistant expert en finance."},
+        {"role": "user", "content": "Explique la diversification de portefeuille."}
+    ]
+)
+
+print(completion.choices[0].message.content)
+\`\`\`
+
+## Le rôle "system" : personnaliser le comportement
+
+\`\`\`python
+messages=[
+    {
+        "role": "system",
+        "content": "Tu es l'assistant de MonEntreprise. Réponds uniquement aux questions sur nos produits. Sois concis et professionnel."
+    },
+    {"role": "user", "content": "Comment réinitialiser mon mot de passe ?"}
+]
+\`\`\`
+
+## Intégration dans une API FastAPI
+
+\`\`\`python
+from fastapi import FastAPI
+from anthropic import Anthropic
+
+app = FastAPI()
+client = Anthropic()
+
+@app.post("/chat")
+async def chat(message: str):
+    response = client.messages.create(
+        model="claude-sonnet-4-5",
+        max_tokens=500,
+        messages=[{"role": "user", "content": message}]
+    )
+    return {"reply": response.content[0].text}
+\`\`\`
+
+## Streaming (réponse en temps réel)
+
+\`\`\`python
+with client.messages.stream(
+    model="claude-sonnet-4-5",
+    max_tokens=1024,
+    messages=[{"role": "user", "content": "Écris un poème"}]
+) as stream:
+    for text in stream.text_stream:
+        print(text, end="", flush=True)
+\`\`\``
+      },
+      {
+        id: "ia-prompt-engineering",
+        title: "Prompt engineering pour les produits",
+        duration: "35 min",
+        content: `# Prompt Engineering
+
+Le prompt est le **code de l'IA**. Un mauvais prompt = résultats imprévisibles. Un bon prompt = comportement stable et de qualité.
+
+## Les 5 règles d'un bon prompt système
+
+### 1. Définir clairement le rôle
+\`\`\`
+❌ "Tu es un assistant."
+✓ "Tu es un expert en fiscalité française spécialisé dans les auto-entrepreneurs."
+\`\`\`
+
+### 2. Définir le format de sortie
+\`\`\`
+✓ "Réponds toujours en JSON : {category, priority, summary}"
+✓ "Réponds en 3 bullet points maximum"
+\`\`\`
+
+### 3. Donner des exemples (few-shot)
+\`\`\`
+Analyse le sentiment :
+- "Ce produit est génial !" → positif
+- "Livraison en retard, déçu." → négatif
+- "Le colis est arrivé." → neutre
+
+Maintenant : "J'attendais mieux pour ce prix."
+\`\`\`
+
+### 4. Définir les limites
+\`\`\`
+"Si la question ne concerne pas [domaine], réponds :
+Je suis spécialisé en X, je ne peux pas répondre."
+\`\`\`
+
+### 5. Chaîne de réflexion (chain-of-thought)
+\`\`\`
+"Réfléchis étape par étape dans <thinking>...</thinking>
+puis donne ta réponse dans <answer>...</answer>"
+\`\`\`
+
+## Structured output (JSON fiable)
+
+\`\`\`python
+prompt = """
+Analyse ce CV et retourne UNIQUEMENT un JSON valide :
+{
+  "nom": "...",
+  "experience_annees": 0,
+  "competences": ["..."],
+  "niveau": "junior|mid|senior"
+}
+
+CV : {cv_text}
+"""
+\`\`\`
+
+## Contrôle des hallucinations
+
+\`\`\`
+"Si tu n'es pas certain, dis-le explicitement.
+N'invente jamais de chiffres, dates ou noms.
+Préfère dire je ne sais pas plutôt qu'inventer."
+\`\`\`
+
+## Prompt avec contexte dynamique
+
+\`\`\`python
+def build_prompt(question, user):
+    return f"""
+Tu es l'assistant de {user['company']}.
+Utilisateur : {user['name']}, abonnement {user['plan']}.
+Question : {question}
+Réponds en utilisant le prénom de l'utilisateur.
+"""
+\`\`\``
+      },
+      {
+        id: "ia-rag",
+        title: "RAG : connecter l'IA à tes données",
+        duration: "40 min",
+        content: `# RAG — Retrieval-Augmented Generation
+
+## Le problème des LLMs sans RAG
+
+Les LLMs ne connaissent pas tes données (ta doc, tes produits, ton entreprise).
+
+\`\`\`
+Sans RAG :
+User: "Quel est le prix de l'abonnement Pro ?"
+IA: "Je ne connais pas les prix de votre entreprise."
+
+Avec RAG :
+User: "Quel est le prix de l'abonnement Pro ?"
+Système: [Cherche dans la doc] → "Pro : 49€/mois"
+IA: "L'abonnement Pro est à 49€/mois, il inclut..."
+\`\`\`
+
+## Architecture RAG
+
+\`\`\`
+Phase 1 : Indexation (une fois)
+Tes docs → Découpe en morceaux → Embeddings → VectorDB (ChromaDB)
+
+Phase 2 : Question/Réponse
+Question → Embedding → Recherche similaire → Contexte → LLM → Réponse
+\`\`\`
+
+## Implémentation avec LangChain
+
+\`\`\`bash
+pip install langchain chromadb anthropic sentence-transformers
+\`\`\`
+
+\`\`\`python
+from langchain.vectorstores import Chroma
+from langchain.embeddings import HuggingFaceEmbeddings
+from langchain.text_splitter import RecursiveCharacterTextSplitter
+from langchain.document_loaders import DirectoryLoader
+
+# 1. Charger les documents
+loader = DirectoryLoader("./docs/", glob="**/*.md")
+docs = loader.load()
+
+# 2. Découper en morceaux
+splitter = RecursiveCharacterTextSplitter(chunk_size=500, chunk_overlap=50)
+chunks = splitter.split_documents(docs)
+
+# 3. Stocker les embeddings
+embeddings = HuggingFaceEmbeddings(model_name="all-MiniLM-L6-v2")
+vectorstore = Chroma.from_documents(chunks, embeddings, persist_directory="./db")
+
+# 4. Recherche + génération
+def ask(question):
+    docs = vectorstore.similarity_search(question, k=3)
+    context = "\n\n".join([d.page_content for d in docs])
+
+    import anthropic
+    client = anthropic.Anthropic()
+    resp = client.messages.create(
+        model="claude-sonnet-4-5",
+        max_tokens=500,
+        messages=[{"role": "user", "content": f"Contexte :\n{context}\n\nQuestion : {question}"}]
+    )
+    return resp.content[0].text
+\`\`\`
+
+## Optimisations RAG
+
+| Problème | Solution |
+|----------|---------|
+| Réponses hors sujet | Score de confiance minimum |
+| Lent | Cache les embeddings |
+| Hallucinations | "Réponds uniquement basé sur le contexte fourni" |`
+      },
+      {
+        id: "ia-agents-prod",
+        title: "Agents IA et bonnes pratiques production",
+        duration: "40 min",
+        content: `# Agents IA et production
+
+## Qu'est-ce qu'un agent ?
+
+Un **agent** est un LLM qui peut décider quelle action prendre, utiliser des **outils** (fonctions), observer les résultats et répéter jusqu'à l'objectif.
+
+## Tool Use (Function Calling)
+
+\`\`\`python
+import anthropic, json
+
+client = anthropic.Anthropic()
+
+tools = [
+    {
+        "name": "get_weather",
+        "description": "Obtenir la météo d'une ville",
+        "input_schema": {
+            "type": "object",
+            "properties": {
+                "city": {"type": "string"}
+            },
+            "required": ["city"]
+        }
+    }
+]
+
+def get_weather(city):
+    return {"city": city, "temp": 22, "condition": "ensoleillé"}
+
+messages = [{"role": "user", "content": "Météo à Paris ?"}]
+
+response = client.messages.create(
+    model="claude-sonnet-4-5",
+    max_tokens=1024,
+    tools=tools,
+    messages=messages
+)
+
+if response.stop_reason == "tool_use":
+    for block in response.content:
+        if block.type == "tool_use":
+            result = get_weather(**block.input)
+            print(f"Outil {block.name} → {result}")
+\`\`\`
+
+## Gestion des coûts en production
+
+\`\`\`python
+# Budget max par requête
+MAX_TOKENS_OUTPUT = 500
+
+# Cache les réponses identiques (Redis)
+import redis
+cache = redis.Redis()
+
+def cached_llm_call(prompt):
+    key = f"llm:{hash(prompt)}"
+    cached = cache.get(key)
+    if cached:
+        return cached.decode()
+    response = call_llm(prompt)
+    cache.setex(key, 3600, response)  # Cache 1h
+    return response
+\`\`\`
+
+## Sécurité : prompt injection
+
+\`\`\`python
+# Sépare clairement le système des données utilisateur
+system = "Tu es un assistant. Réponds uniquement aux questions sur nos produits."
+messages = [{"role": "user", "content": user_input}]
+
+# Valide l'input
+MAX_INPUT = 2000
+if len(user_input) > MAX_INPUT:
+    raise ValueError("Message trop long")
+\`\`\`
+
+## Retry avec backoff exponentiel
+
+\`\`\`python
+import time
+from anthropic import RateLimitError
+
+def call_with_retry(messages, retries=3):
+    for attempt in range(retries):
+        try:
+            return client.messages.create(
+                model="claude-sonnet-4-5",
+                max_tokens=500,
+                messages=messages
+            )
+        except RateLimitError:
+            time.sleep(2 ** attempt)
+    raise Exception("Max retries reached")
+\`\`\`
+
+## Checklist produit IA
+
+\`\`\`
+Avant de mettre en prod :
+✓ Rate limiting par utilisateur
+✓ Validation des inputs
+✓ Timeout sur les appels API (max 30s)
+✓ Fallback si l'API est indisponible
+✓ Logs de tous les appels
+✓ Budget mensuel configuré chez le provider
+✓ Tests sur les cas critiques
+✓ Disclaimer "IA peut se tromper" visible
+\`\`\``
       }
     ]
   }

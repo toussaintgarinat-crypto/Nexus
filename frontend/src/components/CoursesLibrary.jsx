@@ -117,15 +117,15 @@ function MarkdownRenderer({ content }) {
 
 const CATEGORIES = [
   { id: 'all', label: 'Tous', emoji: '📚' },
+  { id: 'Fondamentaux', label: 'Fondamentaux', emoji: '🧱' },
   { id: 'Frontend', label: 'Frontend', emoji: '🎨' },
   { id: 'Backend', label: 'Backend', emoji: '⚙️' },
   { id: 'Base de données', label: 'Base de données', emoji: '🗄️' },
+  { id: 'Architecture', label: 'Architecture', emoji: '🏛️' },
   { id: 'DevOps', label: 'DevOps', emoji: '🚀' },
+  { id: 'Serveurs & Infra', label: 'Serveurs & Infra', emoji: '🖥️' },
   { id: 'Sécurité', label: 'Sécurité', emoji: '🔒' },
   { id: 'IA & LLM', label: 'IA & LLM', emoji: '🤖' },
-  { id: 'Fondamentaux', label: 'Fondamentaux', emoji: '🧱' },
-  { id: 'Serveurs & Infra', label: 'Serveurs & Infra', emoji: '🖥️' },
-  { id: 'Outils', label: 'Outils', emoji: '🛠️' },
 ];
 
 export default function CoursesLibrary({ accentColor = '#8B5CF6' }) {
