@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import '../models/user.dart';
 import '../services/auth_service.dart';
+import '../services/api_service.dart';
 
 enum AuthStatus { loading, authenticated, unauthenticated }
 
@@ -22,7 +23,10 @@ class AuthProvider extends ChangeNotifier {
     final savedToken = await _authService.getToken();
     if (savedToken != null) {
       try {
-        _user = await _authService.getMe(savedToken);
+        _user = await _authService.getMe(savedToken).timeout(
+          const Duration(seconds: 10),
+          onTimeout: () => throw Exception('timeout'),
+        );
         _token = savedToken;
         _status = AuthStatus.authenticated;
       } catch (_) {

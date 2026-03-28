@@ -135,9 +135,13 @@ class _ChatScreenState extends State<ChatScreen> {
             Text(channel.name),
           ],
         ),
-        subtitle: channel.description.isNotEmpty
-            ? Text(channel.description, style: const TextStyle(fontSize: 11, color: AppTheme.textSecondary))
-            : null,
+        bottom: channel.description.isNotEmpty ? PreferredSize(
+          preferredSize: const Size.fromHeight(20),
+          child: Padding(
+            padding: const EdgeInsets.only(left: 16, bottom: 6),
+            child: Align(alignment: Alignment.centerLeft, child: Text(channel.description, style: const TextStyle(fontSize: 11, color: AppTheme.textSecondary))),
+          ),
+        ) : null,
       ),
       body: Column(
         children: [

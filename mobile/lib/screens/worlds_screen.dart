@@ -80,7 +80,9 @@ class _WorldsScreenState extends State<WorldsScreen> {
     final auth = context.watch<AuthProvider>();
     final user = auth.user!;
 
-    return Scaffold(
+    return DefaultTabController(
+      length: 2,
+      child: Scaffold(
       appBar: AppBar(
         leading: Padding(
           padding: const EdgeInsets.all(8),
@@ -123,6 +125,7 @@ class _WorldsScreenState extends State<WorldsScreen> {
               child: const Icon(Icons.add, color: Colors.white),
             )
           : null,
+    ),
     );
   }
 }

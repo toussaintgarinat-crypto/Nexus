@@ -68,14 +68,6 @@ class AppTheme {
       textButtonTheme: TextButtonThemeData(
         style: TextButton.styleFrom(foregroundColor: primary),
       ),
-      cardTheme: CardTheme(
-        color: surface,
-        elevation: 0,
-        shape: RoundedRectangleBorder(
-          borderRadius: BorderRadius.circular(12),
-          side: const BorderSide(color: border),
-        ),
-      ),
       dividerTheme: const DividerThemeData(color: border, thickness: 1),
       iconTheme: const IconThemeData(color: textSecondary),
       textTheme: const TextTheme(

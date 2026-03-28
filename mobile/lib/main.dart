@@ -1,3 +1,4 @@
+import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'providers/auth_provider.dart';
@@ -7,8 +8,30 @@ import 'screens/worlds_screen.dart';
 import 'theme/app_theme.dart';
 
 void main() {
-  WidgetsFlutterBinding.ensureInitialized();
-  runApp(const NexusApp());
+  runZonedGuarded(() {
+    WidgetsFlutterBinding.ensureInitialized();
+    FlutterError.onError = (FlutterErrorDetails details) {
+      FlutterError.presentError(details);
+    };
+    ErrorWidget.builder = (FlutterErrorDetails details) {
+      return Material(
+        color: AppTheme.background,
+        child: Padding(
+          padding: const EdgeInsets.all(24),
+          child: Center(
+            child: Text(
+              'Erreur: ${details.exceptionAsString()}',
+              style: const TextStyle(color: Colors.red, fontSize: 12),
+              textAlign: TextAlign.center,
+            ),
+          ),
+        ),
+      );
+    };
+    runApp(const NexusApp());
+  }, (error, stack) {
+    debugPrint('Zone error: $error\n$stack');
+  });
 }
 
 class NexusApp extends StatelessWidget {
@@ -41,6 +64,7 @@ class _Root extends StatelessWidget {
     switch (auth.status) {
       case AuthStatus.loading:
         return const Scaffold(
+          backgroundColor: AppTheme.background,
           body: Center(
             child: Column(
               mainAxisAlignment: MainAxisAlignment.center,
@@ -48,6 +72,8 @@ class _Root extends StatelessWidget {
                 Text('⚡', style: TextStyle(fontSize: 56)),
                 SizedBox(height: 24),
                 CircularProgressIndicator(color: AppTheme.primary),
+                SizedBox(height: 16),
+                Text('Chargement...', style: TextStyle(color: AppTheme.textSecondary, fontSize: 13)),
               ],
             ),
           ),
